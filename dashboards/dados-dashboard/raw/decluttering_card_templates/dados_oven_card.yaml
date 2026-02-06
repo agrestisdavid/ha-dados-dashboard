@@ -1,0 +1,50 @@
+dados_oven_card:
+  default:
+    - entity: sensor.ofen_betriebszustand
+    - cards:
+        - type: custom:decluttering-card
+          template: dados_oven_control
+    - title_card:
+        type: custom:button-card
+        template:
+          - dados_device_card
+        variables:
+          name: Backberta
+          card_color: var(--contrast2)
+          card_height: 80px
+          show_glow: true
+          entity: sensor.ofen_betriebszustand
+          state_display_entity: sensor.ofen_betriebszustand
+          icon_on: m3rf:oven
+          icon_off: m3r:oven
+          icon_alert: m3o:settings-alert
+          img_cell_background: var(--brown)
+          bar_entity: sensor.ofen_programmfortschritt
+          percent: sensor.ofen_programmfortschritt
+          state_startin: sensor.ofen_start_in
+          state_remaining: sensor.ofen_verbleibende_programmlaufzeit
+          state_active_program: sensor.ofen_aktives_programm
+          value_run: run
+          value_off: inactive
+          value_on: ready
+          value_alert: error
+          value_action: actionrequired
+          value_error_message: sensor.ofen_betriebszustand
+          value_finished: finished
+          value_paused: pause
+          value_aborting: aborting
+          value_start: delayedstart
+          value_returning: returning
+
+        styles:
+          card:
+            - overflow: visible
+
+  card:
+    type: custom:decluttering-card
+    template: dados_expander_base
+    variables:
+      - entity: '[[entity]]'
+      - cards: '[[cards]]'
+      - title_card: '[[title_card]]'
+      - card_mod: '[[card_mod]]'

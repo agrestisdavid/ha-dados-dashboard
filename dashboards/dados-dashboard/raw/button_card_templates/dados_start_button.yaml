@@ -1,0 +1,212 @@
+dados_start_button:
+  variables:
+    state_entity: sensor.ofen_betriebszustand
+    start_button: button.ofen_start
+    pause_button: button.ofen_programm_pausieren
+    resume_button: button.ofen_programm_fortsetzen
+    abort_button: button.ofen_programm_abbrechen
+    img_cell_background: var(--brown)
+  entity: '[[[ return variables.state_entity ]]]'
+  show_state: false
+  show_icon: false
+  show_name: false
+  state:
+    - operator: template
+      value: >
+        [[[ return ['ready', 'inactive', 'on'].includes(states[variables.state_entity]?.state?.toLowerCase()) ]]]
+      styles:
+        card:
+          - border-radius: 16px
+        grid:
+          - grid-template-areas: |
+              "start start"
+          - grid-template-columns: 1fr 1fr
+          - grid-template-rows: 1fr
+          - column-gap: 10px
+          - row-gap: 10px
+        custom_fields:
+          start:
+            - display: block
+          pause:
+            - display: none
+          abort:
+            - display: none
+    - operator: template
+      value: >
+        [[[ return states[variables.state_entity]?.state?.toLowerCase() === 'delayedstart' ]]]
+      styles:
+        card:
+          - border-radius: 16px
+        grid:
+          - grid-template-areas: |
+              "start abort"
+          - grid-template-columns: 1fr 1fr
+          - grid-template-rows: 1fr
+          - column-gap: 10px
+          - row-gap: 10px
+        custom_fields:
+          start:
+            - display: block
+          pause:
+            - display: none
+          abort:
+            - display: block
+  styles:
+    card:
+      - background: transparent
+      - padding: 0px 12px 12px 12px
+      - border-radius: 16px
+      - "--button-card-ripple-color": transparent !important
+      - "--button-card-ripple-hover-opacity": 0 !important
+      - "--ha-card-ripple-color": transparent !important
+      - "--ha-ripple-hover-opacity": 0 !important
+    grid:
+      - grid-template-areas: |
+          "pause abort"
+      - grid-template-columns: 1fr 1fr
+      - grid-template-rows: 1fr
+      - column-gap: 10px
+    name:
+      - justify-self: start
+      - align-self: start
+      - font-size: 16px
+      - font-weight: 600
+      - color: red
+    custom_fields:
+      start:
+        - display: none
+      pause:
+        - display: block
+      abort:
+        - display: block
+  custom_fields:
+    start:
+      card:
+        type: custom:button-card
+        show_icon: true
+        show_state: false
+        icon: mdi:play
+        name: |
+          [[[
+            return `<ha-icon icon="mdi:play" style="--mdc-icon-size:20px;"></ha-icon> Start`;
+          ]]]
+        tap_action:
+          action: call-service
+          service: button.press
+          service_data:
+            entity_id: "[[[ return variables.start_button; ]]]"
+        styles:
+          card:
+            - border-radius: 14px
+            - background: '[[[ return variables.img_cell_background ]]]'
+            - height: 40px
+            - padding: 0
+          grid:
+            - grid-template-areas: "\"i n\""
+            - grid-template-columns: auto auto
+            - grid-template-rows: 1fr
+            - justify-content: center
+            - align-items: center
+            - column-gap: 4px
+          name:
+            - font-size: 14px
+            - font-weight: 600
+            - align-self: center
+            - color: var(--contrast1)
+          icon:
+            - width: 20px
+            - height: 20px
+            - align-self: center
+          img_cell:
+            - align-self: center
+            - display: flex
+            - align-items: center
+            - justify-content: center
+    pause:
+      card:
+        type: custom:button-card
+        show_icon: true
+        show_state: false
+        show_name: false
+        icon: mdi:pause
+        name: |
+          [[[
+            const s = (states[variables.state_entity]?.state || '').toLowerCase();
+            if (s === 'run') return `<ha-icon icon="mdi:pause" style="--mdc-icon-size:20px;"></ha-icon> `;
+            if (s === 'pause') return `<ha-icon icon="mdi:play" style="--mdc-icon-size:20px;"></ha-icon> `;
+            return '—';
+          ]]]
+        tap_action:
+          action: call-service
+          service: button.press
+          service_data:
+            entity_id: |
+              [[[
+                const s = (states[variables.state_entity]?.state || '').toLowerCase();
+                if (s === 'run') return variables.pause_button;
+                if (s === 'pause')  return variables.resume_button;
+                return null;
+              ]]]
+        styles:
+          card:
+            - border-radius: 14px
+            - height: 40px
+            - padding: 0
+            - background-color: '[[[ return variables.img_cell_background ]]]'
+          grid:
+            - grid-template-areas: "\"i\""
+            - grid-template-columns: 1fr
+            - grid-template-rows: 1fr
+            - justify-content: center
+            - align-items: center
+          name:
+            - font-size: 14px
+            - font-weight: 600
+            - justify-self: center
+            - align-self: center
+            - color: var(--contrast1)
+          icon:
+            - width: 20px
+            - height: 20px
+            - align-self: center
+            - color: var(--contrast1)
+
+    abort:
+      card:
+        type: custom:button-card
+        show_icon: true
+        show_name: false
+        show_state: false
+        icon: "mdi:stop"
+        name: |
+          [[[
+            return `<ha-icon icon="mdi:stop" style="--mdc-icon-size:20px;"></ha-icon> Abbrechen`;
+          ]]]
+        tap_action:
+          action: call-service
+          service: button.press
+          service_data:
+            entity_id: "[[[ return variables.abort_button; ]]]"
+        styles:
+          card:
+            - border-radius: 14px
+            - height: 40px
+            - padding: 0
+            - background: '[[[ return variables.img_cell_background ]]]'
+          grid:
+            - grid-template-areas: "\"i\""
+            - grid-template-columns: 1fr
+            - grid-template-rows: 1fr
+            - justify-content: center
+            - align-items: center
+          name:
+            - font-size: 14px
+            - font-weight: 600
+            - justify-self: center
+            - align-self: center
+            - color: var(--contrast1)
+          icon:
+            - width: 20px
+            - height: 20px
+            - align-self: center
+            - color: var(--contrast1)

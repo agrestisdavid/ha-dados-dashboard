@@ -1,0 +1,25 @@
+dados_expander_title:
+  template: dados_base
+  variables:
+    entity: null
+    state_display_entity: null
+    card_color: transparent
+    card_height: 80px
+    card_border_radius: 36px
+    img_cell_background: var(--green)
+    custom_icon: null
+
+  entity: "[[[ return variables.entity ]]]"
+  icon: "[[[ return variables.custom:icon ]]]"
+  show_state: true
+
+  tap_action:
+    action: fire-dom-event
+    expander-card:
+      data:
+        expander-card-id: "[[[ return variables.entity ]]]"
+        action: toggle
+
+  styles:
+    card:
+      - overflow: visible

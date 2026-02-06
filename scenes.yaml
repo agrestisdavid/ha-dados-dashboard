@@ -1,0 +1,22 @@
+- id: '1770252312434'
+  name: test1
+  entities:
+    light.deckenlicht_buro:
+      supported_color_modes:
+      - onoff
+      color_mode:
+      friendly_name: Deckenlicht Büro
+      supported_features: 0
+      state: 'off'
+  metadata: {}
+- id: '1770252326277'
+  name: test2
+  entities:
+    light.deckenlicht_buro:
+      supported_color_modes:
+      - onoff
+      color_mode: onoff
+      friendly_name: Deckenlicht Büro
+      supported_features: 0
+      state: 'on'
+  metadata: {}

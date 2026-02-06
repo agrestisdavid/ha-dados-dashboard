@@ -1,0 +1,87 @@
+dados_temperature:
+  card:
+    type: custom:vertical-stack-in-card
+    cards:
+      - type: custom:button-card
+        entity: "[[entity]]"
+        icon: mdi:thermometer
+        show_state: true
+        name: "[[name]]"
+        state_display: |
+          [[[
+            const v = parseFloat(entity.state);
+            if (isNaN(v)) return '- °C';
+            return v.toFixed(1) + ' °C';
+          ]]]
+        tap_action:
+          action: none
+        styles:
+          grid:
+            - grid-template-columns: 55px 1fr
+            - grid-template-rows: min-content 1fr
+            - grid-template-areas: "'i n' 'i s'"
+          card:
+            - background-color: var(--contrast1)
+            - border-radius: 26px
+            - height: 97px
+            - position: absolute
+          img_cell:
+            - width: 25px
+            - height: 25px
+            - align-self: start
+            - margin: "-7px 0px"
+          icon:
+            - width: 25px
+            - color: var(--red)
+            - z-index: 1
+            - align-self: start
+          name:
+            - justify-self: start
+            - align-self: start
+            - font-size: 16px
+            - font-weight: 500
+            - color: var(--contrast16)
+            - font-family: Roboto
+            - letter-spacing: 0.4px
+            - margin: "-4px -10px"
+            - z-index: 1
+          state:
+            - justify-self: start
+            - align-self: start
+            - font-size: 14px
+            - font-weight: 500
+            - font-family: Roboto
+            - color: var(--contrast1)
+            - letter-spacing: 0.6px
+            - z-index: 1
+            - background: var(--contrast16)
+            - padding: 2px 10px
+            - border-radius: 16px
+            - margin: 8px -10px
+      - type: custom:mini-graph-card
+        entities:
+          - entity: "[[entity]]"
+            name: Temperature
+            color: var(--red)
+        hours_to_show: 24
+        line_width: 5
+        font_size: 50
+        animate: true
+        show:
+          name: false
+          icon: false
+          state: false
+          legend: false
+          fill: false
+        card_mod:
+          style: |
+            ha-card {
+              background: var(--contrast1) !important;
+              padding-top: 50px !important;
+            }
+    card_mod:
+      style: |
+        ha-card {
+          border-radius: 26px !important;
+          overflow: false;
+        }

@@ -1,0 +1,517 @@
+type: sections
+max_columns: 2
+title: Security
+path: security
+icon: mdi:security
+subview: true
+sections:
+  - type: grid
+    cards:
+      - type: custom:gap-card
+        grid_options:
+          columns: full
+          rows: 0.5
+      - type: custom:simple-tabs
+        background-color: var(--contrast2)
+        active-text-color: var(--black1)
+        active-background: var(--tabs)
+        hover-color: var(--contrast4)
+        border-color: var(--contrast2)
+        button_padding: 15px
+        default_tab: 2
+        tabs:
+          - title: Tür & Fenster
+            icon: m3o:door-front
+            id: fenster
+            card:
+              type: custom:auto-entities
+              card:
+                type: entities
+                card_mod:
+                  style: |
+                    ha-card {
+                      background: transparent !important;
+                      box-shadow: none !important;
+                      border: 0 !important;
+                    }
+                    .card-content {
+                      padding: 0 !important;
+                    }
+              filter:
+                include:
+                  - options:
+                      type: custom:button-card
+                      template: dados_alert
+                      variables:
+                        entity: this.entity_id
+                        img_cell_background: var(--red)
+                      state:
+                        - value: "on"
+                          icon: mdi:window-open-variant
+                        - value: "off"
+                          icon: mdi:window-closed-variant
+                    label: fenster
+                exclude: []
+            badge: "{{ states('sensor.fenster_offen') | int > 0 }}"
+          - title: Kamera
+            icon: m3o:nest-cam-outdoor
+            card:
+              type: custom:vertical-stack-in-card
+              cards:
+                - type: custom:layout-card
+                  layout_type: custom:grid-layout
+                  layout:
+                    grid-template-columns: 50% 50%
+                    grid-gap: 12px
+                    grid-template-rows: auto
+                    grid-template-areas: |
+
+                      "kamera2 activity"
+                      "kamera3 activity"
+                      "kamera1 kamera1"
+                    mediaquery:
+                      "(max-width: 800px)":
+                        grid-template-columns: 100%
+                        grid-template-areas: |
+                          "kamera2"
+                          "kamera3"
+                          "kamera1"
+                          "activity"
+                  cards:
+                    - type: custom:advanced-camera-card
+                      cameras:
+                        - frigate:
+                            camera_name: garten_1
+                          live_provider: go2rtc
+                          triggers:
+                            occupancy: true
+                            motion: false
+                            entities:
+                              - binary_sensor.garten_all_occupancy
+                          title: Wall-E
+                      timeline:
+                        show_recordings: true
+                        controls:
+                          thumbnails:
+                            mode: right
+                        style: stack
+                        events_media_type: all
+                      profiles: []
+                      grid_options:
+                        columns: full
+                        rows: auto
+                      view:
+                        default: live
+                        dim: false
+                        keyboard_shortcuts:
+                          ptz_left:
+                            key: ArrowLeft
+                          ptz_right:
+                            key: ArrowRight
+                          ptz_up:
+                            key: ArrowUp
+                          ptz_down:
+                            key: ArrowDown
+                          ptz_zoom_in:
+                            key: +
+                          ptz_zoom_out:
+                            key: "-"
+                          ptz_home:
+                            key: h
+                        theme:
+                          themes: []
+                        camera_select: live
+                      performance:
+                        style:
+                          border_radius: true
+                          box_shadow: false
+                      menu:
+                        style: hover-card
+                        position: bottom
+                        buttons:
+                          microphone:
+                            enabled: true
+                            alignment: matching
+                            permanent: true
+                            priority: 100
+                            icon: mdi:account
+                            type: toggle
+                          iris:
+                            enabled: true
+                            icon: m3of:video-library
+                          live:
+                            icon: mdi:cctv
+                            alignment: opposing
+                          cameras:
+                            icon: m3o:videocam
+                            permanent: true
+                            priority: 79
+                            alignment: matching
+                            enabled: true
+                          snapshots:
+                            enabled: false
+                          media_player:
+                            enabled: false
+                          mute:
+                            enabled: true
+                            alignment: opposing
+                            priority: 76
+                          display_mode:
+                            enabled: false
+                          timeline:
+                            enabled: true
+                            alignment: matching
+                            icon: bha:adguard-home
+                          camera_ui:
+                            enabled: false
+                        button_size: 30
+                      status_bar:
+                        items:
+                          title:
+                            enabled: false
+                          resolution:
+                            enabled: false
+                      live:
+                        display: {}
+                        preload: true
+                      view_layout:
+                        grid-area: kamera1
+                    - type: custom:advanced-camera-card
+                      cameras:
+                        - frigate:
+                            camera_name: hauseingang_1
+                          live_provider: go2rtc
+                          triggers:
+                            occupancy: true
+                            motion: false
+                            entities:
+                              - binary_sensor.hauseingang_all_occupancy
+                          title: Hauseingang
+                      timeline:
+                        show_recordings: true
+                        controls:
+                          thumbnails:
+                            mode: right
+                        style: stack
+                        events_media_type: all
+                      profiles: []
+                      grid_options:
+                        columns: full
+                        rows: auto
+                      view:
+                        default: live
+                        dim: false
+                        keyboard_shortcuts:
+                          ptz_left:
+                            key: ArrowLeft
+                          ptz_right:
+                            key: ArrowRight
+                          ptz_up:
+                            key: ArrowUp
+                          ptz_down:
+                            key: ArrowDown
+                          ptz_zoom_in:
+                            key: +
+                          ptz_zoom_out:
+                            key: "-"
+                          ptz_home:
+                            key: h
+                        theme:
+                          themes: []
+                        camera_select: live
+                      performance:
+                        style:
+                          border_radius: true
+                          box_shadow: false
+                      menu:
+                        style: hover-card
+                        position: bottom
+                        buttons:
+                          microphone:
+                            enabled: true
+                            alignment: matching
+                            permanent: true
+                            priority: 100
+                            icon: mdi:account
+                            type: toggle
+                          iris:
+                            enabled: true
+                            icon: m3of:video-library
+                          live:
+                            icon: mdi:cctv
+                            alignment: opposing
+                          cameras:
+                            icon: m3o:videocam
+                            permanent: true
+                            priority: 79
+                            alignment: matching
+                            enabled: true
+                          snapshots:
+                            enabled: false
+                          media_player:
+                            enabled: false
+                          mute:
+                            enabled: true
+                            alignment: opposing
+                            priority: 76
+                          display_mode:
+                            enabled: false
+                          timeline:
+                            enabled: true
+                            alignment: matching
+                            icon: bha:adguard-home
+                          camera_ui:
+                            enabled: false
+                        button_size: 30
+                      status_bar:
+                        items:
+                          title:
+                            enabled: false
+                          resolution:
+                            enabled: false
+                      live:
+                        display: {}
+                        preload: true
+                      view_layout:
+                        grid-area: kamera2
+                    - type: custom:advanced-camera-card
+                      cameras:
+                        - frigate:
+                            camera_name: gehweg_1
+                          live_provider: go2rtc
+                          triggers:
+                            occupancy: true
+                            motion: false
+                            entities:
+                              - binary_sensor.gehweg_all_occupancy
+                          title: Wall-E
+                      timeline:
+                        show_recordings: true
+                        controls:
+                          thumbnails:
+                            mode: right
+                        style: stack
+                        events_media_type: all
+                      profiles: []
+                      grid_options:
+                        columns: full
+                        rows: auto
+                      view:
+                        default: live
+                        dim: false
+                        keyboard_shortcuts:
+                          ptz_left:
+                            key: ArrowLeft
+                          ptz_right:
+                            key: ArrowRight
+                          ptz_up:
+                            key: ArrowUp
+                          ptz_down:
+                            key: ArrowDown
+                          ptz_zoom_in:
+                            key: +
+                          ptz_zoom_out:
+                            key: "-"
+                          ptz_home:
+                            key: h
+                        theme:
+                          themes: []
+                        camera_select: live
+                      performance:
+                        style:
+                          border_radius: true
+                          box_shadow: false
+                      menu:
+                        style: hover-card
+                        position: bottom
+                        buttons:
+                          microphone:
+                            enabled: true
+                            alignment: matching
+                            permanent: true
+                            priority: 100
+                            icon: mdi:account
+                            type: toggle
+                          iris:
+                            enabled: true
+                            icon: m3of:video-library
+                          live:
+                            icon: mdi:cctv
+                            alignment: opposing
+                          cameras:
+                            icon: m3o:videocam
+                            permanent: true
+                            priority: 79
+                            alignment: matching
+                            enabled: true
+                          snapshots:
+                            enabled: false
+                          media_player:
+                            enabled: false
+                          mute:
+                            enabled: true
+                            alignment: opposing
+                            priority: 76
+                          display_mode:
+                            enabled: false
+                          timeline:
+                            enabled: true
+                            alignment: matching
+                            icon: bha:adguard-home
+                          camera_ui:
+                            enabled: false
+                        button_size: 30
+                      status_bar:
+                        items:
+                          title:
+                            enabled: false
+                          resolution:
+                            enabled: false
+                      live:
+                        display: {}
+                        preload: true
+                      view_layout:
+                        grid-area: kamera3
+                    - view_layout:
+                        grid-area: activity
+                      type: custom:llmvision-card
+                      entity: calendar.llm_vision_timeline
+                      number_of_hours: 168
+                      number_of_events: 7
+                      language: de
+                      category_filters: []
+                      camera_filters: []
+                      grid_options:
+                        columns: 12
+                        rows: auto
+                      custom_colors:
+                        people:
+                          - 254
+                          - 98
+                          - 98
+                        vehicles:
+                          - 233
+                          - 66
+                          - 255
+                        packages:
+                          - 132
+                          - 75
+                          - 36
+                        animals:
+                          - 0
+                          - 98
+                          - 255
+                        nature:
+                          - 150
+                          - 208
+                          - 93
+                        entities:
+                          - 88
+                          - 162
+                          - 208
+                      default_color:
+                        - 208
+                        - 96
+                        - 210
+                  grid_options:
+                    columns: full
+              card_mod:
+                style: |
+                  ha-card {
+                    padding: 5px 12px 12px 12px;
+                  }
+            id: kameras
+          - title: Rollos
+            icon: mdi:window-shutter-open
+            card:
+              type: custom:decluttering-card
+              template: dados_shutters_open
+            badge: "{{ states('sensor.rollos_offen') | int > 0 }}"
+            id: rollos
+        hide_inactive_tab_titles: true
+        grid_options:
+          columns: full
+    column_span: 2
+
+  - type: grid
+    cards:
+      - type: vertical-stack
+        cards:
+          - type: custom:bubble-card
+            card_type: pop-up
+            hash: "#lichteran"
+            button_type: name
+            name: Lichter an
+            icon: m3o:light-group
+            scrolling_effect: false
+            modules:
+              - header-settings
+            more_info_popup:
+              bd_filter: blur(100px)
+              window_ani: rotate(360deg) translateY(150%)
+            sub_button:
+              main: []
+              bottom: []
+          - type: custom:decluttering-card
+            template: dados_active_lights
+      - type: vertical-stack
+        cards:
+          - type: custom:bubble-card
+            card_type: pop-up
+            hash: "#rollosoffen"
+            button_type: name
+            name: Rollos Offen
+            icon: mdi:blinds-open
+            scrolling_effect: false
+            sub_button:
+              main: []
+              bottom: []
+          - type: custom:decluttering-card
+            template: dados_shutters_open
+      - type: vertical-stack
+        cards:
+          - type: custom:bubble-card
+            card_type: pop-up
+            hash: "#fensteroffen"
+            button_type: name
+            name: Fenster Offen
+            icon: mdi:blinds-open
+            scrolling_effect: false
+            sub_button:
+              main: []
+              bottom: []
+          - type: custom:auto-entities
+            card:
+              type: entities
+            filter:
+              include:
+                - options:
+                    type: custom:button-card
+                    template: dados_alert
+                    variables:
+                      entity: this.entity_id
+                      img_cell_background: var(--red)
+                    state:
+                      - value: "on"
+                        icon: mdi:window-open-variant
+                      - value: "off"
+                        icon: mdi:window-closed-variant
+                  label: fenster
+              exclude: []
+    column_span: 2
+  - type: grid
+    cards:
+      - type: custom:navbar-card
+        template: main
+
+badges: []
+header:
+  layout: center
+  badges_position: bottom
+  badges_wrap: scroll
+  card:
+    type: markdown
+    text_only: true
+    content: "# Security"
+cards: []
+dense_section_placement: false

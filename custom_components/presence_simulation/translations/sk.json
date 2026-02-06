@@ -1,0 +1,43 @@
+{
+  "title": "Simulácia prítomnosti",
+  "config": {
+    "error": {
+      "not_unique_name": "Zvolený názov prepínača je už obsadený inou entitou, prosím, zvoľte nový názov"
+    },
+    "step": {
+      "user": {
+        "description": "Konfigurácia",
+        "data": {
+          "switch": "Názov prepínača simulácie prítomnosti",
+          "entities": "Entita alebo skupina entít",
+          "delta": "Delta (v dňoch)",
+          "interval": "Interval obnovenia (v sekundách)",
+          "restore": "Obnoviť stav po simulácii",
+          "random": "Pridať náhodný čas pre prepínanie entít. Tento parameter definuje maximálny čas v sekundách",
+          "unavailable_as_off": "Považovať stav Nedostupný za Vypnutý",
+          "brightness": "Jas ktorý sa má použiť ak svetlo umožňuje túto funkciu"
+        }
+      }
+    }
+  },
+  "options": {
+    "error": {
+      "cannot_change_name": "Názov prepínača nemožno zmeniť"
+    },
+    "step": {
+      "init": {
+        "description": "Konfigurácia",
+        "data": {
+          "switch": "Názov prepínača simulácie prítomnosti",
+          "entities": "Entita alebo skupina entít",
+          "delta": "Delta (v dňoch)",
+          "interval": "Interval obnovenia (v sekundách)",
+          "restore": "Obnoviť stav po simulácii",
+          "random": "Pridať náhodný čas pre prepínanie entít. Tento parameter definuje maximálny čas v sekundách",
+          "unavailable_as_off": "Považovať stav Nedostupný za Vypnutý",
+          "brightness": "Jas ktorý sa má použiť ak svetlo umožňuje túto funkciu"
+        }
+      }
+    }
+  }
+}

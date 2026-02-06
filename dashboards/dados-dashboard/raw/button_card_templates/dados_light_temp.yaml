@@ -1,0 +1,41 @@
+dados_light_temp:
+  template: dados_slider
+  variables:
+    entity: null
+    icon: mdi:thermometer
+  custom_fields:
+    slider:
+      card:
+        type: custom:my-slider-v2
+        entity: '[[[ return variables.entity ]]]'
+        colorMode: temperature
+        allowTapping: true
+        allowSliding: true
+        flipped: false
+        vertical: false
+        styles:
+          container:
+            - border-radius: 24px
+            - overflow: visible
+          card:
+            - border-radius: 24px
+            - height: 57px
+            - background: var(--temperature)
+            - padding: 0 20px
+          track:
+            - overflow: visible
+            - background: none
+          progress:
+            - background: none
+          thumb:
+            - background: transparent
+            - box-shadow: 0 0 0px 5px rgba(255,255,255,1)
+            - top: 15px
+            - right: "-5px"
+            - height: 25px
+            - width: 4px
+            - border-radius: 100px
+  extra_styles: |
+    ha-ripple {
+      display: none !important;
+    }

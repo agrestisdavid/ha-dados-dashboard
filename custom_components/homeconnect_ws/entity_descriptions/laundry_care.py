@@ -1,0 +1,298 @@
+"""Description for LaundryCare Entities."""
+
+from __future__ import annotations
+
+from typing import TYPE_CHECKING
+
+from homeassistant.components.binary_sensor import BinarySensorDeviceClass
+from homeassistant.components.number import NumberMode
+from homeassistant.components.sensor import SensorDeviceClass
+from homeassistant.components.switch import SwitchDeviceClass
+from homeassistant.const import PERCENTAGE, REVOLUTIONS_PER_MINUTE, EntityCategory, UnitOfVolume
+
+from .descriptions_definitions import (
+    HCBinarySensorEntityDescription,
+    HCLightEntityDescription,
+    HCNumberEntityDescription,
+    HCSelectEntityDescription,
+    HCSensorEntityDescription,
+    HCSwitchEntityDescription,
+)
+
+if TYPE_CHECKING:
+    from .descriptions_definitions import _EntityDescriptionsDefinitionsType
+
+LAUNDRY_ENTITY_DESCRIPTIONS: _EntityDescriptionsDefinitionsType = {
+    "sensor": [
+        HCSensorEntityDescription(
+            key="sensor_laundry_reload",
+            entity="LaundryCare.Common.Status.Laundry.Reload",
+            device_class=SensorDeviceClass.ENUM,
+            has_state_translation=True,
+        ),
+        HCSensorEntityDescription(
+            key="sensor_laundry_process_phase",
+            entity="LaundryCare.Common.Option.ProcessPhase",
+            device_class=SensorDeviceClass.ENUM,
+            has_state_translation=True,
+        ),
+        HCSensorEntityDescription(
+            key="sensor_dryer_process_phase",
+            entity="LaundryCare.Dryer.Option.ProcessPhase",
+            device_class=SensorDeviceClass.ENUM,
+            has_state_translation=True,
+        ),
+        HCSensorEntityDescription(
+            key="sensor_laundry_spin_speed",
+            entity="LaundryCare.Washer.Option.SpinSpeed",
+            device_class=SensorDeviceClass.ENUM,
+            has_state_translation=True,
+        ),
+    ],
+    "binary_sensor": [
+        HCBinarySensorEntityDescription(
+            key="binary_sensor_refresher_level",
+            entity="LaundryCare.Dryer.Status.RefresherFillLevel",
+            entity_category=EntityCategory.DIAGNOSTIC,
+            device_class=BinarySensorDeviceClass.PROBLEM,
+            value_on=("Poor"),
+            value_off=("Filled"),
+        ),
+        HCBinarySensorEntityDescription(
+            key="binary_sensor_condensate_container_full",
+            entity="LaundryCare.Dryer.Event.CondensateContainerFull",
+            entity_category=EntityCategory.DIAGNOSTIC,
+            device_class=BinarySensorDeviceClass.PROBLEM,
+            value_on={"Present", "Confirmed"},
+            value_off={"Off"},
+        ),
+        HCBinarySensorEntityDescription(
+            key="binary_sensor_lint_filter_full",
+            entity="LaundryCare.Dryer.Event.LintFilterFull",
+            entity_category=EntityCategory.DIAGNOSTIC,
+            device_class=BinarySensorDeviceClass.PROBLEM,
+            value_on={"Present", "Confirmed"},
+            value_off={"Off"},
+        ),
+        HCBinarySensorEntityDescription(
+            key="binary_sensor_maintenance_reminder",
+            entity="LaundryCare.Dryer.Event.Maintenance.Remind",
+            entity_category=EntityCategory.DIAGNOSTIC,
+            device_class=BinarySensorDeviceClass.PROBLEM,
+            value_on={"Present", "Confirmed"},
+            value_off={"Off"},
+        ),
+        HCBinarySensorEntityDescription(
+            key="binary_sensor_foam_detection",
+            entity="LaundryCare.Common.Event.FoamDetection",
+            entity_category=EntityCategory.DIAGNOSTIC,
+            device_class=BinarySensorDeviceClass.PROBLEM,
+            value_on={"Present", "Confirmed"},
+            value_off={"Off"},
+        ),
+    ],
+    "select": [
+        HCSelectEntityDescription(
+            key="select_auto_power_off",
+            entity="LaundryCare.Common.Setting.AutoPowerOff",
+            entity_category=EntityCategory.CONFIG,
+            has_state_translation=True,
+        ),
+        HCSelectEntityDescription(
+            key="select_laundry_brightness",
+            entity="LaundryCare.Common.Setting.BrightnessLevel",
+            entity_category=EntityCategory.CONFIG,
+            has_state_translation=True,
+        ),
+        HCSelectEntityDescription(
+            key="select_door_light_ring_mode",
+            entity="LaundryCare.Common.Setting.DoorLightRing.ActiveMode",
+            entity_category=EntityCategory.CONFIG,
+            has_state_translation=True,
+        ),
+        HCSelectEntityDescription(
+            key="select_door_light_ring_brightness",
+            entity="LaundryCare.Common.Setting.DoorLightRing.BrightnessLevel",
+            entity_category=EntityCategory.CONFIG,
+            has_state_translation=True,
+        ),
+        HCSelectEntityDescription(
+            key="select_laundry_end_signal_volume",
+            entity="LaundryCare.Common.Setting.EndSignalVolume",
+            entity_category=EntityCategory.CONFIG,
+            has_state_translation=True,
+        ),
+        HCSelectEntityDescription(
+            key="select_laundry_key_signal_volume",
+            entity="LaundryCare.Common.Setting.KeySignalVolume",
+            entity_category=EntityCategory.CONFIG,
+            has_state_translation=True,
+        ),
+        HCSelectEntityDescription(
+            key="select_laundry_sound_volume",
+            entity="LaundryCare.Common.Setting.Sound.Volume",
+            entity_category=EntityCategory.CONFIG,
+            has_state_translation=True,
+        ),
+        HCSelectEntityDescription(
+            key="select_laundry_power_rating",
+            entity="LaundryCare.Common.Setting.SupplyPower.PowerRating",
+            entity_category=EntityCategory.CONFIG,
+            has_state_translation=False,
+        ),
+        HCSelectEntityDescription(
+            key="select_laundry_wrinkle_guard",
+            entity="LaundryCare.Dryer.Option.WrinkleGuard",
+            has_state_translation=True,
+        ),
+        HCSelectEntityDescription(
+            key="select_laundry_cupboard_dry_fine_adjust",
+            entity="LaundryCare.Dryer.Setting.CupboardDryFineAdjust",
+            has_state_translation=True,
+        ),
+        HCSelectEntityDescription(
+            key="select_laundry_cupboard_dry_plus_fine_adjust",
+            entity="LaundryCare.Dryer.Setting.CupboardDryPlusFineAdjust",
+            has_state_translation=True,
+        ),
+        HCSelectEntityDescription(
+            key="select_laundry_iron_dry_fine_adjust",
+            entity="LaundryCare.Dryer.Setting.IronDryFineAdjust",
+            has_state_translation=True,
+        ),
+        HCSelectEntityDescription(
+            key="select_laundry_spin_speed_before_drying",
+            entity="LaundryCare.Dryer.Setting.SpinSpeedBeforeDrying",
+            has_state_translation=True,
+        ),
+        HCSelectEntityDescription(
+            key="select_laundry_drying_target",
+            entity="LaundryCare.Dryer.Option.DryingTarget",
+            has_state_translation=True,
+        ),
+        HCSelectEntityDescription(
+            key="select_laundry_refresher",
+            entity="LaundryCare.Dryer.Option.Refresher",
+            has_state_translation=True,
+        ),
+    ],
+    "number": [
+        HCNumberEntityDescription(
+            key="number_laundry_brightness",
+            entity="LaundryCare.Common.Setting.Brightness",
+            native_unit_of_measurement=PERCENTAGE,
+            entity_category=EntityCategory.CONFIG,
+            mode=NumberMode.AUTO,
+        ),
+        HCNumberEntityDescription(
+            key="number_door_light_ring_brightness",
+            entity="LaundryCare.Common.Setting.DoorLightRing.Brightness",
+            native_unit_of_measurement=PERCENTAGE,
+            entity_category=EntityCategory.CONFIG,
+            mode=NumberMode.AUTO,
+        ),
+        HCNumberEntityDescription(
+            key="number_laundry_spin_class",
+            entity="LaundryCare.Dryer.Option.SpinClass",
+            native_unit_of_measurement=REVOLUTIONS_PER_MINUTE,
+            mode=NumberMode.AUTO,
+        ),
+        HCNumberEntityDescription(
+            key="number_idos1_base_level",
+            entity="LaundryCare.Washer.Setting.IDos1BaseLevel",
+            entity_category=EntityCategory.CONFIG,
+            native_unit_of_measurement=UnitOfVolume.MILLILITERS,
+            mode=NumberMode.AUTO,
+        ),
+        HCNumberEntityDescription(
+            key="number_idos2_base_level",
+            entity="LaundryCare.Washer.Setting.IDos2BaseLevel",
+            entity_category=EntityCategory.CONFIG,
+            native_unit_of_measurement=UnitOfVolume.MILLILITERS,
+            mode=NumberMode.AUTO,
+        ),
+    ],
+    "switch": [
+        HCSwitchEntityDescription(
+            key="switch_door_light_ring",
+            entity="LaundryCare.Common.Setting.DoorLightRing.Active",
+            device_class=SwitchDeviceClass.SWITCH,
+            entity_registry_enabled_default=False,
+        ),
+        HCSwitchEntityDescription(
+            key="switch_drum_light",
+            entity="LaundryCare.Common.Setting.DrumLight.Active",
+            device_class=SwitchDeviceClass.SWITCH,
+            entity_registry_enabled_default=False,
+        ),
+        HCSwitchEntityDescription(
+            key="switch_laundry_end_signal",
+            entity="LaundryCare.Common.Setting.EndSignal",
+            device_class=SwitchDeviceClass.SWITCH,
+            entity_category=EntityCategory.CONFIG,
+        ),
+        HCSwitchEntityDescription(
+            key="switch_laundry_sound_mute",
+            entity="LaundryCare.Common.Setting.Sound.Mute",
+            device_class=SwitchDeviceClass.SWITCH,
+            entity_category=EntityCategory.CONFIG,
+        ),
+        HCSwitchEntityDescription(
+            key="switch_laundry_time_light",
+            entity="LaundryCare.Common.Setting.TimeLight.Active",
+            device_class=SwitchDeviceClass.SWITCH,
+            entity_category=EntityCategory.CONFIG,
+        ),
+        HCSwitchEntityDescription(
+            key="switch_laundry_wrinkle_guard",
+            entity="LaundryCare.Common.Setting.WrinkleGuard",
+            device_class=SwitchDeviceClass.SWITCH,
+            entity_category=EntityCategory.CONFIG,
+        ),
+        HCSwitchEntityDescription(
+            key="switch_laundry_silent_mode",
+            entity="LaundryCare.Common.Option.SilentMode",
+            device_class=SwitchDeviceClass.SWITCH,
+        ),
+        HCSwitchEntityDescription(
+            key="switch_laundry_speed_perfect",
+            entity="LaundryCare.Common.Option.SpeedPerfect",
+            device_class=SwitchDeviceClass.SWITCH,
+        ),
+        HCSwitchEntityDescription(
+            key="switch_laundry_gentle",
+            entity="LaundryCare.Dryer.Option.Gentle",
+            device_class=SwitchDeviceClass.SWITCH,
+        ),
+        HCSwitchEntityDescription(
+            key="switch_half_load",
+            entity="LaundryCare.Dryer.Option.HalfLoad",
+            device_class=SwitchDeviceClass.SWITCH,
+        ),
+        HCSwitchEntityDescription(
+            key="switch_laundry_hygiene",
+            entity="LaundryCare.Dryer.Option.Hygiene",
+            device_class=SwitchDeviceClass.SWITCH,
+        ),
+        HCSwitchEntityDescription(
+            key="switch_laundry_idos1_active",
+            entity="LaundryCare.Washer.Option.IDos1Active",
+            device_class=SwitchDeviceClass.SWITCH,
+        ),
+        HCSwitchEntityDescription(
+            key="switch_laundry_idos2_active",
+            entity="LaundryCare.Washer.Option.IDos2Active",
+            device_class=SwitchDeviceClass.SWITCH,
+        ),
+    ],
+    "light": [
+        HCLightEntityDescription(
+            key="light_door_ring",
+            entity="LaundryCare.Common.Setting.DoorLightRing.Active",
+        ),
+        HCLightEntityDescription(
+            key="light_drum_light",
+            entity="LaundryCare.Common.Setting.DrumLight.Active",
+        ),
+    ],
+}

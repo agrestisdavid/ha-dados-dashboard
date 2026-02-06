@@ -1,0 +1,86 @@
+dados_light:
+  template: dados_base
+  variables:
+    entity: null
+    state_display_entity: null
+    card_color: var(--contrast2)
+    card_height: 80px
+    card_border_radius: 36px
+    img_cell_background: var(--yellow)
+    show_glow: true
+    icon_on: m3o:lightbulb
+    icon_off: m3o:light-off
+    # expander-id: null
+
+  entity: "[[[ return variables.entity ]]]"
+  icon: "[[[ return variables.icon_on ]]]"
+  show_state: true
+
+  state_display: |
+    [[[
+      if (entity.state === "off") return "Aus";
+      if (entity.attributes.brightness)
+        return Math.round(entity.attributes.brightness / 2.55) + "%";
+      return "An";
+    ]]]
+
+  name: |
+    [[[
+      const fn = entity?.attributes?.friendly_name || '';
+      return fn
+        .replace(/deckenlicht\s*/i, '')
+        .replace(/wandleuchte\s*/i, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+    ]]]
+
+  icon_tap_action:
+    action: toggle
+  tap_action:
+    action: fire-dom-event
+    expander-card:
+      data:
+        expander-card-id: "[[[ return variables.entity ]]]"
+        action: toggle
+  state:
+    - value: "off"
+      icon: "[[[ return variables.icon_off ]]]"
+      styles:
+        icon:
+          - color: var(--contrast16)
+        img_cell:
+          - background: var(--contrast3)
+          - box-shadow: none
+    # - value: "aus"
+    #   icon: "[[[ return variables.icon_off ]]]"
+    #   styles:
+    #     icon:
+    #       - color: var(--contrast16)
+    #     img_cell:
+    #       - background: var(--contrast3)
+    #       - box-shadow: none
+  styles:
+    grid:
+      - grid-template-columns: 55px 1fr 55px
+      - grid-template-rows: min-content 1fr
+      - grid-template-areas: "'i n toggle' 'i s toggle'"
+    img_cell:
+      - background: |
+          [[[
+            const c = entity?.attributes?.rgb_color;
+            if (c) {
+              return `rgba(${c[0]}, ${c[1]}, ${c[2]}, 0.7)`;
+            }
+            return variables?.img_cell_background || 'var(--yellow)';
+          ]]]
+    custom_fields:
+      toggle:
+        - margin-top: 0px
+
+  custom_fields:
+    toggle:
+      card:
+        type: custom:button-card
+        template: dados_toggle #_chip
+        variables:
+          entity: "[[[ return variables.entity ]]]"

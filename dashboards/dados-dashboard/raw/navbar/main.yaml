@@ -1,0 +1,151 @@
+main:
+  routes:
+    - url: /dados-dashboard/home
+      icon: m3r:home
+      icon_selected: m3rf:home
+      label: Home
+      tap_action:
+        action: navigate
+        navigation_path: /dados-dashboard/home
+
+    - url: /dados-dashboard/floors
+      icon: mdi:layers-triple-outline
+      label: Rooms
+      hold_action:
+        action: navigate
+        navigation_path: "#lichteran"
+      selected_color: var(--olive)
+      icon_selected: mdi:layers-triple
+      badge:
+        show: |
+          [[[
+            return states["sensor.lichter_eingeschaltet"].state != "0";
+          ]]]
+        color: var(--yellow)
+        count: |-
+          [[[ return states["sensor.lichter_eingeschaltet"].state ]]]
+      popup:
+        - icon: mdi:flower-outline
+          label: Garten
+          url: /dados-dashboard/garten
+          icon_selected: mdi:flower
+          selected_color: var(--lavender)
+        - icon: mdi:home-floor-1
+          label: Erdgeschoss
+          url: /dados-dashboard/eg
+          icon_selected: mdi:home-floor-1
+          selected_color: var(--lavender)
+        - icon: mdi:home-floor-2
+          label: Obergeschoss
+          url: /dados-dashboard/og
+          selected_color: var(--lavender)
+      tap_action:
+        action: navigate
+        navigation_path: /dados-dashboard/floors
+
+    - url: /dados-dashboard/security
+      icon: mdi:shield-outline
+      label: Security
+      badge:
+        show: '[[[ return states["sensor.fenster_offen"].state != "0"; ]]]'
+        color: var(--red)
+        count: '[[[ return states["sensor.fenster_offen"].state ]]]'
+      tap_action: null
+      icon_color: null
+      selected_color: var(--red)
+      icon_selected: mdi:shield
+
+    - url: /dados-dashboard/einkaufsliste
+      icon: mdi:shopping-outline
+      icon_selected: mdi:shopping
+      selected_color: var(--orange)
+      label: Einkaufsliste
+      badge:
+        show: '[[[ return states["todo.einkaufsliste"].state != "0"; ]]]'
+        color: var(--orange)
+        count: '[[[ return states["todo.einkaufsliste"].state ]]]'
+      tap_action: null
+
+    - icon: mdi:cog-outline
+      label: Settings
+      hold_action:
+        action: open-popup
+      popup:
+        - icon: line-md:cog-loop
+          url: /config/dashboard
+          label: Einstellungen
+        - icon: mdi:hammer
+          url: /developer-tools/yaml
+          label: Entwicklerwerkzeuge
+        - icon: mdi:power
+          tap_action:
+            action: call-service
+            service: homeassistant.restart
+            service_data: {}
+            confirmation:
+              text: Bist du dir sicher, dass du Home Assistant neustarten willst?
+          label: Neustarten
+        - icon: m3o:data-table
+          label: HomeLab
+          url: /dados-dashboard/homelab
+        - icon: mdi:music
+          label: Music Assistant
+          url: /dados-dashboard/musik
+      tap_action:
+        action: navigate
+        navigation_path: /dados-dashboard/settings
+      icon_color: ""
+      url: /dados-dashboard/settings
+      selected_color: var(--vanilla)
+      icon_selected: mdi:cog
+
+  mobile:
+    mode: floating
+    show_labels: popup_only
+    show_popup_label_backgrounds: true
+
+  media_player:
+    entity: media_player.main
+    album_cover_background: true
+    tap_action:
+      action: navigate
+      navigation_path: "#musik"
+
+  layout:
+    reflect_child_state: true
+    auto_padding:
+      mobile_px: 1
+
+  desktop:
+    position: left
+    show_labels: popup_only
+    show_popup_label_backgrounds: true
+
+  styles: |-
+    .navbar-card{
+      background: color-mix(in srgb, var(--contrast2) 100%, transparent);
+      --navbar-border-radius: 34px;
+      backdrop-filter: blur(10px);
+      border: none !important;
+      box-shadow: 0 0 1px var(--contrast1) !important;
+      --navbar-box-shadow-mobile-floating: 0 0 1px var(--contrast1) !important;
+    }
+
+    .button {
+      border-radius: 26px;
+      box-shadow: none !important;
+    }
+    .image {
+      border-radius: 999px !important;
+      object-fit: cover;
+    }
+
+    .navbar {
+      --navbar-route-image-size: 30px; /* Avatar größer */
+    }
+
+  haptic:
+    url: true
+    tap_action: true
+    hold_action: true
+    double_tap_action: true

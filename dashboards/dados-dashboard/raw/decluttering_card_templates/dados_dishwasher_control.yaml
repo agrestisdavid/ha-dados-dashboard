@@ -1,0 +1,192 @@
+# decluttering_templates.yaml
+dados_dishwasher_control:
+  default:
+    - entity: select.geschirrspuler_ausgewahltes_programm_2
+    - power_switch: switch.geschirrspuler_einschalter_2
+    - status_entity: sensor.geschirrspuler_betriebszustand
+    - start_button: button.geschirrspuler_start
+    - salt_entity: sensor.geschirrspuler_salz_fast_leer
+    - salt_state_entity: sensor.geschirrspuler_salz
+    - rinse_entity: sensor.geschirrspuler_klarspuler
+
+  card:
+    type: vertical-stack
+    cards:
+      - type: custom:button-card
+        template: dados_selector_toggle
+        variables:
+          entity: '[[power_switch]]'
+          img_cell_background: var(--purple)
+          option1: "off"
+          option2: "on"
+          label1: "off"
+          label2: "on"
+          icon1: mdi:power-off
+          icon2: mdi:power
+
+      # - type: tile
+      #   entity: '[[entity]]'
+      #   vertical: false
+      #   features:
+      #     - type: custom:service-call
+      #       entries:
+      #         - type: dropdown
+      #           entity_id: '[[entity]]'
+      #           options:
+      #             - entity_id: '[[entity]]'
+      #               option: dishcare_dishwasher_program_machinecare
+      #               tap_action:
+      #                 action: perform-action
+      #                 perform_action: select.select_option
+      #                 data:
+      #                   option: dishcare_dishwasher_program_machinecare
+      #                 target:
+      #                   entity_id: '[[entity]]'
+      #               label: Maschinenpflege
+      #               styles: ""
+      #             - entity_id: '[[entity]]'
+      #               option: dishcare_dishwasher_program_glas40
+      #               tap_action:
+      #                 action: perform-action
+      #                 perform_action: select.select_option
+      #                 data:
+      #                   option: dishcare_dishwasher_program_glas40
+      #                 target:
+      #                   entity_id: '[[entity]]'
+      #               label: Glas 40°C
+      #             - entity_id: '[[entity]]'
+      #               option: dishcare_dishwasher_program_eco50
+      #               tap_action:
+      #                 action: perform-action
+      #                 perform_action: select.select_option
+      #                 data:
+      #                   option: dishcare_dishwasher_program_eco50
+      #                 target:
+      #                   entity_id: '[[entity]]'
+      #               label: Eco 50°C
+      #             - entity_id: '[[entity]]'
+      #               option: dishcare_dishwasher_program_nightwash
+      #               tap_action:
+      #                 action: perform-action
+      #                 perform_action: select.select_option
+      #                 data:
+      #                   option: dishcare_dishwasher_program_nightwash
+      #                 target:
+      #                   entity_id: '[[entity]]'
+      #               label: Leise 50°C
+      #             - entity_id: '[[entity]]'
+      #               option: dishcare_dishwasher_program_intensiv70
+      #               tap_action:
+      #                 action: perform-action
+      #                 perform_action: select.select_option
+      #                 data:
+      #                   option: dishcare_dishwasher_program_intensiv70
+      #                 target:
+      #                   entity_id: '[[entity]]'
+      #               label: Intensiv 70°C
+      #             - entity_id: '[[entity]]'
+      #               option: dishcare_dishwasher_program_quick45
+      #               tap_action:
+      #                 action: perform-action
+      #                 perform_action: select.select_option
+      #                 data:
+      #                   option: dishcare_dishwasher_program_quick45
+      #                 target:
+      #                   entity_id: '[[entity]]'
+      #               label: Schnell 45°C
+      #             - entity_id: '[[entity]]'
+      #               option: dishcare_dishwasher_program_kurz60
+      #               tap_action:
+      #                 action: perform-action
+      #                 perform_action: select.select_option
+      #                 data:
+      #                   option: dishcare_dishwasher_program_kurz60
+      #                 target:
+      #                   entity_id: '[[entity]]'
+      #               label: Schnell 60°C
+      #           styles: |-
+      #             :host {
+      #               --mdc-icon-size: 26px;
+      #               --color: var(--contrast6);
+      #               border-radius: 18px;
+      #               --mdc-list-side-padding: 10px !important;
+      #             }
+      #       styles: ""
+
+      #   features_position: bottom
+      #   card_mod:
+      #     style:
+      #       .: |
+      #         ha-card {
+      #           background: transparent !important;
+      #           box-shadow: none !important;
+      #           border: none !important;
+      #           margin-top: 0px;
+      #         }
+      #         ha-card .content {
+      #           display: none !important;
+      #         }
+
+
+
+      - type: custom:button-card
+        template: dados_start_button
+        variables:        
+          state_entity: sensor.geschirrspuler_betriebszustand
+          start_button: button.geschirrspuler_start
+          pause_button: button.geschirrspuler_abbrechen
+          resume_button: button.geschirrspuler_start
+          abort_button: button.geschirrspuler_abbrechen
+          img_cell_background: var(--purple)
+        styles:
+          grid:
+            - grid-template-areas: |
+                "abort abort"
+          custom_fields:
+            start:
+              - display: none
+            pause:
+              - display: none
+            abort:
+              - display: block
+      - type: tile
+        entity: '[[entity]]'
+        vertical: false
+        features:
+          - type: custom:service-call
+            entries:
+              - type: button
+                entity_id: '[[salt_entity]]'
+                icon: mdi:shaker-outline
+                value_attribute: options
+                label: >-
+                  {{ iif(is_state('[[salt_state_entity]]', 'full'), 'Voll', 'LEER!') }}
+                thumb: transparent
+              - type: button
+                entity_id: '[[rinse_entity]]'
+                icon: m3o:glass-cup
+                value_attribute: options
+                label: >-
+                  {{ iif(is_state('[[rinse_entity]]', 'full'), 'Voll', 'LEER!') }}
+                thumb: transparent
+            styles: |-
+              :host {
+                --mdc-icon-size: 25px;
+                --icon-color: var(--contrast15);
+                --label-color: var(--contrast15);
+              }
+
+        features_position: bottom
+        card_mod:
+          style:
+            .: |
+              ha-card {
+                background: transparent !important;
+                box-shadow: none !important;
+                border: none !important;
+                margin-top: 0px;
+              }
+              ha-card .content {
+                display: none !important;
+              }
+

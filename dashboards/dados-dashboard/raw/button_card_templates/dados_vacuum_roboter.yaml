@@ -1,0 +1,29 @@
+dados_vacuum_roboter:
+  template: dados_device_card
+  variables:
+    name: Robobert
+    card_color: transparent
+    card_height: 80px
+    show_glow: true
+    entity: vacuum.roborock_qrevo_curv_series
+    state_display_entity: null
+    icon_on: mdi:robot-vacuum
+    icon_off: mdi:robot-vacuum-off
+    icon_alert: mdi:robot-vacuum-alert
+    img_cell_background: var(--peach)
+    bar_entity: sensor.roborock_qrevo_curv_series_reinigungsfortschritt
+    percent: sensor.roborock_qrevo_curv_series_reinigungsfortschritt
+    state_startin: ""
+    state_remaining: sensor.roborock_qrevo_curv_series_aktueller_raum
+    value_run: cleaning
+    value_off: "off"
+    value_on: "on"
+    value_alert: error
+    value_action: actionrequired
+    value_error_message: sensor.roborock_qrevo_curv_series_staubsauger_fehler
+    value_finished: finished
+    value_paused: paused
+    value_aborting: aborting
+    value_start: delayedstart
+    value_returning: returning
+

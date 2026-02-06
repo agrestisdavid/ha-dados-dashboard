@@ -1,0 +1,303 @@
+dados_alarm_card:
+  template: dados_base
+
+  variables:
+    entity: alarm_control_panel.alarmo
+    name: Alarmanlage
+    navigation_path: "security"
+
+    # Timer Bars
+    bar: timer.alarm_arming_countdown
+    bar2: timer.alarm_arming_countdown
+
+    # Styling / Icon defaults
+    custom_icon: mdi:shield-outline
+    img_cell_background: var(--red)
+    show_glow: true
+
+    # Zustände + Farben/Icons
+    disarmed_value: disarmed
+    disarmed_icon: mdi:shield-off-outline
+    disarmed_color: var(--vanilla)
+
+    armed_away_value: armed_away
+    armed_away_icon: mdi:shield-outline
+    armed_away_color: var(--orange)
+
+    armed_home_value: armed_home
+    armed_home_icon: mdi:shield-home-outline
+    armed_home_color: var(--blue)
+
+    armed_night_value: armed_night
+    armed_night_icon: mdi:shield-moon-outline
+    armed_night_color: var(--purple)
+
+    arming_value: arming
+    arming_icon: mdi:shield-sync-outline
+    arming_color: var(--yellow)
+
+    pending_value: pending
+    pending_icon: mdi:shield-outline
+    pending_color: var(--coral)
+
+    triggered_value: triggered
+    triggered_icon: mdi:shield-alert-outline
+    triggered_color: var(--red)
+
+  entity: "[[[ return variables.entity ]]]"
+
+  name: "[[[ return variables.name ]]]"
+  icon: "[[[ return variables.custom_icon ]]]"
+
+  show_state: true
+  state_display: >-
+    [[[
+      const e = states[variables.state_display_entity ?? variables.entity];
+      if (!e) return '—';
+      const s = e.state;
+      if (s === 'unavailable' || s === 'unknown') return 'Unbekannt';
+      return hass.formatEntityState ? hass.formatEntityState(e) : s;
+    ]]]
+
+  icon_tap_action:
+    action: navigate
+    navigation_path: "[[[ return variables.navigation_path ]]]"
+
+  tap_action:
+    action: fire-dom-event
+    expander-card:
+      data:
+        expander-card-id: "[[[ return variables.entity ]]]"
+        action: toggle
+
+  state:
+    - value: "[[[ return variables.disarmed_value ]]]"
+      icon: "[[[ return variables.disarmed_icon ]]]"
+      styles:
+        img_cell:
+          - background: "[[[ return variables.disarmed_color ]]]"
+          - box-shadow: |
+              [[[
+                if (!variables.show_glow) return 'none';
+                const fb = variables.disarmed_color || 'var(--red)';
+                return `-55px -50px 70px 20px ${fb}, -35px -35px 70px 10px ${fb}`;
+              ]]]
+
+    - value: "[[[ return variables.armed_away_value ]]]"
+      icon: "[[[ return variables.armed_away_icon ]]]"
+      styles:
+        img_cell:
+          - background: "[[[ return variables.armed_away_color ]]]"
+          - color: "[[[ return variables.armed_away_color ]]]"
+          - animation: strong-alert-glow 2s ease-in-out infinite
+          - box-shadow: |
+              [[[
+                if (!variables.show_glow) return 'none';
+                const fb = variables.armed_away_color || 'var(--red)';
+                return `-55px -50px 70px 20px ${fb}, -35px -35px 70px 10px ${fb}`;
+              ]]]
+
+    - value: "[[[ return variables.arming_value ]]]"
+      icon: "[[[ return variables.arming_icon ]]]"
+      styles:
+        grid:
+          - grid-template-columns: 55px 1fr
+          - grid-template-rows: min-content 1fr
+          - grid-template-areas: "'i s' 'i bar'"
+        custom_fields:
+          bar:
+            - display: block
+        name:
+          - display: none
+        state:
+          - justify-self: start
+          - align-self: start
+          - margin-top: 9px
+          - margin-left: 5px
+          - font-size: 16px
+          - font-weight: 500
+          - color: var(--contrast16)
+          - letter-spacing: 0.4px
+          - padding-left: 3px
+        img_cell:
+          - background: "[[[ return variables.arming_color ]]]"
+          - color: "[[[ return variables.arming_color ]]]"
+          - animation: strong-alert-glow 4s ease-in-out infinite
+          - box-shadow: |
+              [[[
+                if (!variables.show_glow) return 'none';
+                const fb = variables.arming_color || 'var(--red)';
+                return `-55px -50px 70px 20px ${fb}, -35px -35px 70px 10px ${fb}`;
+              ]]]
+
+    - value: "[[[ return variables.armed_home_value ]]]"
+      icon: "[[[ return variables.armed_home_icon ]]]"
+      styles:
+        img_cell:
+          - background: "[[[ return variables.armed_home_color ]]]"
+          - color: "[[[ return variables.armed_home_color ]]]"
+          - box-shadow: |
+              [[[
+                if (!variables.show_glow) return 'none';
+                const fb = variables.armed_home_color || 'var(--red)';
+                return `-55px -50px 70px 20px ${fb}, -35px -35px 70px 10px ${fb}`;
+              ]]]
+
+    - value: "[[[ return variables.armed_night_value ]]]"
+      icon: "[[[ return variables.armed_night_icon ]]]"
+      styles:
+        img_cell:
+          - background: "[[[ return variables.armed_night_color ]]]"
+          - color: "[[[ return variables.armed_night_color ]]]"
+          - box-shadow: |
+              [[[
+                if (!variables.show_glow) return 'none';
+                const fb = variables.armed_night_color || 'var(--red)';
+                return `-55px -50px 70px 20px ${fb}, -35px -35px 70px 10px ${fb}`;
+              ]]]
+
+    - value: "[[[ return variables.triggered_value ]]]"
+      icon: "[[[ return variables.triggered_icon ]]]"
+      styles:
+        img_cell:
+          - background: "[[[ return variables.triggered_color ]]]"
+          - color: "[[[ return variables.triggered_color ]]]"
+          - animation: strong-alert-glow 0.2s ease-in-out infinite
+          - box-shadow: |
+              [[[
+                if (!variables.show_glow) return 'none';
+                const fb = variables.triggered_color || 'var(--red)';
+                return `-55px -50px 70px 20px ${fb}, -35px -35px 70px 10px ${fb}`;
+              ]]]
+
+    - value: "[[[ return variables.pending_value ]]]"
+      icon: "[[[ return variables.pending_icon ]]]"
+      styles:
+        grid:
+          - grid-template-columns: 55px 1fr
+          - grid-template-rows: min-content 1fr
+          - grid-template-areas: "'i s' 'i bar2'"
+        custom_fields:
+          bar2:
+            - display: block
+        name:
+          - display: none
+        state:
+          - justify-self: start
+          - align-self: start
+          - margin-top: 9px
+          - margin-left: 5px
+          - font-size: 16px
+          - font-weight: 500
+          - color: var(--contrast16)
+          - letter-spacing: 0.4px
+          - padding-left: 3px
+        img_cell:
+          - background: "[[[ return variables.pending_color ]]]"
+          - color: "[[[ return variables.pending_color ]]]"
+          - animation: strong-alert-glow 1s ease-in-out infinite
+          - box-shadow: |
+              [[[
+                if (!variables.show_glow) return 'none';
+                const fb = variables.pending_color || 'var(--red)';
+                return `-55px -50px 70px 20px ${fb}, -35px -35px 70px 10px ${fb}`;
+              ]]]
+
+ 
+  styles:
+    custom_fields:
+      bar:
+        - justify-self: center
+        - align-self: center
+        - margin-top: 0px
+        - margin-left: 0px
+        - width: 90%
+        - border-radius: 99px
+        - background: var(--contrast3)
+        - height: 18px
+        - display: none
+      bar2:
+        - justify-self: center
+        - align-self: center
+        - margin-top: 0px
+        - margin-left: 0px
+        - width: 90%
+        - border-radius: 99px
+        - background: var(--contrast3)
+        - height: 18px
+        - display: none
+
+  custom_fields:
+    bar:
+      card:
+        type: custom:mod-card
+        card_mod:
+          style: |
+            ha-card {
+              border-radius: 40px !important;
+              overflow: hidden !important;
+              padding: 0px !important;
+              background: var(--contrast3) !important;
+              box-shadow: 0px !important;
+              height: 18px;
+            }
+        card:
+          type: custom:timer-bar-card
+          entity: "[[[ return variables.bar ]]]"
+          invert: true
+          icon: mdi:timer
+          name: Aktivierung in
+          bar_background: var(--contrast3)
+          bar_foreground: var(--yellow)
+          bar_height: 50px
+          layout: full_row
+          text_width: 0px
+          show_empty: true
+          card_mod:
+            style: |
+              ha-card {
+                background: transparent !important;
+                border: none !important;
+                box-shadow: none !important;
+                padding: 0 !important;
+              }
+
+    bar2:
+      card:
+        type: custom:mod-card
+        card_mod:
+          style: |
+            ha-card {
+              border-radius: 40px !important;
+              overflow: hidden !important;
+              padding: 0px !important;
+              background: var(--contrast3) !important;
+              box-shadow: 0px !important;
+              height: 18px;
+            }
+        card:
+          type: custom:timer-bar-card
+          entity: "[[[ return variables.bar2 ]]]"
+          invert: true
+          icon: mdi:timer
+          name: Aktivierung in
+          bar_background: var(--contrast3)
+          bar_foreground: var(--coral)
+          bar_height: 50px
+          layout: full_row
+          text_width: 0px
+          show_empty: true
+          card_mod:
+            style: |
+              ha-card {
+                background: transparent !important;
+                border: none !important;
+                box-shadow: none !important;
+                padding: 0 !important;
+              }
+
+  extra_styles: |
+    @keyframes strong-alert-glow {
+      0%,100% { filter: drop-shadow(0 0 2px currentColor); }
+      50%     { filter: drop-shadow(0 0 12px currentColor); }
+    }

@@ -1,0 +1,141 @@
+dados_boiler:
+  template: dados_light
+  variables:
+    entity: sensor.warmwasser_aktuell
+    switch_entity: switch.wasser_schnell_warm
+    state_display_entity: sensor.warmwasser_aktuell
+    icon_on: mdi:water-thermometer-outline
+    icon_off: mdi:water-thermometer-outline
+    img_cell_background: var(--red)
+    state1: 55
+    state2: 45
+    state3: 35
+    state4: 30
+    state1_color: var(--red)
+    state2_color: var(--peach)
+    state3_color: var(--lavender)
+    state4_color: var(--blue)
+    show_glow: true
+
+  # WICHTIG: damit state/operator wirklich den Sensor prüft
+  entity: '[[[ return variables.entity ]]]'
+
+  name: Warmwasser
+
+  state_display: |
+    [[[
+      const id = variables?.state_display_entity;
+      const e  = id ? states[id] : entity;
+      if (!e) return '-';
+
+      const s = e.state;
+      const u = e.attributes?.unit_of_measurement;
+      if (s == null || s === 'unknown' || s === 'unavailable') return '-';
+      return u ? `${s} ${u}` : `${s}`;
+    ]]]
+
+  tap_action:
+    action: none
+  icon_tap_action:
+    action: none
+
+  state:
+    - operator: ">="
+      value: 60
+      styles:
+        img_cell:
+          - background-color: "[[[ return variables.state1_color ]]]"
+          - box-shadow: |
+              [[[
+                if (variables?.show_glow === false) return 'none';
+                const fb = variables?.state1_color || 'var(--red)';
+                return `-55px -50px 70px 20px ${fb}, -35px -35px 70px 10px ${fb}`;
+              ]]]
+
+    - operator: ">="
+      value: 45
+      styles:
+        img_cell:
+          - background-color: "[[[ return variables.state2_color ]]]"
+          - box-shadow: |
+              [[[
+                if (variables?.show_glow === false) return 'none';
+                const fb = variables?.state2_color || 'var(--red)';
+                return `-55px -50px 70px 20px ${fb}, -35px -35px 70px 10px ${fb}`;
+              ]]]
+
+    - operator: ">="
+      value: 35
+      styles:
+        img_cell:
+          - background-color: "[[[ return variables.state3_color ]]]"
+          - box-shadow: |
+              [[[
+                if (variables?.show_glow === false) return 'none';
+                const fb = variables?.state3_color || 'var(--red)';
+                return `-55px -50px 70px 20px ${fb}, -35px -35px 70px 10px ${fb}`;
+              ]]]
+
+    - operator: "<="
+      value: 34
+      styles:
+        img_cell:
+          - background-color: "[[[ return variables.state4_color ]]]"
+          - box-shadow: |
+              [[[
+                if (variables?.show_glow === false) return 'none';
+                const fb = variables?.state4_color || 'var(--red)';
+                return `-55px -50px 70px 20px ${fb}, -35px -35px 70px 10px ${fb}`;
+              ]]]
+
+  custom_fields:
+    toggle:
+      card:
+        type: custom:button-card
+        template: dados_toggle
+        variables:
+          entity: "[[[ return variables.switch_entity ]]]"
+          img_cell_background: var(--blue)
+        icon: m3of:water-heater
+        state:
+          - value: "off"
+            icon: mdi:water-boiler-off
+            styles:
+              icon:
+                - color: var(--contrast16)
+              img_cell:
+                - background: var(--contrast3)
+                - box-shadow: none
+
+        styles:
+          icon:
+            - color: |
+                [[[
+                  const sid = variables?.state_display_entity;
+                  const s = sid ? parseFloat(states[sid]?.state) : NaN;
+                  if (isNaN(s)) return 'var(--contrast14)';
+
+                  const t1 = parseFloat(variables?.state1);
+                  const t2 = parseFloat(variables?.state2);
+                  const t3 = parseFloat(variables?.state3);
+                  const t4 = parseFloat(variables?.state4);
+
+                  // falls eine Variable fehlt -> sinnvolle Defaults
+                  const S1 = isNaN(t1) ? 55 : t1;
+                  const S2 = isNaN(t2) ? 45 : t2;
+                  const S3 = isNaN(t3) ? 35 : t3;
+                  const S4 = isNaN(t4) ? 30 : t4;
+
+                  if (s >= S1) return variables?.state1_color || 'var(--red)';
+                  if (s >= S2) return variables?.state2_color || 'var(--peach)';
+                  if (s >= S3) return variables?.state3_color || 'var(--lavender)';
+
+                  // alles darunter (inkl. < S4) → state4 color
+                  return variables?.state4_color || 'var(--blue)';
+                ]]]
+
+
+
+
+
+

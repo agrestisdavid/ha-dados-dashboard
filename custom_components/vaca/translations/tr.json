@@ -1,0 +1,216 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Servis zaten yapılandırılmış",
+            "no_port": "Uç nokta için port bulunamadı",
+            "no_services": "Uç noktada servis bulunamadı"
+        },
+        "error": {
+            "cannot_connect": "Bağlantı kurulamadı"
+        },
+        "step": {
+            "hassio_confirm": {
+                "description": "Home Assistant'ı {addon} eklentisi tarafından sağlanan Wyoming servisine bağlamak istiyor musunuz?"
+            },
+            "user": {
+                "data": {
+                    "host": "Sunucu",
+                    "port": "Port"
+                }
+            },
+            "zeroconf_confirm": {
+                "description": "Home Assistant'ı {name} Wyoming servisine bağlamak istiyor musunuz?",
+                "title": "Wyoming servisi keşfedildi"
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "battery_charging": {
+                "name": "Pil şarj oluyor"
+            },
+            "screen_on": {
+                "name": "Ekran"
+            }
+        },
+        "button": {
+            "refresh": {
+                "name": "Yenile"
+            },
+            "screen_wake": {
+                "name": "Ekranı uyandır"
+            },
+            "screen_sleep": {
+                "name": "Ekranı uyut"
+            },
+            "wake": {
+                "name": "Uyandır"
+            }
+        },
+        "media_player": {
+            "media_player": {
+                "name": "Medya Oynatıcı",
+                "state": {
+                    "playing": "Oynatılıyor",
+                    "paused": "Duraklatıldı",
+                    "idle": "Boşta"
+                }
+            }
+        },
+        "number": {
+            "mic_gain": {
+                "name": "Mikrofon kazancı"
+            },
+            "screen_brightness": {
+                "name": "Ekran parlaklığı"
+            },
+            "notification_volume": {
+                "name": "Konuşma ses seviyesi"
+            },
+            "motion_detection_sensitivity": {
+                "name": "Hareket algılama hassasiyeti"
+            },
+            "music_volume": {
+                "name": "Müzik ses seviyesi"
+            },
+            "ducking_volume": {
+                "name": "Ses kısma seviyesi"
+            },
+            "wake_word_threshold": {
+                "name": "Uyandırma kelimesi eşiği"
+            },
+            "zoom_level": {
+                "name": "Yakınlaştırma seviyesi"
+            }
+        },
+        "select": {
+            "noise_suppression_level": {
+                "name": "Gürültü bastırma seviyesi",
+                "state": {
+                    "high": "Yüksek",
+                    "low": "Düşük",
+                    "max": "Maksimum",
+                    "medium": "Orta",
+                    "off": "Kapalı"
+                }
+            },
+            "pipeline": {
+                "name": "Asistan",
+                "state": {
+                    "preferred": "Tercih edilen"
+                }
+            },
+            "vad_sensitivity": {
+                "name": "Konuşma bitişi algılama",
+                "state": {
+                    "aggressive": "Agresif",
+                    "default": "Varsayılan",
+                    "relaxed": "Rahat"
+                }
+            },
+            "wake_word": {
+                "name": "Uyandırma kelimesi"
+            },
+            "wake_word_sound": {
+                "name": "Uyandırma kelimesi sesi",
+                "state": {
+                    "none": "Yok",
+                    "havpe": "Home Assistant",
+                    "alexa": "Alexa",
+                    "bubble": "Baloncuk",
+                    "ding": "Zil"
+                }
+            },
+            "screen_timeout": {
+                "name": "Ekran zaman aşımı",
+                "state": {
+                    "15": "15 saniye",
+                    "30": "30 saniye",
+                    "60": "1 dakika",
+                    "120": "2 dakika",
+                    "300": "5 dakika",
+                    "600": "10 dakika",
+                    "1800": "30 dakika"
+                }
+            }
+        },
+        "sensor": {
+            "stt": {
+                "name": "Konuşmadan Metne"
+            },
+            "tts": {
+                "name": "Metinden Konuşmaya"
+            },
+            "intent": {
+                "name": "Niyet"
+            },
+            "light_level": {
+                "name": "Işık seviyesi"
+            },
+            "orientation": {
+                "name": "Yön",
+                "state": {
+                    "unknown": "Bilinmiyor",
+                    "portrait": "Dikey",
+                    "landscape": "Yatay"
+                }
+            },
+            "battery_level": {
+                "name": "Pil"
+            },
+            "app_version": {
+                "name": "Uygulama sürümü"
+            },
+            "current_path": {
+                "name": "Mevcut yol"
+            },
+            "last_motion": {
+                "name": "Son hareket"
+            }
+        },
+        "switch": {
+            "mute": {
+                "name": "Sessiz"
+            },
+            "swipe_refresh": {
+                "name": "Kaydırarak yenile"
+            },
+            "screen_auto_brightness": {
+                "name": "Otomatik parlaklık"
+            },
+            "screen_always_on": {
+                "name": "Ekran her zaman açık"
+            },
+            "do_not_disturb": {
+                "name": "Rahatsız etmeyin"
+            },
+            "dark_mode": {
+                "name": "Karanlık mod"
+            },
+            "diagnostics_enabled": {
+                "name": "Ekran üstü tanılama"
+            },
+            "continue_conversation": {
+                "name": "Konuşmaya devam et"
+            },
+            "alarm": {
+                "name": "Alarm"
+            },
+            "enable_motion_detection": {
+                "name": "Hareket algılama"
+            },
+            "screen_on_wake_word": {
+                "name": "Uyandırma kelimesiyle ekranı aç"
+            },
+            "screen_on_bump": {
+                "name": "Darbe ile ekranı aç"
+            },
+            "screen_on_proximity": {
+                "name": "Yakınlık ile ekranı aç"
+            },
+            "screen_on_motion": {
+                "name": "Hareket ile ekranı aç"
+            }
+        }
+    }
+}

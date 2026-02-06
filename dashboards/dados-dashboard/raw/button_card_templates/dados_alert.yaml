@@ -1,0 +1,72 @@
+dados_alert:
+  template: dados_base
+  variables:
+    entity: sensor.dummy
+    state_display_entity: null
+    card_color: var(--contrast2)
+    card_height: 80px
+    card_border_radius: 36px
+    card_overflow: hidden
+    img_cell_background: var(--red)
+    show_glow: true
+    remove_words_regex: (betriebszustand\s*|Qrevo\s*|Curv\s*|Series\s*|Dock\s*|Aufgetreten\s*)
+
+  entity: "[[[ return variables.entity ]]]"
+  name: |
+    [[[
+      const fn = entity?.attributes?.friendly_name || '';
+      const re = new RegExp(variables.remove_words_regex, 'ig');
+      return fn.replace(re, '').trim();
+    ]]]
+
+
+  # styles:
+  #   grid:
+  #     - grid-template-columns: 55px 1fr
+  #     - grid-template-rows: min-content 1fr
+  #     - grid-template-areas: "'i n ' 'i s '"
+  #   card:
+  #     - border-radius: 36px
+  #     - background: "[[[ return variables.card_color ]]]"
+  #     - padding: 12px
+  #     - height: 80px
+  #     - overflow: hidden
+  #   img_cell:
+  #     - width: 45px
+  #     - height: 45px
+  #     - align-self: start
+  #     - margin-top: 5px
+  #     - border-radius: 18px
+  #     - box-shadow: none
+  #     - overflow: visible
+  #     - background-color: "[[[ return variables.img_cell_background ]]]"
+  #     - box-shadow: |
+  #         [[[
+  #           const c = entity?.attributes?.rgb_color;
+  #           const fbColor = variables?.img_cell_background || 'var(--red)';
+  #           const colA = c ? `rgba(${c[0]}, ${c[1]}, ${c[2]}, 0.7)` : fbColor;
+  #           const colB = c ? `rgba(${c[0]}, ${c[1]}, ${c[2]}, 0.8)` : fbColor;
+  #           return `-55px -50px 70px 20px ${colA}, -35px -53px 70px 10px ${colB}`;
+  #         ]]]
+  #     - overflow: visible
+  #   icon:
+  #     - width: 32px
+  #     - color: var(--contrast2)
+  #   name:
+  #     - justify-self: start
+  #     - align-self: start
+  #     - margin-top: 9px
+  #     - font-size: 16px
+  #     - font-weight: 500
+  #     - color: var(--contrast16)
+  #     - letter-spacing: 0.4px
+  #     - padding-left: 3px
+  #   state:
+  #     - justify-self: start
+  #     - align-self: start
+  #     - font-size: 14px
+  #     - font-weight: 400
+  #     - color: var(--contrast14)
+  #     - letter-spacing: 0.6px
+  #     - margin-top: 0px
+  #     - padding-left: 3px

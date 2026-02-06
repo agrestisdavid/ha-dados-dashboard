@@ -1,0 +1,21 @@
+generate_thumbnails:
+  name: Generate Thumbnails
+  description: Generates missing thumbnails for Reolink camera recordings.
+  fields:
+    entry:
+      name: Entry
+      description: Entry (if empty, all entries will be selected)
+      required: false
+      selector:
+        config_entry:
+          integration: reolink
+    days:
+      name: Days
+      description: Number of days to look back (default is 1 = today only)
+      default: 1
+      example: 7
+      selector:
+        number:
+          min: 1
+          max: 365
+          mode: box

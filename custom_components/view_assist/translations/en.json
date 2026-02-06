@@ -1,0 +1,271 @@
+{
+  "config": {
+    "abort": {
+      "already_configured": "Device is already configured",
+      "reconfigure_successful": "Reconfiguration successful",
+      "already_in_progress": "A setup is already in progress for this integration"
+    },
+    "error": {
+      "cannot_connect": "Failed to connect",
+      "invalid_auth": "Invalid authentication",
+      "invalid_settings": "Invalid settings",
+      "unknown": "Unexpected error"
+    },
+    "step": {
+      "master_config": {
+        "title": "Master Configuration",
+        "description": "This adds a master configuration instance of View Assist\n\nIt must be added before you can setup any View Assist device instances if a new install or any more View Assist devices instances if an existing install\n\nYou may need to refresh any existing View Assist devices to enable the full functionality"
+      },
+      "options": {
+        "title": "Configure a View Assist device",
+        "data": {
+          "name": "Satellite Name",
+          "mic_device": "Microphone device",
+          "mediaplayer_device": "Media player device",
+          "musicplayer_device": "Music player device",
+          "display_device": "Display Device",
+          "intent_device": "Intent Device (optional)",
+          "orientation_sensor": "Orientation Sensor (optional)",
+          "dev_mimic": "Mimic for view development"
+        },
+        "data_description": {
+          "name": "The View Assist satellite name",
+          "mic_device": "The microphone device for this satellite",
+          "mediaplayer_device": "The media player device for this satellite",
+          "musicplayer_device": "The music player device for this satellite",
+          "display_device": "The display device for this satellite",
+          "intent_device": "The device to provide intent data for this satellite",
+          "orientation_sensor": "Sensor that reports device orientation (portrait/landscape)",
+          "dev_mimic": "Use this device for view development on another machine"
+        }
+      }
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Configuration",
+        "description": "Select which options to amend",
+        "menu_options": {
+          "integration_options": "Integration Options",
+          "main_config": "Core Device Configuration",
+          "dashboard_options": "Dashboard Options",
+          "default_options": "Default Options",
+          "developer_options": "Developer Options"
+        }
+      },
+      "main_config": {
+        "title": "{name} Core Device Configuration",
+        "description": "",
+        "data": {
+          "name": "Satellite Name",
+          "mic_device": "Microphone device",
+          "mediaplayer_device": "Media player device",
+          "musicplayer_device": "Music player device",
+          "display_device": "Display Device",
+          "intent_device": "Intent Device (optional)",
+          "orientation_sensor": "Orientation Sensor (optional)",
+          "dev_mimic": "Mimic for view development"
+        },
+        "data_description": {
+          "name": "The View Assist satellite name",
+          "mic_device": "The microphone device for this satellite",
+          "mediaplayer_device": "The media player device for this satellite",
+          "musicplayer_device": "The music player device for this satellite",
+          "intent_device": "The device to provide intent data for this satellite",
+          "orientation_sensor": "Sensor that reports device orientation (portrait/landscape)",
+          "display_device": "The display device for this satellite",
+          "dev_mimic": "Use this device for view development on another machine"
+        }
+      },
+      "dashboard_options": {
+        "title": "{name} Dashboard Options",
+        "description": "{description}",
+        "data": {
+          "dashboard": "Dashboard",
+          "home": "Home screen",
+          "music": "Music view",
+          "intent": "Intent view",
+          "list_view": "List view"
+        },
+        "data_description": {
+          "dashboard": "The base dashboard for View Assist (do not include trailing slash)",
+          "home": "The screen to return to after timeout",
+          "music": "The view to return to when in music mode",
+          "intent": "The view to display for default HA actions for displaying those entities",
+          "list_view": "The view to display when updating a list"
+        },
+        "sections": {
+          "background_settings": {
+            "name": "Background Settings",
+            "description": "Options for the background image",
+            "data": {
+              "background_mode": "Background image source",
+              "background": "Default background",
+              "rotate_background_path": "Image path or url",
+              "rotate_background_linked_entity": "Linked entity",
+              "rotate_background_interval": "Rotation interval"
+            },
+            "data_description": {
+              "background": "The default background image url",
+              "rotate_background_path": "A path under config/view_assist to load images from in local file modes. A url to load images from in url mode",
+              "rotate_background_linked_entity": "View Assist entity to link the background to",
+              "rotate_background_interval": "Interval in minutes to rotate the background"
+            }
+          },
+          "display_settings": {
+            "name": "Display Settings",
+            "description": "Options for the display device",
+            "data": {
+              "assist_prompt": "Assist prompt",
+              "font_style": "Font style",
+              "status_icons_size": "Status icon size",
+              "status_icons": "Launch icons",
+              "menu_config": "Menu configuration",
+              "menu_items": "Menu items",
+              "menu_timeout": "Menu timeout",
+              "time_format": "Time format",
+              "screen_mode": "Show/hide header and sidebar",
+              "cycle_views": "Cycle views"
+            },
+            "data_description": {
+              "assist_prompt": "The Assist notification prompt style to use for wake word detection and intent processing",
+              "font_style": "The default font to use for this satellite device. Font name must match perfectly and be available",
+              "status_icons_size": "Size of the icons in the status icon display",
+              "status_icons": "Advanced option! List of custom launch icons to set on start up. Do not change this if you do not know what you are doing",
+              "menu_config": "Configure the menu behavior",
+              "menu_items": "List of items to show in the menu when activated",
+              "menu_timeout": "Time in seconds before menu automatically closes (0 to disable timeout)",
+              "time_format": "Sets clock display time format",
+              "screen_mode": "Show or hide the header and sidebar",
+              "cycle_views": "List of items to show when in cycle mode"
+            }
+          }
+        }
+      },
+      "default_options": {
+        "title": "{name} Default Options",
+        "description": "{description}",
+        "data": {
+          "weather_entity": "Weather entity to use for conditons display",
+          "mic_type": "The integration handling microphone input",
+          "mode": "Default Mode",
+          "view_timeout": "View Timeout",
+          "do_not_disturb": "Enable do not disturb at startup",
+          "use_announce": "Disable announce on this device",
+          "micunmute": "Unmute microphone on HA start/restart",
+          "ducking_volume": "Volume ducking percentage",
+          "music_mode_auto": "Auto music mode",
+          "music_mode_timeout": "Music mode timeout"
+        },
+        "data_description": {
+          "mode": "The default mode for this satellite device",
+          "view_timeout": "The default time out value for this satellite device in seconds before returning to default view",
+          "do_not_disturb": "Default state for do not disturb mode on HA restart",
+          "use_announce": "Some media player devices, like BrowserMod, cannot use the Home Assistant announce feature while media is playing. This option allows for turning off announce messages if problems arise. Default is on.",
+          "micunmute": "Helpful for Stream Assist devices",
+          "ducking_volume": "Lower media playback volume by this percentage when Assist is active",
+          "music_mode_auto": "Automatically enter music mode when music player starts playing",
+          "music_mode_timeout": "Time in seconds before automatically exiting music mode after music stops (0 = disabled)"
+        }
+      },
+      "integration_options": {
+        "title": "{name} Integration Options",
+        "data": {
+          "enable_updates": "Enable update notifications",
+          "translation_engine": "Translation engine"
+        },
+        "data_description": {
+          "enable_updates": "Enable or disable update notifications for the dashboard, views and blueprints",
+          "translation_engine": "The translation engine to use for timers (experimental)"
+        }
+      },
+      "developer_options": {
+        "title": "{name} Developer Options",
+        "data": {
+          "developer_device": "Developer device",
+          "developer_mimic_device": "Mimic device"
+        },
+        "data_description": {
+          "developer_device": "The browser id of the device you wish to use for development",
+          "developer_mimic_device": "The device to mimic for development"
+        }
+      }
+    }
+  },
+  "selector": {
+    "type_selector": {
+      "options": {
+        "vaca": "View Assist Companion App device",
+        "view_audio": "View Assist device with display",
+        "audio_only": "View Assist device with no display"
+      }
+    },
+    "assist_prompt_selector": {
+      "options": {
+        "blur_pop_up": "Blurs the screen and shows pop up",
+        "flashing_bar": "Flashing bar at bottom",
+        "kitt_bar": "KITT style bar at bottom"
+      }
+    },
+    "status_icons_size_selector": {
+      "options": {
+        "6vw": "Small",
+        "7vw": "Medium",
+        "8vw": "Large"
+      }
+    },
+    "menu_config_selector": {
+      "options": {
+        "menu_disabled": "Menu disabled",
+        "menu_enabled_button_visible": "Menu enabled, button visible",
+        "menu_enabled_button_hidden": "Menu enabled, button hidden"
+      }
+    },
+    "mic_type_selector": {
+      "options": {
+        "home_assistant_voice_satellite": "Home Assistant Voice Satellite",
+        "hassmic": "HassMic",
+        "stream_assist": "Stream Assist"
+      }
+    },
+    "display_type_selector": {
+      "options": {
+        "browser_mod": "BrowserMod",
+        "remote_assist_display": "Remote Assist Display",
+        "stream_assist": "Stream Assist"
+      }
+    },
+    "rotate_backgound_source_selector": {
+      "options": {
+        "default_background": "Default background",
+        "local_sequence": "Sequenced image from local file path",
+        "local_random": "Random image from local file path",
+        "download": "Random image from unsplash.com",
+        "custom_url": "Image from custom url",
+        "link_to_entity": "Mirror another View Assist device"
+      }
+    },
+    "menu_icons_selector": {
+      "options": {}
+    },
+    "lookup_selector": {
+      "options": {
+        "hour_12": "12 Hour",
+        "hour_24": "24 Hour",
+        "on": "On",
+        "off": "Off",
+        "hide_header_sidebar": "Hide header and side menu",
+        "hide_header": "Hide header",
+        "hide_sidebar": "Hide side menu",
+        "no_hide": "Do not hide elements"
+      }
+    }
+  },
+  "issues": {
+    "no_resource_version": {
+      "title": "Fix View Assist resource version issues",
+      "description": "The view assist helper plugin resource has no version identifier.  This can cause it not to use the latest version.  Please remove the resource and restart Home Assistant to fix it."
+    }
+  }
+}

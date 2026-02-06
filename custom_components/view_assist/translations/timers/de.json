@@ -1,0 +1,127 @@
+{
+    "decimal_separator": ",",
+    "numbers": {
+        "zero": "null",
+        "one": ["ein","eins","eine"],
+        "two": "zwei",
+        "three": "drei",
+        "four": "vier",
+        "five": "fünf",
+        "six": "sechs",
+        "seven": "sieben",
+        "eight": "acht",
+        "nine": "neun",
+        "ten": "zehn",
+        "eleven": "elf",
+        "twelve": "zwölf",
+        "thirteen": "dreizehn",
+        "fourteen": "vierzehn",
+        "fifteen": "fünfzehn",
+        "sixteen": "sechzehn",
+        "seventeen": "siebzehn",
+        "eighteen": "achtzehn",
+        "nineteen": "neunzehn",
+        "twenty": "zwanzig",
+        "thirty": "dreißig",
+        "forty": "vierzig",
+        "fifty": "fünfzig",
+        "sixty": "sechzig",
+        "seventy": "siebzig",
+        "eighty": "achtzig",
+        "ninety": "neunzig"
+    },
+    "days": {
+        "monday": "montag",
+        "tuesday": "dienstag",
+        "wednesday": "mittwoch",
+        "thursday": "donnerstag",
+        "friday": "freitag",
+        "saturday": "samstag",
+        "sunday": "sonntag",
+        "today": "heute",
+        "tomorrow": "morgen"
+    },
+    "durations": {
+        "days": ["tage", "tag"],
+        "hours": ["stunden", "stunde", "stde", "std", "std."],
+        "minutes": ["minuten", "minute", "min", "min", "min."],
+        "seconds": ["sekunde","sekunden", "sek", "sek."],
+        "quarter of an hour": ["viertelstunde"],
+        "half an hour": ["halbestunde"],
+        "three quarters of an hour": ["dreiviertelstunde"]
+    },
+    "operators": {
+        "before": ["vor"],
+        "after": ["nach"],
+        "and": ["und"],
+        "minus": ["minus", "weniger"]
+    },
+    "time_of_day": {
+        "morning": ["morgen", "morgens"],
+        "noon": ["mittag", "mittags"],
+        "afternoon": ["nachmittag", "nachmittags"],
+        "evening": ["abend", "abends", "heute abend", "heute abends"],
+        "night": ["nacht", "nachts"],
+        "midnight": ["mitternacht"]
+    },
+    "fractions": {
+        "oclock": ["uhr"],
+        "quarter": ["viertel"],
+        "half": ["halbe"],
+        "half before": ["halb"],
+        "threequarter": ["drei viertel", "dreiviertel"]
+    },
+    "other_words": {
+        "at": ["um"],
+        "on": ["am"],
+        "this": ["diesen", "diese", "dieser"],
+        "next": ["nächsten", "nächste", "nächster"],
+        "in": ["in"],
+        "to": ["bis", "an"]
+
+    },
+    "compound_words": {
+        "{a:numbers}und{b:numbers}": "{b} {a}",
+        "{a:numbers}einhalb": "{a} and a half",
+        "{a:days}{b:time_of_day}": "{a} {b}"
+    },
+    "structures": {
+        "basic_time": [
+            "{hours} oclock",
+            "{hours} {minutes} oclock",
+            "{minutes} {operator} {hours}",
+            "{minutes} minutes {operator} {hours}",
+            "{minutes} minutes {operator} {hours} oclock",
+            "{minutes} {operator} {hours}",
+            "{minutes} {operator} {hours} oclock",
+            "{fractions} {hours}",
+            "{fractions} {operator} {hours}",
+            "{fractions} {operator} {hours} oclock"
+        ],
+        "advanced_time": [
+            "{basic_time} {time_of_day}",
+            "{basic_time} on {time_of_day}",
+            "{day} {time_of_day} at {basic_time}",
+            "{day} at {basic_time}",
+            "{day} at {fractions} {hours} {time_of_day}",
+            "{day} at {fractions} {operator} {hours} {time_of_day}"
+        ],
+        "basic_interval": [],
+        "advanced_interval": [
+            "{fractions} hours",
+            "{hours} {fractions} hours",
+            "{hours} and a {fractions} hours"
+        ]
+    },
+    "responses": {
+        "timer_set": "Timer auf {time} gestellt",
+        "timer_named_set": "Timer {name} auf {time} gestellt",
+        "timer_already_exists": "Es existiert bereits ein Timer mit dem Namen {name}",
+        "timer_none": "Es sind keine Timer gesetzt",
+        "timer_list": "Du hast folgende Timer gesetzt: {timers}",
+        "timer_deleted": "Timer {name} gelöscht",
+        "timer_not_found": "Es konnte kein Timer mit dem Namen {name} gefunden werden",
+        "time_remaining": "Es sind noch {remaining} auf dem Timer {name} übrig",
+        "timer_error": "Beim Setzen des Timers ist ein Fehler aufgetreten"
+    }
+}

@@ -1,0 +1,21 @@
+{
+  "domain": "vaca",
+  "name": "View Assist Companion App",
+  "codeowners": ["@msp1974"],
+  "config_flow": true,
+  "dependencies": [
+    "assist_satellite",
+    "assist_pipeline",
+    "intent",
+    "conversation",
+    "ffmpeg",
+    "wyoming"
+  ],
+  "documentation": "https://github.com/msp1974/ViewAssist_Companion_App",
+  "integration_type": "service",
+  "iot_class": "local_push",
+  "issue_tracker": "https://github.com/msp1974/ViewAssist_Companion_App/issues",
+  "requirements": ["wyoming>=1.7.1"],
+  "version": "0.9.1",
+  "zeroconf": ["_vaca._tcp.local."]
+}

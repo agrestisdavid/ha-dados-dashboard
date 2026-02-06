@@ -1,0 +1,794 @@
+import { timerCards } from "./timers.js?v=1.0.25";
+
+const version = "1.0.25"
+const TIMEOUT_ERROR = "SELECTTREE-TIMEOUT";
+
+export async function await_element(el, hard = false) {
+  if (el.localName?.includes("-"))
+    await customElements.whenDefined(el.localName);
+  if (el.updateComplete) await el.updateComplete;
+  if (hard) {
+    if (el.pageRendered) await el.pageRendered;
+    if (el._panelState) {
+      let rounds = 0;
+      while (el._panelState !== "loaded" && rounds++ < 5)
+        await new Promise((r) => setTimeout(r, 100));
+    }
+  }
+}
+
+async function _selectTree(root, path, all = false) {
+  let el = [root];
+  if (typeof path === "string") {
+    path = path.split(/(\$| )/);
+  }
+  while (path[path.length - 1] === "") path.pop();
+  for (const [i, p] of path.entries()) {
+    const e = el[0];
+    if (!e) return null;
+
+    if (!p.trim().length) continue;
+
+    await_element(e);
+    el = p === "$" ? [e.shadowRoot] : e.querySelectorAll(p);
+  }
+  return all ? el : el[0];
+}
+
+export async function selectTree(root, path, all = false, timeout = 10000) {
+  return Promise.race([
+    _selectTree(root, path, all),
+    new Promise((_, reject) =>
+      setTimeout(() => reject(new Error(TIMEOUT_ERROR)), timeout)
+    ),
+  ]).catch((err) => {
+    if (!err.message || err.message !== TIMEOUT_ERROR) throw err;
+    return null;
+  });
+}
+
+export async function hass_base_el() {
+  await Promise.race([
+    customElements.whenDefined("home-assistant"),
+    customElements.whenDefined("hc-main"),
+  ]);
+
+  const element = customElements.get("home-assistant")
+    ? "home-assistant"
+    : "hc-main";
+
+  while (!document.querySelector(element))
+    await new Promise((r) => window.setTimeout(r, 100));
+  return document.querySelector(element);
+}
+
+export async function hass() {
+  const base = await hass_base_el();
+  while (!base.hass) await new Promise((r) => window.setTimeout(r, 100));
+  return base.hass;
+}
+
+function strftime(sFormat, date, locale) {
+  if (!(date instanceof Date)) date = new Date();
+  var nDay = date.getDay(),
+    nDate = date.getDate(),
+    nMonth = date.getMonth(),
+    nYear = date.getFullYear(),
+    nHour = date.getHours(),
+    aDay = new Intl.DateTimeFormat(locale, {weekday: "long"}).format(date),
+    aMonth = new Intl.DateTimeFormat(locale, {month: "long"}).format(date),
+    aDayCount = [0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334],
+    isLeapYear = function() {
+      if ((nYear&3)!==0) return false;
+      return nYear%100!==0 || nYear%400===0;
+    },
+    getThursday = function() {
+      var target = new Date(date);
+      target.setDate(nDate - ((nDay+6)%7) + 3);
+      return target;
+    },
+    zeroPad = function(nNum, nPad) {
+      return ('' + (Math.pow(10, nPad) + nNum)).slice(1);
+    };
+  return sFormat.replace(/%[a-z]/gi, function(sMatch) {
+    return {
+      '%a': aDay.slice(0,3),
+      '%A': aDay,
+      '%b': aMonth.slice(0,3),
+      '%B': aMonth,
+      '%c': date.toUTCString(),
+      '%C': Math.floor(nYear/100),
+      '%d': zeroPad(nDate, 2),
+      '%e': nDate,
+      '%F': date.toISOString().slice(0,10),
+      '%G': getThursday().getFullYear(),
+      '%g': ('' + getThursday().getFullYear()).slice(2),
+      '%H': zeroPad(nHour, 2),
+      '%I': zeroPad((nHour+11)%12 + 1, 2),
+      '%j': zeroPad(aDayCount[nMonth] + nDate + ((nMonth>1 && isLeapYear()) ? 1 : 0), 3),
+      '%k': '' + nHour,
+      '%l': (nHour+11)%12 + 1,
+      '%m': zeroPad(nMonth + 1, 2),
+      '%M': zeroPad(date.getMinutes(), 2),
+      '%p': (nHour<12) ? 'AM' : 'PM',
+      '%P': (nHour<12) ? 'am' : 'pm',
+      '%s': Math.round(date.getTime()/1000),
+      '%S': zeroPad(date.getSeconds(), 2),
+      '%u': nDay || 7,
+      '%V': (function() {
+              var target = getThursday(),
+                n1stThu = target.valueOf();
+              target.setMonth(0, 1);
+              var nJan1 = target.getDay();
+              if (nJan1!==4) target.setMonth(0, 1 + ((4-nJan1)+7)%7);
+              return zeroPad(1 + Math.ceil((n1stThu-target)/604800000), 2);
+            })(),
+      '%w': '' + nDay,
+      '%x': date.toLocaleDateString(locale),
+      '%X': date.toLocaleTimeString(locale),
+      '%y': ('' + nYear).slice(2),
+      '%Y': nYear,
+      '%z': date.toTimeString().replace(/.+GMT([+-]\d+).+/, '$1'),
+      '%Z': date.toTimeString().replace(/.+\((.+?)\)$/, '$1')
+    }[sMatch] || sMatch;
+  });
+}
+
+class Clock extends HTMLElement {
+  static observedAttributes = ["server_time", "format", "mode", "hour24"];
+
+  constructor() {
+    super();
+    this.server_time = true;
+  }
+
+  connectedCallback() {
+    const shadow = this.shadowRoot || this.attachShadow({ mode: 'open' });
+    // Create span
+    this.shadowRoot.innerHTML = '';
+    var el = document.createElement("div");
+    el.setAttribute("class", "clock");
+    shadow.appendChild(el);
+
+    if (this.hasAttribute("server_time")) this.server_time = this.getAttribute("server_time");
+    this.run_clock(el);
+  }
+
+  display_time(el) {
+    var format = this.getAttribute("format") ? this.getAttribute("format") : ''
+    var language = document.documentElement.lang || navigator.language || 'en-GB';
+    var options = {}
+    var formattedOutput = '';
+
+    var dt_now = new Date();
+    if (this.server_time) dt_now = new Date(dt_now.getTime() + window.viewassist.server_time_delta);
+
+    // Backward compatible for older dashboard
+    if (format != '') {
+      formattedOutput = strftime(format, dt_now, language);
+    } else {
+      var mode = this.getAttribute("mode") ? this.getAttribute("mode") : 'time';
+      if (mode == 'time') {
+        var hour24 = this.getAttribute("hour24") == 'true';
+        const options = { hour: 'numeric', minute: '2-digit', hour12: !hour24 };
+        const output = Intl.DateTimeFormat(language, options).formatToParts(dt_now)
+        formattedOutput = output[0].value + output[1].value + output[2].value;
+      } else if (mode == 'date') {
+        options = { weekday: 'short', month: 'short', day: 'numeric' };
+        formattedOutput = Intl.DateTimeFormat(language, options).format(dt_now).trim();
+      }
+    }
+    el.textContent = formattedOutput
+  }
+
+  run_clock(el) {
+    var t = this;
+    t.display_time(el);
+    const x = setInterval(() => {
+      t.display_time(el);
+    }, 1000);
+  }
+}
+
+class CountdownTimer extends HTMLElement {
+  static observedAttributes = ["expires", "server_time", "show_negative", "no_timer_text", "expired_text"];
+
+  constructor() {
+    super();
+    this.expires = 0;
+    this.server_time = true;
+    this.show_negative = true;
+    this.expired_text = '';
+    this.no_timer_text = '';
+    this.interval_timer = null;
+  }
+
+  connectedCallback() {
+    const shadow = this.shadowRoot || this.attachShadow({ mode: 'open' });
+    // Create span
+    this.shadowRoot.innerHTML = '';
+    const el = document.createElement("div");
+    el.setAttribute("class", "countdown");
+    shadow.appendChild(el);
+
+
+
+    this.expires = this.getAttribute("expires");
+    if (this.hasAttribute("server_time")) this.server_time = this.getAttribute("server_time");
+    if (this.hasAttribute("show_negative")) this.show_negative = this.getAttribute("show_negative");
+    if (this.hasAttribute("no_timer_text")) this.no_timer_text = this.getAttribute("no_timer_text");
+    if (this.hasAttribute("expired_text")) this.expired_text = this.getAttribute("expired_text");
+
+    this.start_timer(el);
+  }
+
+  disconnectedCallback() {
+    clearInterval(this.interval_timer);
+  }
+
+  display_countdown(el) {
+    let dt_now = new Date();
+    if (this.server_time) {
+      // Use now plus server time delta to compare expiry to
+      dt_now = new Date(dt_now.getTime() + window.viewassist.server_time_delta);
+    }
+
+    const expire = new Date(this.expires).getTime();
+
+    // Find the distance between now and the count down date
+    let distance = (expire - dt_now) / 1000;
+    let disp_distance = Math.abs(Math.round(distance))
+
+    // Time calculations for days, hours, minutes and seconds
+    let days = Math.floor(disp_distance / (60 * 60 * 24));
+    let hours = String(Math.floor((disp_distance % (60 * 60 * 24)) / (60 * 60))).padStart(2,'0');
+    let minutes = String(Math.floor((disp_distance % (60 * 60)) / (60))).padStart(2,'0');
+    let seconds = String(Math.floor(disp_distance % (60))).padStart(2,'0');
+
+    // Display the result in the element
+    let sign = Math.round(distance) < 0 ? '-':'';
+    if (days) {
+      el.textContent = sign + days + "d " + hours + ":" + minutes + ":" + seconds;
+    } else {
+      el.textContent = sign + hours + ":" + minutes + ":" + seconds;
+    }
+    return distance
+  }
+
+  start_timer(el) {
+    if (this.expires != 0) {
+      var t = this;
+      t.display_countdown(el)
+      this.interval_timer = setInterval(function () {
+        var distance = t.display_countdown(el);
+        if (!t.show_negative && distance < 0) {
+          clearInterval(this.interval_timer);
+          el.textContent = t.expired_text;
+        }
+      }, 500);
+    } else {
+      if (typeof x !== 'undefined') { clearInterval(this.interval_timer) };
+      el.textContent = this.no_timer_text;
+    }
+  }
+}
+
+class VAData {
+  constructor() {
+    this.config;
+    this.helpers = null;
+    this.server_time_delta = 0;
+    this.browser_id = '';
+    this.registered = false;
+  }
+}
+
+class ViewAssistHelpers {
+  constructor(hass) {
+    this.hass = hass;
+  }
+
+  getTimer(timer_id) {
+    if (!window.viewassist?.config?.timers) return null;
+    return window.viewassist.config.timers.find(t => t.id == timer_id) || null;
+  }
+
+  getCurrentView() {
+    const pathname = window.location.pathname;
+    if (pathname) {
+      const match = pathname.match(/\/view-assist\/([^\/]+)/);
+      if (match && match[1]) {
+        return match[1];
+      }
+    }
+  }
+
+  timerCards(show_all = false) {
+    const timerCount = window.viewassist.config.timers.length;
+    if (timerCount == 0) return timerCards.noTimersCard();
+
+    if (timerCount > 1) {
+      return timerCards.timerCards(show_all);
+    } else {
+      return timerCards.singleTimerCard(window.viewassist.config.timers[0].id);
+    }
+  }
+
+  validateRequirements(requirements) {
+    if (typeof requirements === "string") requirements = [requirements];
+    const missing = requirements.filter(req => window.customElements.get(req) === undefined);
+    if (missing.length) {
+      return "<div style='display: flex; align-items: center;'><p class='error'>Missing required resources: " + missing.join(", ") + "</p></div>";
+    }
+  }
+}
+
+class ViewAssist {
+  constructor() {
+    this._hass = null;
+    this.serverTimeHandler = null;
+    this.hide_header_timeout = null;
+    this.hide_sidebar_timeout = null;
+    this.variables = new VAData();
+    this.connected = false;
+
+    setTimeout(() => this.initialize(), 100);
+  }
+
+  async hide_sections() {
+    // Hide header and sidebar
+    if (!this.variables.config?.mimic_device) {
+      await this.hide_header(this.variables.config?.hide_header);
+      await this.hide_sidebar(this.variables.config?.hide_sidebar);
+    }
+  }
+
+  async hide_header(enabled) {
+    try {
+      let elMain = await selectTree(
+        document.body,
+        "home-assistant $ home-assistant-main $ partial-panel-resolver ha-panel-lovelace $ hui-root $"
+      )
+
+      await selectTree(
+        elMain, "hui-view-container"
+      ).then((el) => {
+        enabled ? el.style.setProperty("padding-top", "0px") : el.style.removeProperty("padding-top")
+      });
+
+      await selectTree(
+        elMain, ".header"
+      ).then((el) => {
+        enabled ? el.style.setProperty("display", "none") : el.style.removeProperty("display")
+      });
+    } catch (e) {
+      clearTimeout(this.hide_header_timeout);
+      this.hide_header_timeout = setTimeout(() => {
+        this.hide_header(enabled);
+      }, 200);
+    }
+  }
+
+  async hide_sidebar(enabled) {
+    try {
+      let elMain = await selectTree(
+        document.body,
+        "home-assistant $ home-assistant-main"
+      )
+
+      enabled ? elMain?.style?.setProperty("--mdc-drawer-width", "0px") : elMain?.style?.removeProperty("--mdc-drawer-width");
+
+      await selectTree(
+        elMain, "$ partial-panel-resolver"
+      ).then((el) => {
+        enabled ? el.style.setProperty("--mdc-top-app-bar-width", "100% !important") : el.style.removeProperty("--mdc-top-app-bar-width")
+      });
+
+      await selectTree(
+        elMain, "$ ha-drawer ha-sidebar"
+      ).then((el) => {
+        enabled ? el.style.setProperty("display", "none !important") : el.style.removeProperty("display")
+      });
+
+      await selectTree(
+        elMain, "$ partial-panel-resolver ha-panel-lovelace $ hui-root $ ha-menu-button"
+      ).then((el) => {
+        enabled ? el.style.setProperty("display", "none") : el.style.removeProperty("display")
+      });
+
+      // Hide white line on left
+      await selectTree(
+        elMain, "$ ha-drawer $ aside"
+      ).then((el) => {
+        enabled ? el.style.setProperty("display", "none") : el.style.removeProperty("display");
+      });
+    } catch (e) {
+      clearTimeout(this.hide_sidebar_timeout);
+      this.hide_sidebar_timerout = setTimeout(() => {
+        this.hide_sidebar(enabled);
+      }, 200);
+    }
+
+  }
+
+  missingModules() {
+    let missingModules = []
+    const modules = ['button-card', 'layout-card', 'card-mod']
+    modules.forEach((module) => {
+      if (!customElements.get(module)) {
+        missingModules.push(module)
+      }
+    })
+    return missingModules
+  }
+
+  async display_browser_id() {
+    const elRoot = await selectTree(
+      document.body,
+      "home-assistant $ home-assistant-main $ partial-panel-resolver ha-panel-lovelace $ hui-root"
+    );
+
+    try {
+      if (!this.variables.registered && location.pathname.includes("view-assist")) {
+        let elMain = await selectTree(
+          elRoot,
+          "$ div hui-view-container hui-view"
+        )
+        var browserId = elRoot.shadowRoot.getElementById("view_assist_browser_id");
+        if (!browserId) {
+          browserId = document.createElement("div");
+          browserId.id = "view_assist_browser_id";
+          browserId.attachShadow({ mode: "open" });
+          elMain.append(browserId);
+
+          const vadiv = document.createElement("div");
+
+          vadiv.innerHTML = '<p class="displayID">Display ID: ' + this.get_browser_id() + '</p>';
+          vadiv.innerHTML += '<p class="message" style="font-size: 4vh">Register this device in View Assist to start using it. You may see a template error until you do</p>';
+          const missingModules = this.missingModules();
+          if (missingModules.length > 0) {
+            vadiv.innerHTML += '<p class="missingResources" style="background-color: rgba(126, 3, 3, 0.8);">Missing resources! You must install these before continuing or View Assist will not work.</br>' + missingModules.join(", ") + '</p>';
+          } else {
+            vadiv.innerHTML += '<p class="noMissingResources" style="background-color: rgba(3, 126, 3, 0.8);">Base required resources are detected!</p>';
+          }
+          browserId.shadowRoot.appendChild(vadiv);
+
+          const styleEl = document.createElement("style");
+          styleEl.innerHTML = (
+            `
+            :host {
+              position: absolute;
+              left: 10%;
+              top: 30%;
+              font-size: 5vh;
+              color: white;
+              background-color: rgba(0,0,0,0.9);
+              z-index: 5;
+              padding: 0 5%;
+              border: 4px solid #5C82A7; */
+              margin: auto;
+              justify-content: center;
+              width: 70%;
+              text-align: center;
+            }
+            `
+          );
+          browserId.shadowRoot.append(styleEl);
+        }
+      } else {
+        var browserId = elRoot.shadowRoot.getElementById("view_assist_browser_id");
+        if (browserId) {
+          browserId.remove();
+        }
+      }
+    } catch (e) {
+      setTimeout(() => this.display_browser_id(), 1000);
+    }
+  }
+
+  async initialize() {
+    try {
+
+      // Connect to server websocket
+      this._hass = await hass();
+      this.variables.helpers = new ViewAssistHelpers(this._hass);
+
+      // Add custom elements
+      customElements.define("viewassist-countdown", CountdownTimer)
+      customElements.define("viewassist-clock", Clock)
+
+      await this.connect();
+
+      if (this.connected) {
+        window.addEventListener("connection-status", (ev) => {
+          if (ev.detail != "connected") {
+            this.connect()
+          } else {
+            this.connected = false;
+            clearInterval(this.serverTimeHandler)
+          }
+        });
+
+        window.addEventListener("location-changed", () => {
+          setTimeout(() => {
+            this.hide_sections(false);
+            this.display_browser_id();
+          }, 100);
+        });
+      }
+
+    } catch (e) {
+      console.log("Error on initialisation: ", e.message);
+    }
+  }
+
+  get_browser_id() {
+    // Create a browser id if not already set
+    if (!localStorage.getItem("view_assist_browser_id")) {
+      // Test if VA Companion App is installed and get uuid from that
+      let browser_id = '';
+      try {
+        browser_id = `va-${ViewAssistApp.getViewAssistCAUUID()}`;
+      } catch (e) {
+        const s4 = () => { return Math.floor((1 + Math.random()) * 100000).toString(16).substring(1); };
+        browser_id = `va-${s4()}${s4()}-${s4()}${s4()}`
+      }
+      localStorage.setItem("view_assist_browser_id", browser_id);
+      return browser_id
+    }
+    return localStorage.getItem("view_assist_browser_id");
+  }
+
+  async connect(attempts = 1) {
+    // Subscribe to server updates
+    try {
+      this.variables.browser_id = this.get_browser_id();
+      this.variables.registered = localStorage.getItem("view_assist_status") == "registered";
+
+      // Subscribe to server messages
+      const conn = this._hass.connection;
+      conn.subscribeMessage((msg) => this.incoming_message(msg), {
+        type: "view_assist/connect",
+        browser_id: this.variables.browser_id,
+      })
+
+      // Test connection - this will fail if integration not yet loaded and cause a retry
+      const delta = await this._hass.callWS({
+        type: 'view_assist/get_server_time_delta',
+        epoch: new Date().getTime()
+      })
+      this.connected = true;
+    } catch {
+      this.connected = false;
+      if (attempts < 50) {
+        setTimeout(() => this.connect(attempts + 1), 500);
+      } else {
+        console.log("View Assist - Unable to connect to server")
+      }
+    }
+
+    if (this.connected) {
+      // Create time sync job with server - updates every 5 minutes
+      await this.set_time_delta();
+      var t = this;
+      this.serverTimeHandler = setInterval(function () {
+        t.set_time_delta();
+      }, 300 * 1000);
+    }
+  }
+
+  async incoming_message(msg) {
+    // Handle incomming messages from the server
+    const event = msg["event"];
+    const payload = msg["payload"];
+    const is_mimic = this.variables.config?.mimic_device;
+
+    //console.log("Event: " + event + ", Payload: " + JSON.stringify(payload));
+
+    switch (event) {
+      case "registered":
+        localStorage.setItem("view_assist_status", "registered");
+        this.variables.registered = true
+        // Add listening overlay html from overlay.html and overlay.css files
+        await this.inject_assist_listening_overlay();
+        // Setup device config
+        this.process_config(event, payload);
+        break;
+      case "reload":
+        clearInterval(this.serverTimeHandler);
+        this.connected = false;
+        setTimeout(() => this.connect(), 1000);
+        break;
+      case "unregistered":
+        localStorage.removeItem("view_assist_sensor");
+        localStorage.removeItem("view_assist_mimic_device");
+        localStorage.setItem("view_assist_status", "unregistered");
+        this.variables.config = {};
+        this.variables.registered = false;
+        await this.hide_sections(this.variables.registered);
+        setTimeout(() => this. display_browser_id(), 2000);
+        break;
+      case "config_update":
+        this.process_config(event, payload);
+        break;
+      case "timer_update":
+        this.variables.config.timers = payload
+        break;
+      case "navigate":
+        if (!is_mimic) {
+          if (payload["variables"]) {
+            this.variables.navigation = payload["variables"];
+          }
+          this.browser_navigate(payload["path"]);
+        }
+        break;
+      case "listening":
+        if (!is_mimic) {
+          this.show_assist_listening_overlay(payload["state"], payload["style"])
+        }
+        break;
+      default:
+        console.log("ViewAssist - unknown event: " + event);
+    }
+  }
+
+  process_config(event, payload) {
+    let reload = false;
+    const old_config = this.variables?.config
+
+    if (event == "registered") {
+      reload = true;
+    }
+
+    // Entity id changed
+    if (payload.entity_id && payload.entity_id != localStorage.getItem("view_assist_sensor")) {
+      localStorage.setItem("view_assist_sensor", payload.entity_id);
+      localStorage.setItem("view_assist_mimic_device", payload.mimic_device);
+      reload = true;
+    }
+
+    // Set variables to payload
+    this.variables.config = payload
+
+    if (!payload.mimic_device) {
+      // On register, go to default page
+      if (reload) {
+        this.browser_navigate(payload.home);
+      }
+    }
+  }
+
+  async set_time_delta() {
+    // Get this clients time delta to the server
+    if (this.connected) {
+      const delta = await this._hass.callWS({
+        type: 'view_assist/get_server_time_delta',
+        epoch: new Date().getTime()
+      })
+      this.variables.server_time_delta = delta;
+    }
+  }
+
+  browser_navigate(path) {
+    // Navigate the browser window
+    if (!path) return;
+    history.pushState(null, "", path);
+    window.dispatchEvent(new CustomEvent("location-changed"));
+  }
+
+  async inject_assist_listening_overlay() {
+    // If already exists, return
+    if (document.querySelector("view-assist-overlays")) return;
+
+    // Create overlay html element and add to body
+    var htmlElement = document.createElement('view-assist-overlays');
+    htmlElement.style.display = "block";
+    htmlElement.attachShadow({ mode: "open" });
+    document.body.appendChild(htmlElement);
+
+    // Load html from url
+    const html_response = await fetch("/view_assist/dashboard/overlay.html");
+    if (!html_response.ok) {
+      console.error("Overlay HTML not found - no overlays will be displayed");
+      return;
+    }
+
+    // Add html to shadow root
+    htmlElement.shadowRoot.innerHTML = await html_response.text();
+
+    var st = document.createElement("style");
+    const css_response = await fetch("/view_assist/dashboard/overlay.css");
+    if (!css_response.ok) {
+      console.error("Overlay CSS not found - no overlays will be displayed");
+      return;
+    }
+    st.innerHTML = await css_response.text();
+
+    // Add custom overlays html/css
+    try {
+      // Load custom overlays html
+      const response = await fetch("/view_assist/custom_overlays/overlay.html");
+      if (response.ok) {
+        const custom_html = await response.text();
+        htmlElement.shadowRoot.innerHTML += custom_html;
+
+        // Load custom css
+        const custom_css = await fetch("/view_assist/custom_overlays/overlay.css");
+        if (custom_css.ok) {
+          st.innerHTML += await custom_css.text();
+        }
+      } else {
+        console.log("Custom overlays not implemented");
+      }
+    } catch (error) {
+      // No custom html
+    }
+
+    htmlElement.shadowRoot.appendChild(st);
+  }
+
+  async show_assist_listening_overlay(state, style) {
+    // Display listening message
+    try {
+      let overlays = await selectTree(
+        document.body,
+        "view-assist-overlays $"
+      );
+
+      // Reset all overlays to ensure no stuck ones if style changes
+      overlays.querySelectorAll("*").forEach((div) => {
+        if (div.getAttribute("data-name") != null) {
+          div.style.display = "none";
+        }
+      });
+
+
+      const styleDiv = overlays.querySelector(`[id=${style}]`);
+      const listeningDiv = styleDiv.querySelector(`[id="listening"]`);
+      const processingDiv = styleDiv.querySelector(`[id="processing"]`);
+      const respondingDiv = styleDiv.querySelector(`[id="responding"]`);
+
+      const divs = { "listening": listeningDiv, "processing": processingDiv, "responding": respondingDiv };
+
+      if (state in divs && divs[state] != null) {
+        styleDiv.style.display = "block";
+      } else {
+        styleDiv.style.display = "none";
+      }
+
+
+      Object.entries(divs).forEach(([id, div]) => {
+        if (div != null) {
+          if (id == state) {
+            div.classList.add("active");
+            div.style.display = "block";
+          } else {
+            div.classList.remove("active");
+            div.style.display = "none";
+          }
+        }
+      });
+
+    } catch (e) {
+      console.log("Error showing overlay for style: ", style, "with action: ", state, "\n", e);
+      return;
+    }
+  }
+}
+
+
+// Initialize when core web components are ready
+Promise.all([
+  customElements.whenDefined("home-assistant"),
+  customElements.whenDefined("hui-view"),
+  //customElements.whenDefined("button-card")
+]).then(() => {
+  console.info(
+    `%cVIEW ASSIST ${version} IS INSTALLED
+      %cView Assist Entity: ${localStorage.getItem("view_assist_sensor")}
+      Is Mimic Device: ${localStorage.getItem("view_assist_mimic_device")}`,
+      "color: green; font-weight: bold",
+      ""
+  );
+  window.viewassist = new ViewAssist().variables;
+});

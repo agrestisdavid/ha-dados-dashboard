@@ -1,0 +1,65 @@
+dados_heating_card:
+  default:
+    - entity: climate.heizung
+    - state_display_entity: sensor.heizung_aktuelle_temperatur_wohnzimmer
+    - img_cell_background: var(--olive)
+    - custom_icon: mdi:heat-pump-outline
+    - navigation_path: /dados-dashboard/heizung
+    - name: Heizung
+
+  card:
+    type: custom:decluttering-card
+    template: dados_expander_base
+    variables:
+      - entity: '[[entity]]'
+
+      - cards:
+          - type: tile
+            entity: '[[entity]]'
+            vertical: false
+            features:
+              - type: target-temperature
+              - type: custom:service-call
+                entries: []
+            features_position: bottom
+            card_mod:
+              style:
+                .: |
+                  ha-card {
+                    background: transparent !important;
+                    box-shadow: none !important;
+                    border: none !important;
+                    margin-top: 0px;
+                  }
+                  ha-card .content {
+                    display: none !important;
+                  }
+                hui-card-features $:
+                  hui-card-feature $:
+                    hui-alarm-modes-card-feature $:
+                      ha-control-select $: |
+                        .container {
+                          background-color: rgba(var(--contrast2-rgb), 1) !important;
+                          border-radius: 13px !important;
+                          padding: 0px !important;
+                        }
+
+      - title_card:
+          type: custom:button-card
+          template: dados_expander_title
+          variables:
+            entity: '[[entity]]'
+            state_display_entity: '[[state_display_entity]]'
+            img_cell_background: '[[img_cell_background]]'
+            custom_icon: '[[custom_icon]]'
+            navigation_path: '[[navigation_path]]'
+          icon: "[[[ return variables.custom_icon ]]]"
+          show_state: true
+          state_display: >-
+            [[[ return states[variables.state_display_entity]?.state || 'FEHLER'; ]]]
+          name: '[[name]]'
+          icon_tap_action:
+            action: navigate
+            navigation_path: "[[[ return variables.navigation_path ]]]"
+
+      - card_mod: '[[card_mod]]'

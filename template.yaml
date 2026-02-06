@@ -1,0 +1,305 @@
+- sensor:
+    - name: "Lichter eingeschaltet"
+      unique_id: sensor_lichter_eingeschaltet
+      icon: mdi:lightbulb-on
+      state: >
+        {% set licht = label_entities('licht') %}
+        {% set exclude = label_entities('no-dboard') %}
+        {% set ns = namespace(on=[]) %}
+
+        {% for eid in licht %}
+          {% if eid not in exclude %}
+            {% set s = states(eid) %}
+            {% if s not in ['unavailable', 'unknown', 'none'] %}
+              {# an wenn klassisch "on" oder numerischer Wert > 0 (Dimmer) #}
+              {% if s == 'on' or (s|float(0) > 0) %}
+                {% set ns.on = ns.on + [eid] %}
+              {% endif %}
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+
+        {{ ns.on | length }}
+      attributes:
+        lichter_an: >
+          {% set licht = label_entities('licht') %}
+          {% set exclude = label_entities('no-dboard') %}
+          {% set ns = namespace(names=[]) %}
+
+          {% for eid in licht %}
+            {% if eid not in exclude %}
+              {% set s = states(eid) %}
+              {% if s not in ['unavailable', 'unknown', 'none'] and (s == 'on' or (s|float(0) > 0)) %}
+                {% set name = state_attr(eid, 'friendly_name') or eid %}
+                {% set ns.names = ns.names + [name] %}
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+
+          {{ ns.names }}
+- sensor:
+    - name: "Lichter Erdgeschoss"
+      unique_id: sensor_lichter_eg
+      icon: mdi:lightbulb-group
+      state: >
+        {% set exclude = label_entities('no-dboard') %}
+        {% set eg_on = states.light
+          | selectattr('state','eq','on')
+          | selectattr('entity_id','in', floor_entities('Erdgeschoss'))
+          | rejectattr('entity_id','in', exclude)
+          | list %}
+        {{ eg_on | count }}
+      attributes:
+        lichter_an: >
+          {% set exclude = label_entities('no-dboard') %}
+          {% set eg_on = states.light
+            | selectattr('state','eq','on')
+            | selectattr('entity_id','in', floor_entities('Erdgeschoss'))
+            | rejectattr('entity_id','in', exclude)
+            | list %}
+          {{ eg_on | map(attribute='name') | list }}
+
+- sensor:
+    - name: "Lichter Obergeschoss"
+      unique_id: sensor_lichter_og
+      icon: mdi:lightbulb-group
+      state: >
+        {% set og = states.light
+            | selectattr('state','eq','on')
+            | selectattr('entity_id','in', floor_entities('Obergeschoss'))
+            | list %}
+        {{ og | count }}
+      attributes:
+        lichter_an: >
+          {% set og = states.light
+              | selectattr('state','eq','on')
+              | selectattr('entity_id','in', floor_entities('Obergeschoss'))
+              | list %}
+          {{ og | map(attribute='name') | list }}
+- sensor:
+    - name: "Lichter Garten"
+      unique_id: sensor_lichter_garten
+      icon: mdi:outdoor-lamp
+      state: >
+        {% set exclude = label_entities('no-dboard') %}
+        {% set garten_on = states.light
+          | selectattr('state','eq','on')
+          | selectattr('entity_id','in', area_entities('Garten'))
+          | rejectattr('entity_id','in', exclude)
+          | list %}
+        {{ garten_on | count }}
+      attributes:
+        lichter_an: >
+          {% set exclude = label_entities('no-dboard') %}
+          {% set garten_on = states.light
+            | selectattr('state','eq','on')
+            | selectattr('entity_id','in', area_entities('Garten'))
+            | rejectattr('entity_id','in', exclude)
+            | list %}
+          {{ garten_on | map(attribute='name') | list }}
+
+- sensor:
+    - name: "Rollos offen"
+      unique_id: rollos_offen
+      icon: mdi:blinds-open
+      state: >
+        {% set rollos = label_entities('rollo') %}
+        {% set exclude = label_entities('no-dboard') %}
+        {% set ns = namespace(open=[]) %}
+
+        {% for eid in rollos %}
+          {% if eid not in exclude %}
+            {% set s = states(eid) %}
+            {% set pos = state_attr(eid, 'current_position') %}
+            {% set is_closed = state_attr(eid, 'is_closed') %}
+            {% if s not in ['unavailable', 'unknown', 'none'] %}
+              {% if (pos is number and pos > 0)
+                    or (s in ['open', 'opening', 'closing'])
+                    or (is_closed is boolean and not is_closed) %}
+                {% set ns.open = ns.open + [eid] %}
+              {% endif %}
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+
+        {{ ns.open | length }}
+      attributes:
+        rollos_offen: >
+          {% set rollos = label_entities('rollo') %}
+          {% set exclude = label_entities('no-dboard') %}
+          {% set ns = namespace(names=[]) %}
+
+          {% for eid in rollos %}
+            {% if eid not in exclude %}
+              {% set s = states(eid) %}
+              {% set pos = state_attr(eid, 'current_position') %}
+              {% set is_closed = state_attr(eid, 'is_closed') %}
+              {% if s not in ['unavailable', 'unknown', 'none'] %}
+                {% if (pos is number and pos > 0)
+                      or (s in ['open', 'opening', 'closing'])
+                      or (is_closed is boolean and not is_closed) %}
+                  {% set name = state_attr(eid, 'friendly_name') or eid %}
+                  {% set ns.names = ns.names + [name] %}
+                {% endif %}
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+
+          {{ ns.names }}
+
+- sensor:
+    - name: "Robobert Aktueller Raum"
+      unique_id: robobert_aktueller_raum_enum
+      state: >
+        {% set rid = states('vacuum.roborock_qrevo_curv_series') | int(0) %}
+
+        {% if rid == 1 %} Küche
+        {% elif rid == 2 %} Esszimmer
+        {% elif rid == 3 %} Büro
+        {% elif rid == 4 %} Wohnzimmer
+        {% elif rid == 5 %} Gästezimmer
+        {% elif rid == 6 %} Gästebad
+        {% elif rid == 7 %} Eingang
+        {% elif rid == 8 %} Flur
+        {% else %} Unbekannt
+        {% endif %}
+
+- sensor:
+    - name: "Fenster offen"
+      unique_id: fenster_offen
+      icon: mdi:window-open-variant
+      state: >
+        {% set fenster = label_entities('fenster') %}
+        {% set exclude = label_entities('no-dboard') %}
+        {% set ns = namespace(open=[]) %}
+
+        {% for eid in fenster %}
+          {% if eid not in exclude %}
+            {% set s = states(eid) %}
+            {% if s not in ['unavailable', 'unknown', 'none'] %}
+              {% if s in ['on', 'open'] %}
+                {% set ns.open = ns.open + [eid] %}
+              {% endif %}
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+
+        {{ ns.open | length }}
+      attributes:
+        fenster_offen: >
+          {% set fenster = label_entities('fenster') %}
+          {% set exclude = label_entities('no-dboard') %}
+          {% set ns = namespace(names=[]) %}
+
+          {% for eid in fenster %}
+            {% if eid not in exclude %}
+              {% set s = states(eid) %}
+              {% if s not in ['unavailable', 'unknown', 'none'] and s in ['on', 'open'] %}
+                {% set name = state_attr(eid, 'friendly_name') or eid %}
+                {% set ns.names = ns.names + [name] %}
+              {% endif %}
+            {% endif %}
+          {% endfor %}
+
+          {{ ns.names }}
+
+- sensor:
+    - name: "Probleme (Count)"
+      unique_id: probleme_count
+      icon: mdi:alert-circle-outline
+      state: >
+        {% set rules = [
+          {'id': 'sensor.backofen_betriebszustand', 'bad': ['error', 'actionrequired']},
+          {'id': 'sensor.geschirrspuler_betriebszustand', 'bad': ['error', 'actionrequired']},
+          {'id': 'sensor.ofen_betriebszustand', 'bad': ['error', 'actionrequired']},
+          {'id': 'sensor.geschirrspuler_klarspuler', 'bad': ['empty', 'nearly_empty']},
+          {'id': 'sensor.geschirrspuler_salz', 'bad': ['empty', 'nearly_empty']},
+          {'id': 'sensor.roborock_qrevo_curv_series_status', 'bad': ['charger_disconnected', 'charging_problem', 'error']},
+
+          {'id': 'sensor.roborock_qrevo_curv_series_dock_dock_fehler', 'bad': [
+            'duct_blockage',
+            'water_empty',
+            'waste_water_tank_full',
+            'maintenance_brush_jammed',
+            'dirty_tank_latch_open',
+            'no_dustbin',
+            'cleaning_tank_full_or_blocked'
+          ]},
+
+          {'id': 'sensor.waschmaschine', 'bad': ['failure', 'program_interrupted', 'service']},
+
+          {'id': 'binary_sensor.geschirrspuler_aquastop_aufgetreten', 'bad': ['on']},
+          {'id': 'binary_sensor.geschirrspuler_maschinenreinigung', 'bad': ['on']},
+          {'id': 'binary_sensor.roborock_qrevo_curv_series_wasserknappheit', 'bad': ['on']},
+          {'id': 'binary_sensor.waschmaschine_problem', 'bad': ['on']}
+        ] %}
+
+        {% set ns = namespace(count=0) %}
+        {% for r in rules %}
+          {% if states(r.id) in r.bad %}
+            {% set ns.count = ns.count + 1 %}
+          {% endif %}
+        {% endfor %}
+        {{ ns.count }}
+      attributes:
+        matching_entities: >
+          {% set rules = [
+            {'id': 'sensor.backofen_betriebszustand', 'bad': ['error', 'actionrequired']},
+            {'id': 'sensor.geschirrspuler_betriebszustand', 'bad': ['error', 'actionrequired']},
+            {'id': 'sensor.ofen_betriebszustand', 'bad': ['error', 'actionrequired']},
+            {'id': 'sensor.geschirrspuler_klarspuler', 'bad': ['empty', 'nearly_empty']},
+            {'id': 'sensor.geschirrspuler_salz', 'bad': ['empty', 'nearly_empty']},
+            {'id': 'sensor.roborock_qrevo_curv_series_status', 'bad': ['charger_disconnected', 'charging_problem', 'error']},
+
+            {'id': 'sensor.roborock_qrevo_curv_series_dock_dock_fehler', 'bad': [
+              'duct_blockage',
+              'water_empty',
+              'waste_water_tank_full',
+              'maintenance_brush_jammed',
+              'dirty_tank_latch_open',
+              'no_dustbin',
+              'cleaning_tank_full_or_blocked'
+            ]},
+
+            {'id': 'sensor.waschmaschine', 'bad': ['failure', 'program_interrupted', 'service']},
+
+            {'id': 'binary_sensor.geschirrspuler_aquastop_aufgetreten', 'bad': ['on']},
+            {'id': 'binary_sensor.geschirrspuler_maschinenreinigung', 'bad': ['on']},
+            {'id': 'binary_sensor.roborock_qrevo_curv_series_wasserknappheit', 'bad': ['on']},
+            {'id': 'binary_sensor.waschmaschine_problem', 'bad': ['on']}
+          ] %}
+
+          {% set hits = [] %}
+          {% for r in rules %}
+            {% set st = states(r.id) %}
+            {% if st in r.bad %}
+              {% set hits = hits + [r.id ~ '=' ~ st] %}
+            {% endif %}
+          {% endfor %}
+          {{ hits }}
+
+- sensor:
+    - name: "Dado Präsenz Anzeige"
+      unique_id: dado_presence_display
+      state: >
+        {% set dt = states('device_tracker.dado_2') %}
+        {% if dt in ['home','zuhause','Zuhause'] %}
+          {{ states('sensor.dado_iphone_bt_presense_area') }}
+        {% else %}
+          {{ dt }}
+        {% endif %}
+      attributes:
+        entity_picture: /local/bilder/dado/peanut.png
+
+- sensor:
+    - name: "Aktive Musik Räume"
+      unique_id: aktive_musik_raume
+      icon: mdi:music
+      state: >
+        {% set players = [
+          ('Küche', 'media_player.vaca_kuche_media_player'),
+          ('Büro', 'media_player.buro'),
+          ('Esszimmer', 'media_player.esszimmer')
+        ] %}
+        {% set active = players | selectattr('1', 'is_state', 'playing') | map(attribute='0') | list %}
+        {{ active | join(', ') if active else 'Keine Wiedergabe' }}

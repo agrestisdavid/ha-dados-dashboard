@@ -1,0 +1,39 @@
+dados_button:
+  template: dados_base
+  variables:
+    entity: null
+    state_display_entity: null
+    icon_on: mdi:cog
+    icon_off: mdi:cog-outline
+    name: ""
+    img_cell_background:
+  entity: "[[[ return variables.entity ]]]"
+  name: |
+    [[[
+      if (variables.name) return variables.name;
+      if (variables.entity) return states[variables.entity]?.attributes?.friendly_name || "Set Entity";
+      return "Set Entity";
+    ]]]
+  icon: "[[[ return variables.icon_on ]]]"
+  styles:
+    grid:
+      - grid-template-columns: 55px 1fr 1fr
+      - grid-template-rows: min-content 1fr
+      - grid-template-areas: "'i n toggle' 'i s toggle'"
+  state:
+    - value: "off"
+      icon: "[[[ return variables.icon_off ]]]"
+      styles:
+        icon:
+          - color: var(--contrast16)
+        img_cell:
+          - background: var(--contrast3)
+          - box-shadow: none
+  icon_tap_action:
+    action: toggle
+  tap_action:
+    action: fire-dom-event
+    expander-card:
+      data:
+        expander-card-id: "[[[ return variables.entity ]]]"
+        action: toggle

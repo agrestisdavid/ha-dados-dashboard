@@ -1,0 +1,9 @@
+
+hide_header: true
+hide_sidebar: true
+hide_dialog_header_breadcrumb_navigation: true
+hide_dialog_header_action_items: true
+hide_dialog_light_settings_actions: true
+hide_dialog_update_actions: true
+hide_dialog_attributes: true
+hide_dialog_light_color_actions: true

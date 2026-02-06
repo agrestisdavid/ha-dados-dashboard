@@ -1,0 +1,51 @@
+dados_automation_decription:
+  variables:
+    description: test
+    entity: sensor.dummy
+    expander_id: test
+
+  entity: "[[[ return variables.entity ]]]"
+  show_name: false
+  show_state: true
+  show_icon: false
+
+  state_display: "[[[ return variables.description ]]]"
+
+  tap_action:
+    action: fire-dom-event
+    expander-card:
+      data:
+        expander-card-id: "[[[ return variables.expander_id ]]]"
+        action: toggle
+
+  styles:
+    card:
+      - padding: 0px 8px 16px 8px
+      - border-radius: 6px
+      - background-color: transparent
+    grid:
+      - grid-template-areas: |
+          "s"
+      - grid-template-columns: 1fr
+    state:
+      - justify-self: start
+      - align-self: start
+      - font-size: 14px
+      - font-weight: 400
+      - font-family: Roboto
+      - letter-spacing: 0.6px
+      - color: var(--contrast10)
+      - padding-left: 10px
+      - padding-bottom: 5px
+      - margin-top: "-15px"
+      - white-space: pre-line
+      - line-height: 1.2
+      - text-align: start
+
+  card_mod:
+    style: |
+      ha-card {
+        border-radius: 36px !important;
+        overflow: hidden !important;
+        margin-top: 0px !important;
+      }

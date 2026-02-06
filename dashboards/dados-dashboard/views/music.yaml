@@ -1,0 +1,14 @@
+title: music2
+type: masonry
+path: music2
+cards:
+  - type: vertical-stack
+    cards:
+      - type: custom:navbar-card
+        template: main
+      - type: custom:addon-iframe-card
+        url: https://mass.jovanovic.app/?frameless=true#/home
+        aspect_ratio: 160%
+    grid_options:
+      columns: full
+subview: true

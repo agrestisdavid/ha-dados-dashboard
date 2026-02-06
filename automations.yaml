@@ -1,0 +1,2300 @@
+- id: '1763046160907'
+  alias: 'Weihnachtsbaum Toggle '
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - binary_sensor.weihnachtsbaum_knx
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: state
+        entity_id: binary_sensor.weihnachtsbaum_knx
+        state:
+        - 'off'
+      sequence:
+      - action: light.turn_off
+        metadata: {}
+        data: {}
+        target:
+          entity_id:
+          - light.kommode_wohnzimmer
+    - conditions:
+      - condition: state
+        entity_id: binary_sensor.weihnachtsbaum_knx
+        state:
+        - 'on'
+      sequence:
+      - action: light.turn_on
+        metadata: {}
+        data: {}
+        target:
+          entity_id:
+          - light.kommode_wohnzimmer
+  mode: single
+- id: '1763250228312'
+  alias: Geschirrspüler Fertig - Notify
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - sensor.geschirrspuler_betriebszustand_2
+    from:
+    - run
+    to:
+    - finished
+  conditions: []
+  actions:
+  - action: timer.finish
+    metadata: {}
+    data: {}
+    target:
+      entity_id: timer.geschirrspuler
+  - if:
+    - condition: state
+      entity_id: person.dado
+      state:
+      - home
+    then:
+    - action: notify.mobile_app_dado
+      metadata: {}
+      data:
+        message: Geschirrspüler ist fertig
+        title: Geschirrspüler
+  - if:
+    - condition: state
+      state:
+      - home
+      entity_id: person.feri
+    then:
+    - action: notify.mobile_app_ferahnur_iphone
+      metadata: {}
+      data:
+        message: Geschirrspüler ist fertig
+        title: Geschirrspüler
+  - action: media_player.volume_set
+    metadata: {}
+    data:
+      volume_level: 0.3
+    target:
+      device_id: be44e315f878a810a98fb3b6ff630580
+  - action: media_player.volume_set
+    metadata: {}
+    data:
+      volume_level: 0.2
+    target:
+      entity_id: media_player.sonos_symfonisk
+  - parallel:
+    - action: tts.speak
+      metadata: {}
+      data:
+        cache: true
+        media_player_entity_id: media_player.homepod_mini
+        message: Der Geschirrspüler ist fertig!
+        options:
+          voice: cgSgspJ2msm6clMCkdW9
+      enabled: true
+      target:
+        entity_id: tts.elevenlabs_text_zu_sprache
+    - action: tts.speak
+      metadata: {}
+      data:
+        cache: true
+        media_player_entity_id: media_player.sonos_symfonisk
+        message: Der Geschirrspüler ist fertig!
+        options:
+          voice: cgSgspJ2msm6clMCkdW9
+      enabled: true
+      target:
+        entity_id: tts.elevenlabs_text_zu_sprache
+  mode: single
+- id: '1763280769794'
+  alias: Notify - Waschmaschine beendet
+  description: ''
+  triggers:
+  - type: duration
+    device_id: 0ef837119e9f8dde2d1811514d537b8b
+    entity_id: ead5625cf6439456143290cbcb8bb43d
+    domain: sensor
+    trigger: device
+    below: 1
+  conditions: []
+  actions:
+  - action: notify.mobile_app_dado
+    metadata: {}
+    data:
+      message: Waschmaschine ist fertig
+      title: Waschmaschine
+  - action: notify.mobile_app_ferahnur_iphone
+    metadata: {}
+    data:
+      message: Waschmaschine ist fertig
+      title: Waschmaschine
+    enabled: true
+  - action: media_player.volume_set
+    metadata: {}
+    data:
+      volume_level: 1
+    target:
+      entity_id:
+      - media_player.homepod_mini
+    enabled: false
+  - action: media_player.volume_set
+    metadata: {}
+    data:
+      volume_level: 0.5
+    target:
+      entity_id:
+      - media_player.lautsprecher
+  - action: tts.speak
+    metadata: {}
+    data:
+      cache: true
+      media_player_entity_id: media_player.homepod_mini
+      options:
+        voice: cgSgspJ2msm6clMCkdW9
+      message: Die Waschmaschine ist fertig! Bewege deinen Arsch hoch und räume die
+        Wäsche raus!
+    enabled: false
+    target:
+      entity_id: tts.elevenlabs_text_zu_sprache
+  - action: tts.speak
+    metadata: {}
+    data:
+      cache: true
+      media_player_entity_id: media_player.lautsprecher
+      options:
+        voice: cgSgspJ2msm6clMCkdW9
+      message: Die Waschmaschine ist fertig!
+    enabled: true
+    target:
+      entity_id: tts.elevenlabs_text_zu_sprache
+  mode: single
+- id: '1763641791083'
+  alias: Wohnzimmer Kommode Schalten über KNX
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - binary_sensor.wohnzimmer_kommode_knx_schalten
+    from:
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: state
+        entity_id: binary_sensor.wohnzimmer_kommode_knx_schalten
+        state:
+        - 'off'
+      sequence:
+      - action: light.turn_off
+        metadata: {}
+        data: {}
+        target:
+          entity_id:
+          - light.kommode_wohnzimmer
+    - conditions:
+      - condition: state
+        entity_id: binary_sensor.wohnzimmer_kommode_knx_schalten
+        state:
+        - 'on'
+      sequence:
+      - action: light.turn_on
+        metadata: {}
+        data:
+          color_temp_kelvin: 2203
+          brightness_pct: 100
+        target:
+          entity_id:
+          - light.kommode_wohnzimmer
+  mode: restart
+- id: '1763659613712'
+  alias: Esszimmer Deckenlicht Schalten über KNX
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - binary_sensor.deckenlicht_esszimmer
+    from:
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: state
+        entity_id: binary_sensor.deckenlicht_esszimmer
+        state:
+        - 'off'
+      sequence:
+      - action: light.turn_off
+        metadata: {}
+        data: {}
+        target:
+          entity_id:
+          - light.essen_deckenlicht
+    - conditions:
+      - condition: state
+        entity_id: binary_sensor.deckenlicht_esszimmer
+        state:
+        - 'on'
+      sequence:
+      - action: light.turn_on
+        metadata: {}
+        data:
+          brightness_pct: 100
+        target:
+          entity_id: light.essen_deckenlicht
+  mode: restart
+- id: '1763687521640'
+  alias: Ofen – Programm starten
+  description: ''
+  triggers:
+  - entity_id: input_button.ofen_start
+    to: 'on'
+    trigger: state
+  actions:
+  - target:
+      entity_id: select.backofen_aktives_programm
+    data:
+      option: '{{ states(''select.backofen_ausgewahltes_programm'') }}'
+    action: select.select_option
+  mode: single
+- id: '1763843193195'
+  alias: Müllabfuhr – Erinnerung für morgen
+  description: ''
+  triggers:
+  - trigger: time
+    at: 04:30:00
+    weekday:
+    - mon
+    - tue
+    - wed
+    - thu
+    - fri
+    - sat
+    - sun
+  - trigger: time
+    at: '19:15:00'
+    weekday:
+    - mon
+    - tue
+    - wed
+    - thu
+    - fri
+    - sat
+    - sun
+  conditions:
+  - condition: template
+    value_template: "{{\n  states('sensor.restmull') | int(0) == 1 or\n  states('sensor.gelber_sack')
+      | int(0) == 1 or\n  states('sensor.biomull') | int(0) == 1 or\n  states('sensor.papier')
+      | int(0) == 1\n}}\n"
+  actions:
+  - action: notify.mobile_app_dado
+    metadata: {}
+    data:
+      title: ♻️ Müllabfuhr morgen
+      message: "{% set heute = [] %}\n{% set morgen = [] %}\n\n{# Restmüll #}\n{%
+        set s = states('sensor.restmull') %}\n{% if s in ['0','1'] %}\n  {% if s |
+        int == 0 %}\n    {% set heute = heute + ['Restmüll'] %}\n  {% elif s | int
+        == 1 %}\n    {% set morgen = morgen + ['Restmüll'] %}\n  {% endif %}\n{% endif
+        %}\n\n{# Gelber Sack #}\n{% set s = states('sensor.gelber_sack') %}\n{% if
+        s in ['0','1'] %}\n  {% if s | int == 0 %}\n    {% set heute = heute + ['Gelber
+        Sack'] %}\n  {% elif s | int == 1 %}\n    {% set morgen = morgen + ['Gelber
+        Sack'] %}\n  {% endif %}\n{% endif %}\n\n{# Biomüll #}\n{% set s = states('sensor.biomull')
+        %}\n{% if s in ['0','1'] %}\n  {% if s | int == 0 %}\n    {% set heute = heute
+        + ['Biomüll'] %}\n  {% elif s | int == 1 %}\n    {% set morgen = morgen +
+        ['Biomüll'] %}\n  {% endif %}\n{% endif %}\n\n{# Papier #}\n{% set s = states('sensor.papier')
+        %}\n{% if s in ['0','1'] %}\n  {% if s | int == 0 %}\n    {% set heute = heute
+        + ['Papier'] %}\n  {% elif s | int == 1 %}\n    {% set morgen = morgen + ['Papier']
+        %}\n  {% endif %}\n{% endif %}\n\n{% if heute | length == 0 and morgen | length
+        == 0 %}\n  Keine Müllabfuhr heute oder morgen.\n{% else %}\n  {%- if heute
+        | length > 0 -%}\n    Heute wird {{ heute | join(', ') }} abgeholt.\n  {%-
+        endif -%}\n\n  {%- if heute | length > 0 and morgen | length > 0 -%}\n    <br>\n
+        \ {%- endif -%}\n\n  {%- if morgen | length > 0 -%}\n    Morgen wird {{ morgen
+        | join(', ') }} abgeholt.\n  {%- endif -%}\n{% endif %}\n"
+  - action: notify.mobile_app_ferahnur_iphone
+    metadata: {}
+    data:
+      title: ♻️ Müllabfuhr morgen
+      message: "{% set heute = [] %}\n{% set morgen = [] %}\n\n{% set s = states('sensor.restmull')
+        %}\n{% if s in ['0','1'] %}\n  {% if s | int == 0 %}\n    {% set heute = heute
+        + ['Restmüll'] %}\n  {% elif s | int == 1 %}\n    {% set morgen = morgen +
+        ['Restmüll'] %}\n  {% endif %}\n{% endif %}\n\n{% set s = states('sensor.gelber_sack')
+        %}\n{% if s in ['0','1'] %}\n  {% if s | int == 0 %}\n    {% set heute = heute
+        + ['Gelber Sack'] %}\n  {% elif s | int == 1 %}\n    {% set morgen = morgen
+        + ['Gelber Sack'] %}\n  {% endif %}\n{% endif %}\n\n{% set s = states('sensor.biomull')
+        %}\n{% if s in ['0','1'] %}\n  {% if s | int == 0 %}\n    {% set heute = heute
+        + ['Biomüll'] %}\n  {% elif s | int == 1 %}\n    {% set morgen = morgen +
+        ['Biomüll'] %}\n  {% endif %}\n{% endif %}\n\n{% set s = states('sensor.papier')
+        %}\n{% if s in ['0','1'] %}\n  {% if s | int == 0 %}\n    {% set heute = heute
+        + ['Papier'] %}\n  {% elif s | int == 1 %}\n    {% set morgen = morgen + ['Papier']
+        %}\n  {% endif %}\n{% endif %}\n\n{% if heute | length == 0 and morgen | length
+        == 0 %}\n  Keine Müllabfuhr heute oder morgen.\n{% else %}\n  {%- if heute
+        | length > 0 -%}\n    Heute wird {{ heute | join(', ') }} abgeholt.\n  {%-
+        endif -%}\n\n  {%- if heute | length > 0 and morgen | length > 0 -%}\n    <br>\n
+        \ {%- endif -%}\n\n  {%- if morgen | length > 0 -%}\n    Morgen wird {{ morgen
+        | join(', ') }} abgeholt.\n  {%- endif -%}\n{% endif %}\n"
+  mode: single
+- id: '1763896995180'
+  alias: Feri - Arbeit
+  description: ''
+  triggers:
+  - platform: state
+    entity_id:
+    - person.feri
+    to:
+    - Arbeit
+  actions:
+  - data:
+      title: I love you!
+      message: Viel Kraft für die Arbeit Bebo!
+      data:
+        image: /local/bilder/peanut/peanut_002.jpeg
+    action: notify.mobile_app_ferahnur_iphone
+  - data:
+      title: Feri Arbeit
+      message: Feri ist gerade in der Arbeit angekommen.
+      data:
+        image: /local/bilder/peanut/peanut_002.jpeg
+    action: notify.mobile_app_dado
+  mode: single
+  variables:
+    _cafe_metadata:
+      version: 1
+      strategy: native
+      nodes:
+        trigger_1770165484136_0:
+          x: 12
+          y: 12
+        action_1770165484137_1:
+          x: 312
+          y: 12
+        action_1770165484137_2:
+          x: 612
+          y: 12
+      graph_id: f452c506-bcac-4148-b1d6-9b666b0e7a16
+      graph_version: 1
+- id: '1764007038252'
+  alias: Wetterfrage beantworten und Fenster öffnen
+  description: ''
+  triggers:
+  - trigger: conversation
+    command:
+    - (wie ist das wetter)
+    - (wie warm ist es draußen)
+    - (wie ist das wetter draußen)
+    - (wie ist das wetter heute)
+    - wie wird das wetter heute
+  conditions: []
+  actions:
+  - set_conversation_response: "{% set t = states('sensor.zuhause_outdoor_temperature')
+      %}\n{% set cond = state_translated('weather.forecast_home') %}\n\n{% if t in
+      ['unknown', 'unavailable'] %}\n  Die aktuelle Temperatur ist nicht verfügbar.\n{%
+      else %}\n  Aktuell sind es {{ t|round(0) }} Grad und {{ cond }}.\n{% endif %}\n"
+  mode: single
+- id: '1764854407724'
+  alias: Lichter eingeschaltet
+  description: ''
+  triggers:
+  - trigger: conversation
+    command:
+    - welche lichter sind eingeschaltet
+    - brennt irgendwo noch licht
+    - lichter eingeschaltet
+    - wo ist das licht an
+    - wo ist alles das licht an
+    - wo sind lichter eingeschaltet
+  conditions: []
+  actions:
+  - set_conversation_response: "\n          {% set eg_count = states('sensor.lichter_erdgeschoss')
+      | int(0) %}\n          {% set og_count = states('sensor.lichter_obergeschoss')
+      | int(0) %}\n          {% set ga_count = states('sensor.lichter_garten') | int(0)
+      %}\n\n          {% set eg_names = state_attr('sensor.lichter_erdgeschoss', 'lichter_an')
+      or [] %}\n          {% set og_names = state_attr('sensor.lichter_obergeschoss',
+      'lichter_an') or [] %}\n          {% set ga_names = state_attr('sensor.lichter_garten',
+      'lichter_an') or [] %}\n\n          {% set ns = namespace(lines=[]) %}\n\n          {#
+      Fall: Nirgends ein Licht an #}\n          {% if eg_count == 0 and og_count ==
+      0 and ga_count == 0 %}\n            {% set ns.lines = ns.lines + ['Es ist kein
+      Licht an.'] %}\n          {% else %}\n\n            {# Erdgeschoss #}\n            {%
+      if eg_count > 0 %}\n              {% if eg_count == 1 %}\n                {%
+      set ns.lines = ns.lines + [\n                  'Im Erdgeschoss ist das Licht
+      ' ~ eg_names[0] ~ ' eingeschaltet.'\n                ] %}\n              {%
+      else %}\n                {% set ns.lines = ns.lines + [\n                  'Im
+      Erdgeschoss sind ' ~ eg_count ~ ' Lichter eingeschaltet. Diese sind ' ~ (eg_names
+      | join(', ')) ~ '.'\n                ] %}\n              {% endif %}\n            {%
+      endif %}\n\n            {# Obergeschoss #}\n            {% if og_count > 0 %}\n
+      \             {% if og_count == 1 %}\n                {% set ns.lines = ns.lines
+      + [\n                  'Im Obergeschoss ist das Licht ' ~ og_names[0] ~ ' eingeschaltet.'\n
+      \               ] %}\n              {% else %}\n                {% set ns.lines
+      = ns.lines + [\n                  'Im Obergeschoss sind ' ~ og_count ~ ' Lichter
+      eingeschaltet. Diese sind ' ~ (og_names | join(', ')) ~ '.'\n                ]
+      %}\n              {% endif %}\n            {% endif %}\n\n            {# Garten
+      #}\n            {% if ga_count > 0 %}\n              {% if ga_count == 1 %}\n
+      \               {% set ns.lines = ns.lines + [\n                  'Im Garten
+      ist das Licht ' ~ ga_names[0] ~ ' eingeschaltet.'\n                ] %}\n              {%
+      else %}\n                {% set ns.lines = ns.lines + [\n                  'Im
+      Garten sind ' ~ ga_count ~ ' Lichter eingeschaltet. Diese sind ' ~ (ga_names
+      | join(', ')) ~ '.'\n                ] %}\n              {% endif %}\n            {%
+      endif %}\n\n          {% endif %}\n\n          {{ ns.lines | join(' ') }}\n"
+  mode: single
+- id: '1764856464749'
+  alias: Klarspüler Geschirrspüler leer
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - sensor.geschirrspuler_klarspuler
+    to:
+    - empty
+  conditions: []
+  actions:
+  - action: notify.mobile_app_dado
+    metadata: {}
+    data:
+      message: Klarspüler im Geschirrspüler ist leer!
+      title: Geschirrspüler
+  - action: notify.mobile_app_ferahnur_iphone
+    metadata: {}
+    data:
+      message: Klarspüler im Geschirrspüler ist leer!
+      title: Geschirrspüler
+  mode: single
+- id: '1764856614186'
+  alias: Klarspüler im Geschirrspüler fast leer
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - sensor.geschirrspuler_klarspuler
+    to:
+    - nearly_empty
+    from:
+    - full
+    id: voll
+  - trigger: state
+    entity_id:
+    - sensor.geschirrspuler_klarspuler
+    to:
+    - nearly_empty
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+    from:
+    - unavailable
+    id: nicht verfügbar
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id:
+        - voll
+      sequence:
+      - if:
+        - condition: state
+          entity_id: person.dado
+          state:
+          - home
+        then:
+        - action: notify.mobile_app_dado
+          metadata: {}
+          data:
+            message: Klarspüler im Geschirrspüler ist fast leer!
+            title: Geschirrspüler
+        else:
+        - wait_for_trigger:
+          - trigger: state
+            entity_id:
+            - person.dado
+            to:
+            - not_home
+            for:
+              hours: 0
+              minutes: 15
+              seconds: 0
+          timeout:
+            hours: 12
+            minutes: 0
+            seconds: 0
+            milliseconds: 0
+        - action: notify.mobile_app_dado
+          metadata: {}
+          data:
+            message: Klarspüler im Geschirrspüler ist fast leer!
+            title: Geschirrspüler
+  - action: notify.mobile_app_ferahnur_iphone
+    metadata: {}
+    data:
+      message: Klarspüler im Geschirrspüler ist fast leer!
+      title: Geschirrspüler
+    enabled: false
+  mode: single
+- id: '1764857480031'
+  alias: Salz Geschirrspüler leer
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - sensor.geschirrspuler_salz
+    to:
+    - empty
+  conditions: []
+  actions:
+  - action: notify.mobile_app_dado
+    metadata: {}
+    data:
+      message: Salz im Geschirrspüler ist leer!
+      title: Geschirrspüler
+  - action: notify.mobile_app_ferahnur_iphone
+    metadata: {}
+    data:
+      message: Salz im Geschirrspüler ist leer!
+      title: Geschirrspüler
+  mode: single
+- id: '1764857525048'
+  alias: Salz Geschirrspüler fast leer
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - sensor.geschirrspuler_salz
+    to:
+    - nearly_empty
+  conditions: []
+  actions:
+  - action: notify.mobile_app_dado
+    metadata: {}
+    data:
+      message: Salz im Geschirrspüler ist fast leer!
+      title: Geschirrspüler
+  - action: notify.mobile_app_ferahnur_iphone
+    metadata: {}
+    data:
+      message: Salz im Geschirrspüler ist fast leer!
+      title: Geschirrspüler
+  mode: single
+- id: '1764857837619'
+  alias: Geschirrspüler Fertig?
+  description: ''
+  triggers:
+  - trigger: conversation
+    command:
+    - wie lange braucht noch der geschirrspüler
+    - wann ist der geschirrspüler fertig
+    - wie lange dauert der geschirrspüler noch
+    - geschirrspüler zeit
+    - geschirrspüler restzeit
+    - geschirrspüler restlaufzeit
+  conditions: []
+  actions:
+  - set_conversation_response: "\n{% set zustand = states('sensor.geschirrspuler_betriebszustand')
+      %}\n{% set rest = states('sensor.geschirrspuler_verbleibende_programmlaufzeit')
+      | float(0) %}\n{% set door_state = states('binary_sensor.geschirrspuler_tur')
+      %}\n\n{# Timestamps für Logik \"fertig\" vs. \"war gar nicht an\" #}\n{% set
+      status_changed = states.sensor.geschirrspuler_betriebszustand.last_changed %}\n{%
+      set door_changed = states.binary_sensor.geschirrspuler_tur.last_changed %}\n{%
+      set status_ts = as_timestamp(status_changed) if status_changed is not none else
+      0 %}\n{% set door_ts = as_timestamp(door_changed) if door_changed is not none
+      else 0 %}\n\n{# 1) Läuft gerade -> Restlaufzeit in Stunden/Minuten #}\n{% if
+      zustand == 'run' and rest > 0 %}\n{% set total_min = (rest * 60) | round(0)
+      | int %}\n{% set hours = (total_min // 60) | int %}\n{% set mins = (total_min
+      % 60) | int %}\n\n{% if hours > 0 and mins > 0 %}\n  Der Geschirrspüler braucht
+      noch {{ hours }} Stunden {{ mins }} Minuten oder nur {{ total_min }} Minuten.\n{%
+      elif hours > 0 and mins == 0 %}\n  Der Geschirrspüler braucht noch {{ hours
+      }} Stunden oder nur {{ total_min }} Minuten.\n{% else %}\n  Der Geschirrspüler
+      braucht nur noch {{ total_min }} Minuten.\n{% endif %}\n\n{# 2) Fertig oder
+      bereit, Tür seitdem nicht geöffnet -> \"schon fertig\" #}\n{% elif zustand in
+      ['finished', 'ready'] and door_ts < status_ts %}\nDer Geschirrspüler ist schon
+      fertig.\n\n{# 3) Zustand ready, Tür war zwischendurch offen und ist jetzt wieder
+      zu -> \"war gar nicht an\" #}\n{% elif zustand == 'ready' and door_state ==
+      'off' and door_ts > status_ts %}\nDer Geschirrspüler war gar nicht an.\n\n{#
+      4) Zusatzfälle für andere Zustände, falls du sie brauchst #}\n{% elif zustand
+      == 'delayedstart' %}\nDer Geschirrspüler ist programmiert und startet später.\n{%
+      elif zustand == 'pause' %}\nDer Geschirrspüler ist gerade pausiert.\n{% elif
+      zustand == 'actionrequired' %}\nDer Geschirrspüler benötigt eine Aktion.\n{%
+      elif zustand == 'error' %}\nDer Geschirrspüler meldet einen Fehler.\n{% elif
+      zustand == 'aborting' %}\nDer Geschirrspüler bricht das Programm ab.\n{% else
+      %}\nDer Geschirrspüler ist ausgeschaltet oder bereit.\n{% endif %}"
+  mode: single
+- id: '1765555507935'
+  alias: 'Roborock: Räume (Multi) -> Segment Array'
+  description: ''
+  triggers:
+  - entity_id:
+    - input_boolean.saugen_buro
+    - input_boolean.saugen_gastezimmer
+    - input_boolean.saugen_esszimmer
+    - input_boolean.saugen_alles
+    - input_boolean.saugen_eingang
+    - input_boolean.saugen_flur
+    - input_boolean.saugen_gastebad
+    - input_boolean.saugen_kuche
+    - input_boolean.saugen_wohnzimmer
+    trigger: state
+    to:
+    - 'on'
+  actions:
+  - target:
+      entity_id: input_text.segment_eingabe
+    data:
+      value: "{% set segs = [] %}\n{% if is_state('input_boolean.saugen_kuche', 'on')
+        %}\n  {% set segs = segs + [1] %}\n{% endif %}\n{% if is_state('input_boolean.saugen_esszimmer',
+        'on') %}\n  {% set segs = segs + [2] %}\n{% endif %}\n{% if is_state('input_boolean.saugen_buro',
+        'on') %}\n  {% set segs = segs + [3] %}\n{% endif %}\n{% if is_state('input_boolean.saugen_wohnzimmer',
+        'on') %}\n  {% set segs = segs + [4] %}\n{% endif %}\n{% if is_state('input_boolean.saugen_gastezimmer',
+        'on') %}\n  {% set segs = segs + [5] %}\n{% endif %}\n{% if is_state('input_boolean.saugen_gastebad',
+        'on') %}\n  {% set segs = segs + [6] %}\n{% endif %}\n{% if is_state('input_boolean.saugen_eingang',
+        'on') %}\n  {% set segs = segs + [7] %}\n{% endif %}\n{% if is_state('input_boolean.saugen_flur',
+        'on') %}\n  {% set segs = segs + [8] %}\n{% endif %}\n{{ segs | tojson }}"
+    action: input_text.set_value
+  mode: restart
+- id: '1765557741787'
+  alias: 'Roborock: Raum Dropdown Single -> Segment Array'
+  description: ''
+  triggers:
+  - entity_id: input_select.raum_auswahlen
+    trigger: state
+  actions:
+  - target:
+      entity_id: input_text.segment_eingabe
+    data:
+      value: "{% set map = {\n  'Küche': 1,\n  'Esszimmer': 2,\n  'Büro': 3,\n  'Wohnzimmer':
+        4,\n  'Gästezimmer': 5,\n  'Gästebad': 6,\n  'Eingang': 7,\n  'Flur': 8,\n
+        \ 'Alles': [1,2,3,4,5,6,7,8]\n} %}\n\n{% set r = states('input_select.raum_auswahlen')
+        %}\n{% set v = map.get(r) %}\n\n{{ (v if v is sequence else [v]) if v is not
+        none else [] | tojson }}\n"
+    action: input_text.set_value
+  mode: single
+- id: '1765559956412'
+  alias: saugen_alles_ein
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - input_boolean.saugen_alles
+    to:
+    - 'on'
+  conditions: []
+  actions:
+  - action: input_boolean.turn_on
+    metadata: {}
+    target:
+      entity_id:
+      - input_boolean.saugen_buro
+      - input_boolean.saugen_gastezimmer
+      - input_boolean.saugen_esszimmer
+      - input_boolean.saugen_eingang
+      - input_boolean.saugen_flur
+      - input_boolean.saugen_gastebad
+      - input_boolean.saugen_kuche
+      - input_boolean.saugen_wohnzimmer
+    data: {}
+  mode: single
+- id: '1765560082106'
+  alias: saugen_alles_aus
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - input_boolean.saugen_buro
+    - input_boolean.saugen_gastezimmer
+    - input_boolean.saugen_esszimmer
+    - input_boolean.saugen_eingang
+    - input_boolean.saugen_flur
+    - input_boolean.saugen_gastebad
+    - input_boolean.saugen_kuche
+    - input_boolean.saugen_wohnzimmer
+    to:
+    - 'off'
+    id: einzelnd
+  - trigger: state
+    entity_id:
+    - input_boolean.saugen_alles
+    id: alles
+    to:
+    - 'off'
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id:
+        - alles
+      sequence:
+      - action: input_boolean.turn_off
+        metadata: {}
+        target:
+          entity_id:
+          - input_boolean.saugen_buro
+          - input_boolean.saugen_gastezimmer
+          - input_boolean.saugen_esszimmer
+          - input_boolean.saugen_eingang
+          - input_boolean.saugen_flur
+          - input_boolean.saugen_gastebad
+          - input_boolean.saugen_kuche
+          - input_boolean.saugen_wohnzimmer
+        data: {}
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 0
+          milliseconds: 500
+      - action: automation.trigger
+        metadata: {}
+        data:
+          skip_condition: true
+        target:
+          entity_id: automation.roborock_raume_multi_segment_array
+      - action: input_text.set_value
+        metadata: {}
+        target:
+          entity_id: input_text.segment_eingabe
+        data:
+          value: '[]'
+    - conditions:
+      - condition: trigger
+        id:
+        - einzelnd
+      sequence:
+      - action: input_boolean.turn_off
+        metadata: {}
+        data: {}
+        target:
+          entity_id: input_boolean.saugen_alles
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 0
+          milliseconds: 500
+      - action: automation.trigger
+        metadata: {}
+        data:
+          skip_condition: true
+        target:
+          entity_id: automation.roborock_raume_multi_segment_array
+  mode: single
+- id: '1765562700681'
+  alias: 'Robobert: Saugleistung aus Dropdown setzen'
+  description: ''
+  triggers:
+  - entity_id: input_select.robobert_saugleistung
+    trigger: state
+  actions:
+  - target:
+      entity_id: vacuum.roborock_qrevo_curv_series
+    data:
+      fan_speed: '{{ states(''input_select.robobert_saugleistung'') }}'
+    action: vacuum.set_fan_speed
+  mode: restart
+- id: '1766175113159'
+  alias: "\U0001F6A8 AI-Bewegungszusammenfassung (Eingangstür) – Live-Erkennung"
+  description: Erstellt eine kurze Zusammenfassung von Bewegungen an der Eingangstür
+    basierend auf Live-Videoanalyse. Bei Bewegung werden Personen und Aktivitäten
+    erkannt und als Benachrichtigung mit KI-Zusammenfassung ausgegeben.
+  use_blueprint:
+    path: valentinfrlch/event_summary.yaml
+    input:
+      camera_entities:
+      - camera.hauseingang
+      provider: 01KCW3JT98J5PCV2Q5NKV1YWJ9
+      notify_device:
+      - cb1e3ba8c10146a7872d930e73d6354c
+      preview_mode: Snapshot
+      analysis_mode: Snapshot
+      model: ministral-3:14b
+      tap_navigate: /lovelace/security
+      notification_sound: default
+      run_conditions:
+      - condition: state
+        entity_id: binary_sensor.hauseingang_all_occupancy
+        state:
+        - 'on'
+      motion_sensors:
+      - binary_sensor.hauseingang_all_occupancy
+      cooldown:
+        hours: 0
+        minutes: 1
+        seconds: 0
+      use_memory: false
+      message: 'Erstelle eine sehr kurze Zusammenfassung des Clips. Ignoriere Umgebung/Details.
+        Berichte nur: Bewegung und  Personen. Keine Frame-Liste. Das ist mein Eingang
+        zum Grundstück. Von oben kommt man, durch das Gartentor (grau) rein. Nach
+        unten geht es in den Garten. In der Mitte-Links geht man durch eine Türe ins
+        Haus rein, welche im geschlossenen zustand nicht sichtbar sein sollte. Rechts
+        ist die Mauer vom Nachbarn. Maximal  3 Sätze. Verwende keine Markdown-Formatierung
+        in deiner Aussage. Die Benachrichtigung geht an mein Handy. Sage nicht woher
+        du die Informationen hast.'
+      notification_delivery: Consolidated
+      notification_time: at {{ now().strftime("%H:%M") }}
+      notification_critical: true
+      max_tokens: 5000
+      file_path: /media/llmvision/snapshots_blueprint/{{ camera_file_path }}/last_motion.jpg
+      notification_channel: '{{ camera }} Snapshot'
+      tts_notification: false
+      notification_sticky: false
+      max_frames: 6
+      duration: 6
+- id: '1766748497120'
+  alias: Arming Timer
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - alarm_control_panel.alarmo
+    to:
+    - arming
+  - trigger: state
+    entity_id:
+    - alarm_control_panel.alarmo
+    to:
+    - pending
+  conditions: []
+  actions:
+  - action: timer.start
+    metadata: {}
+    target:
+      entity_id: timer.alarm_arming_countdown
+    data: {}
+  mode: restart
+- id: '1766912970041'
+  alias: "\U0001F6A8 Wasseralarm in der Waschküche und Gästebad auslösen"
+  description: Löst eine dringende Benachrichtigung auf allen registrierten Mobilgeräten
+    aus, wenn in der Waschküche oder im Gästebad Wasserleakage erkannt wird. Die Benachrichtigung
+    enthält einen kritischen Alarmton und wird mit hoher Priorität angezeigt.
+  triggers:
+  - trigger: state
+    entity_id:
+    - binary_sensor.wasser_sensor_waschkuche_water_leak
+    to:
+    - 'on'
+    id: waschküche
+    alias: Wasser in Waschküche
+  - trigger: state
+    entity_id:
+    - binary_sensor.wasser_sensor_gastebad_water_leak
+    to:
+    - 'on'
+    id: gästebad
+    alias: Wasser im Gästebad
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id:
+        - waschküche
+      sequence:
+      - parallel:
+        - data:
+            title: "\U0001F6A8 WASSERALARM"
+            message: "WASSER IN DER WASCHKÜCHE\U0001F4A7\U0001F4A7\U0001F4A7"
+            data:
+              ttl: 0
+              priority: high
+              push:
+                sound:
+                  name: default
+                  critical: 1
+                  volume: 1
+          action: notify.mobile_app_dado
+        - data:
+            title: "\U0001F6A8 WASSERALARM"
+            message: "WASSER IN DER WASCHKÜCHE\U0001F4A7\U0001F4A7\U0001F4A7"
+            data:
+              ttl: 0
+              priority: high
+              push:
+                sound:
+                  name: default
+                  critical: 1
+                  volume: 1
+          action: notify.mobile_app_ferahnur_iphone
+          enabled: true
+    - conditions:
+      - condition: trigger
+        id:
+        - gästebad
+      sequence:
+      - parallel:
+        - data:
+            title: "\U0001F6A8 WASSERALARM"
+            message: "WASSER IM GÄSTEBAD\U0001F4A7\U0001F4A7\U0001F4A7"
+            data:
+              ttl: 0
+              priority: high
+              push:
+                sound:
+                  name: default
+                  critical: 1
+                  volume: 1
+          action: notify.mobile_app_dado
+        - data:
+            title: "\U0001F6A8 WASSERALARM"
+            message: "WASSER IM GÄSTEBAD\U0001F4A7\U0001F4A7\U0001F4A7"
+            data:
+              ttl: 0
+              priority: high
+              push:
+                sound:
+                  name: default
+                  critical: 1
+                  volume: 1
+          action: notify.mobile_app_ferahnur_iphone
+          enabled: true
+  mode: single
+- id: '1766999894277'
+  alias: Lichter bei Sonnenaufgang/-untergang anpassen
+  description: Schaltet 30 Minuten nach Sonnenuntergang bestimmte Innen- und Außenlichter
+    ein und schaltet sie bei Sonnenaufgang wieder aus.
+  triggers:
+  - id: untergang
+    event: sunset
+    offset: 00:30:00
+    trigger: sun
+  - id: aufgang
+    event: sunrise
+    trigger: sun
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: untergang
+      sequence:
+      - target:
+          entity_id: light.kommode_wohnzimmer
+        data:
+          brightness_pct: 70
+          color_temp_kelvin: 2208
+        action: light.turn_on
+      - target:
+          entity_id:
+          - light.deckenlicht_gaupe
+          - light.insel_kuche
+        data:
+          brightness_pct: 50
+          color_temp_kelvin: 2208
+        action: light.turn_on
+      - target:
+          entity_id: light.wandleuchte_treppenhaus
+        data:
+          brightness_pct: 70
+          color_temp_kelvin: 2208
+        action: light.turn_on
+      - target:
+          entity_id: light.aussenlicht_eingang
+        action: light.turn_on
+    - conditions:
+      - condition: trigger
+        id: aufgang
+      sequence:
+      - target:
+          entity_id:
+          - light.wandleuchte_treppenhaus
+          - light.deckenlicht_gaupe
+          - light.insel_kuche
+          - light.kommode_wohnzimmer
+          - light.aussenlicht_eingang
+        action: light.turn_off
+  mode: single
+- id: '1767122253503'
+  alias: Kalender anzeigen
+  description: Zeigt den ausgewählten Kalender (Dienstplan, Mom oder Arbeit) oder
+    alle Kalender an, basierend auf der Sprachsteuerung.
+  use_blueprint:
+    path: dinki/blueprint-viewcalendar.yaml
+    input:
+      command: '(Zeige | zeig) [den] [{Kalender}] '
+      calendars:
+        all:
+        - calendar.dienstplan_2
+        dienstplan:
+        - calendar.dienstplan_2
+        mull:
+        - calendar.nickelsdorf
+      response_single: Hier der {{trigger.slots.calendar}} Kalender
+      response_all: Zeige alle Kalender an
+- id: '1767124171003'
+  alias: Weckalarm – Erinnerungen für geplante Timer/Alarme
+  description: Erinnert an geplante Timer und Alarme, die in den nächsten 30 Minuten
+    ausgelöst werden sollen.
+  triggers:
+  - trigger: conversation
+    id: timer
+    command:
+    - set [a] timer for {when}
+    - set [a] {when} timer
+    - (set|start) [a | an] {name} timer for {when}
+    - (setze|starte) [einen|den] timer (auf|für) {when}
+    - (setze|starte) [einen|den] {when} timer
+    - (setze|starte) [einen|den] {name} timer (auf|für) {when}
+  - trigger: conversation
+    id: reminder
+    command:
+    - (remind me | set a reminder) to {name} (at | in) {when}
+    - remind me (at | in) {when} to {name}
+    - set a reminder (at | for) {when} to {name}
+    - set a reminder for {when}
+    - (erinnere mich|setze eine erinnerung) (um|in) {when} (an|dass|zu) {name}
+    - erinnere mich (um|in) {when} {name}
+    - setze eine erinnerung (um|für|in) {when}
+    - setze eine erinnerung (um|für|in) {when} (an|für|zu) {name}
+  - trigger: conversation
+    id: alarm
+    command:
+    - set [an] alarm for {when}
+    - set a {name} alarm for {when}
+    - (setze|stelle) [einen|den] wecker (auf|für) {when}
+    - (setze|stelle) [einen|den] {name} wecker (auf|für) {when}
+  - trigger: conversation
+    id: listtimers
+    command:
+    - list [me] my (timers | alarms | reminders)
+    - liste [mir] meine (timer|wecker|alarme|erinnerungen)
+    - zeig [mir] meine (timer|wecker|alarme|erinnerungen) (als liste)
+  - trigger: conversation
+    id: showtimers
+    command:
+    - show [me] my (timers | alarms | reminders)
+    - zeig [mir] meine (timer|wecker|alarme|erinnerungen)
+    - öffne meine (timer|wecker|alarme|erinnerungen)
+  - trigger: conversation
+    id: snooze_voice
+    command:
+    - snooze [my] (alarm | timer | reminder)
+    - (schlummern|snooze) [meinen] (wecker|alarm|timer|erinnerung)
+  - trigger: conversation
+    id: timeremaining
+    command:
+    - how much time [is] left on my (alarm | timer | reminder)
+    - how much time [is] left on my {name} (alarm | timer | reminder)
+    - how (long | long's) [is] left on my (alarm | timer | reminder)
+    - how (long | long's) [is] left on my {name} (alarm | timer | reminder)
+    - wie viel zeit ist noch übrig (bei|für) [meinem] (wecker|alarm|timer|erinnerung)
+    - wie viel zeit ist noch übrig (bei|für) [meinem] {name} (wecker|alarm|timer|erinnerung)
+    - wie lange dauert (es) noch (bei|für) [meinem] (wecker|alarm|timer|erinnerung)
+    - wie lange dauert (es) noch (bei|für) [meinem] {name} (wecker|alarm|timer|erinnerung)
+  - trigger: conversation
+    id: canceltimer
+    command:
+    - cancel my {name} (alarm | timer | reminder)
+    - cancel my (alarm | timer | reminder) for {when}
+    - (turn off | cancel | stop) [my] (alarm | timer | reminder)
+    - (stoppe|beende|lösche|abbrechen|abbruch) [meinen] {name} (wecker|alarm|timer|erinnerung)
+    - (stoppe|beende|lösche|abbrechen|abbruch) [meinen] (wecker|alarm|timer|erinnerung)
+      (auf|für) {when}
+    - (stoppe|beende|lösche|abbrechen|abbruch) [meinen] (wecker|alarm|timer|erinnerung)
+  - trigger: event
+    id: timerwarning
+    event_type: va_timer_warning
+    alias: When viewassist event warning expired fires
+  - trigger: event
+    id: ringalarm
+    event_type: va_timer_expired
+    alias: When viewassist event timer expired fires
+  - trigger: event
+    id: snooze_button
+    event_type: viewassist
+    alias: When SNOOZE button pressed
+    event_data:
+      command: snooze alarm
+  - trigger: event
+    id: dismiss_button
+    event_type: viewassist
+    alias: When DISMISS button pressed
+    event_data:
+      command: dismiss alarm
+  conditions: []
+  actions:
+  - variables:
+      target_satellite_device: '{{ view_assist_entity(trigger.device_id) if trigger.platform
+        == ''conversation'' else trigger.event.data.entity_id }}'
+      target_mediaplayer_device: '{{ state_attr(target_satellite_device, ''mediaplayer_device'')}}'
+      target_satellite_device_type: '{{ state_attr(target_satellite_device, ''type'')}}'
+      has_display: '{{ target_satellite_device_type != ''audio_only'' }}'
+      alarmsound_path: /local/viewassist/sounds_timer_finished.wav
+      view_alarm: /view-assist/alarm
+      view_info: /view-assist/info
+      snooze_time_input: '10'
+      snooze_time: '{{ snooze_time_input | int }}'
+      language: "{{ trigger.user_input.language\n   if trigger.platform == 'conversation'
+        and trigger.user_input is defined and trigger.user_input.language is defined\n
+        \  else 'de' }}"
+      translations:
+        de:
+          set_ok: '{{ response }}'
+          canceled: Dein {{ label }} wurde abgebrochen.
+          not_found: Ich konnte keinen aktiven {{ label }} finden.
+          time_left: Du hast noch {{ time_left }} bei deinem {{ label }}.
+          no_display: Dieses Gerät hat kein Display, um Timer anzuzeigen.
+          no_active: Es gibt keine aktiven Timer.
+          active_one: 'Es gibt 1 aktiven Timer:'
+          active_many: 'Es gibt {{ count }} aktive Timer:'
+        en:
+          set_ok: '{{ response }}'
+          canceled: Your {{ label }} has been canceled.
+          not_found: I could not find an active {{ label }}.
+          time_left: You have {{ time_left }} left on your {{ label }}.
+          no_display: This device does not have a display to show timers.
+          no_active: There are no active timers.
+          active_one: 'There is 1 active timer:'
+          active_many: 'There are {{ count }} active timers:'
+        it:
+          set_ok: '{{ response }}'
+          canceled: Il tuo {{ label }} è stato annullato.
+          not_found: Non ho trovato un {{ label }} attivo.
+          time_left: Hai ancora {{ time_left }} per il tuo {{ label }}.
+          no_display: Questo dispositivo non ha un display per mostrare i timer.
+          no_active: Non ci sono timer attivi.
+          active_one: 'C''è 1 timer attivo:'
+          active_many: 'Ci sono {{ count }} timer attivi:'
+  - choose:
+    - conditions:
+      - condition: trigger
+        id:
+        - timer
+        - alarm
+        - reminder
+      sequence:
+      - variables:
+          device_id: '{{ trigger.device_id }}'
+          type: '{{ trigger.id }}'
+          time: '{{ trigger.slots.when }}'
+          name: '{{ trigger.slots.name if trigger.slots.name is defined else ''''
+            }}'
+      - action: view_assist.set_timer
+        data:
+          device_id: '{{ device_id }}'
+          type: '{{ type }}'
+          time: '{{ time }}'
+          name: '{{ name }}'
+          language: '{{ language }}'
+        response_variable: timer_result
+      - set_conversation_response: '{{ timer_result.response }}'
+      - if:
+        - condition: template
+          value_template: '{{ timer_result.timer is defined and timer_result.timer
+            != null and has_display }}'
+        then:
+        - action: view_assist.navigate
+          data:
+            device: '{{ target_satellite_device }}'
+            path: '{{ view_alarm }}'
+    - conditions:
+      - condition: trigger
+        id:
+        - timerwarning
+        - ringalarm
+      sequence:
+      - if:
+        - condition: template
+          value_template: '{{ has_display }}'
+        then:
+        - action: view_assist.navigate
+          data:
+            device: '{{ target_satellite_device }}'
+            path: '{{ view_alarm }}'
+      - action: view_assist.set_state
+        target:
+          entity_id: '{{ target_satellite_device }}'
+        data:
+          mode: hold
+      - if:
+        - condition: template
+          value_template: '{{ trigger.id == ''ringalarm'' and target_mediaplayer_device
+            is not none }}'
+        then:
+        - action: view_assist.sound_alarm
+          data:
+            entity_id: '{{ target_mediaplayer_device }}'
+            media_file: '{{ alarmsound_path }}'
+    - conditions:
+      - condition: trigger
+        id:
+        - dismiss_button
+      sequence:
+      - variables:
+          timer_id: '{{ trigger.event.data.timer_id }}'
+      - if:
+        - condition: template
+          value_template: '{{ target_mediaplayer_device is not none }}'
+        then:
+        - action: view_assist.cancel_sound_alarm
+          data:
+            entity_id: '{{ target_mediaplayer_device }}'
+      - action: view_assist.cancel_timer
+        data:
+          timer_id: '{{ timer_id }}'
+      - action: view_assist.set_state
+        target:
+          entity_id: '{{ target_satellite_device }}'
+        data:
+          mode: normal
+    - conditions:
+      - condition: trigger
+        id:
+        - snooze_voice
+        - snooze_button
+      sequence:
+      - variables:
+          new_time: '{{ snooze_time }} minutes'
+          timer_id: '{{ trigger.event.data.timer_id if trigger.platform != ''conversation''
+            else '''' }}'
+      - if:
+        - condition: template
+          value_template: '{{ target_mediaplayer_device is not none }}'
+        then:
+        - action: view_assist.cancel_sound_alarm
+          data:
+            entity_id: '{{ target_mediaplayer_device }}'
+      - action: view_assist.snooze_timer
+        data:
+          timer_id: '{{ timer_id }}'
+          time: '{{ new_time }}'
+        response_variable: snooze_response
+      - action: view_assist.set_state
+        target:
+          entity_id: '{{ target_satellite_device }}'
+        data:
+          mode: normal
+      - set_conversation_response: '{{ snooze_response.response }}'
+    - conditions:
+      - condition: trigger
+        id:
+        - canceltimer
+      sequence:
+      - action: view_assist.get_timers
+        data:
+          device_id: '{{ trigger.device_id }}'
+          name: "{{ trigger.slots.name if trigger.slots.name is defined else\n   trigger.slots.when
+            if trigger.slots.when is defined else \"\" }}"
+          include_expired: true
+        response_variable: timer_info
+      - variables:
+          timer_id: '{{ timer_info.result[0].id if timer_info.result | length > 0
+            else '''' }}'
+          timer_class: '{{ timer_info.result[0].timer_class if timer_info.result |
+            length > 0 else '''' }}'
+          timer_name: '{{ timer_info.result[0].name if timer_info.result | length
+            > 0 else '''' }}'
+          timer_sentence: '{{ timer_info.result[0].extra_info.sentence if timer_info.result
+            | length > 0 else '''' }}'
+          label: '{{ (timer_name if timer_name else timer_sentence) ~ '' '' ~ timer_class
+            }}'
+      - if:
+        - condition: template
+          value_template: '{{ timer_id != '''' }}'
+        then:
+        - if:
+          - condition: template
+            value_template: '{{ target_mediaplayer_device is not none }}'
+          then:
+          - action: view_assist.cancel_sound_alarm
+            data:
+              entity_id: '{{ target_mediaplayer_device }}'
+        - action: view_assist.cancel_timer
+          data:
+            timer_id: '{{ timer_id }}'
+        - set_conversation_response: '{{ translations[language][''canceled''].replace(''{{
+            label }}'', label) }}'
+        else:
+        - set_conversation_response: '{{ translations[language][''not_found''].replace(''{{
+            label }}'', (trigger.slots.name if trigger.slots.name is defined else
+            ''Timer'')) }}'
+        - if:
+          - condition: template
+            value_template: '{{ has_display }}'
+          then:
+          - action: view_assist.navigate
+            data:
+              device: '{{ target_satellite_device }}'
+              path: '{{ view_alarm }}'
+    - conditions:
+      - condition: trigger
+        id:
+        - timeremaining
+      sequence:
+      - action: view_assist.get_timers
+        data:
+          device_id: '{{ trigger.device_id }}'
+          name: '{{ trigger.slots.name if trigger.slots.name is defined else ''''
+            }}'
+        response_variable: timer_info
+      - variables:
+          timer_id: '{{ timer_info.result[0].id if timer_info.result | length > 0
+            else '''' }}'
+          timer_class: '{{ timer_info.result[0].timer_class if timer_info.result |
+            length > 0 else '''' }}'
+          timer_name: '{{ timer_info.result[0].name if timer_info.result | length
+            > 0 else '''' }}'
+          timer_duration: '{{ timer_info.result[0].duration if timer_info.result |
+            length > 0 else '''' }}'
+          time_left: '{{ timer_info.result[0].expiry.text if timer_info.result | length
+            > 0 else '''' }}'
+          label: '{{ (timer_name if timer_name else timer_duration) ~ '' '' ~ timer_class
+            }}'
+      - if:
+        - condition: template
+          value_template: '{{ timer_id != '''' }}'
+        then:
+        - set_conversation_response: "{{ translations[language]['time_left']\n   .replace('{{
+            time_left }}', time_left)\n   .replace('{{ label }}', label) }}"
+        - if:
+          - condition: template
+            value_template: '{{ has_display }}'
+          then:
+          - action: view_assist.navigate
+            data:
+              device: '{{ target_satellite_device }}'
+              path: '{{ view_alarm }}'
+        else:
+        - set_conversation_response: '{{ translations[language][''not_found''].replace(''{{
+            label }}'', ''Timer'') }}'
+        - if:
+          - condition: template
+            value_template: '{{ has_display }}'
+          then:
+          - action: view_assist.navigate
+            data:
+              device: '{{ target_satellite_device }}'
+              path: '{{ view_alarm }}'
+    - conditions:
+      - condition: trigger
+        id:
+        - listtimers
+      sequence:
+      - action: view_assist.get_timers
+        data:
+          device_id: '{{ trigger.device_id }}'
+        response_variable: timer_info
+      - set_conversation_response: "{% set active = timer_info.result | selectattr('status','!=','expired')
+          | list %}\n{% set count = active | length %}\n{% if count == 0 %}\n  {{
+          translations[language]['no_active'] }}\n{% elif count == 1 %}\n  {{ translations[language]['active_one']
+          }}\n  {{ active[0]['expiry']['speak'] }}\n{% else %}\n  {{ translations[language]['active_many'].replace('{{
+          count }}', count|string) }}\n  {%- for t in active -%}\n    {{ t['expiry']['speak']
+          }}{% if not loop.last %}, {% endif %}\n  {%- endfor -%}\n{% endif %}"
+      - if:
+        - condition: template
+          value_template: '{{ has_display }}'
+        then:
+        - action: view_assist.navigate
+          data:
+            device: '{{ target_satellite_device }}'
+            path: '{{ view_alarm }}'
+    - conditions:
+      - condition: trigger
+        id:
+        - showtimers
+      sequence:
+      - if:
+        - condition: template
+          value_template: '{{ has_display }}'
+        then:
+        - action: view_assist.navigate
+          data:
+            device: '{{ target_satellite_device }}'
+            path: '{{ view_alarm }}'
+        - set_conversation_response: ''
+        else:
+        - set_conversation_response: '{{ translations[language][''no_display''] }}'
+  mode: parallel
+- id: '1767124467280'
+  alias: Wetterfrage beantworten – Aktuelle Temperatur draußen
+  description: Antwortet auf Fragen nach der aktuellen Außentemperatur und gibt diese
+    über den Sprachassistenten aus.
+  use_blueprint:
+    path: dinki/blueprint-howstheweather.yaml
+    input:
+      language: de
+      weather_entity: weather.forecast_home
+      command_prompt: (Wie | Wie ist) [das] Wetter
+- id: '1767125118527'
+  alias: "\U0001F6A8 Alarmanlage – Sprachhinweis bei Scharfschaltung/Deaktivierung"
+  description: Spricht eine Nachricht aus, wenn die Alarmanlage auf 'Away' geschaltet
+    wird oder deaktiviert wird. Wird über die Sensoren in der Bürogruppe (VACA) ausgelöst.
+  use_blueprint:
+    path: dinki/blueprint-devicealerts.yaml
+    input:
+      satellite:
+      - sensor.vaca_buro
+      start_sensor: alarm_control_panel.alarmo
+      start_sensor_to: armed_away
+      end_sensor: alarm_control_panel.alarmo
+      end_sensor_to: disarmed
+      start_speech: Alarm wurde scharf geschaltet
+      end_speech: Alarm wurde deaktiviert
+- id: '1767125576302'
+  alias: Musikabspielung über Music Assistant starten
+  description: Startet die Musikwiedergabe über Music Assistant mit der ausgewählten
+    Instanz.
+  use_blueprint:
+    path: dinki/blueprint-playmusicwithmusicassistant.yaml
+    input:
+      ma_instance: 01KB6A4PTTYSYGQ0M5N6KD3SHZ
+      language: de
+      play_artist_command: (Spiele den Künstler {artist} | Spiele etwas {artist} [Musik]
+        | Spiele [etwas] [Musik | Lieder] von {artist})
+      play_playlist_command: Spiele [die] Playlist {playlist}
+      play_song_command: Spiele [den Song|den Titel] {song} von {artist}
+      queue_song_command: Setze [den Song|den Titel] {song} von {artist} [in|auf]
+        die Warteschlange
+- id: '1767129069304'
+  alias: Wetterfrage beantworten – Aktuelle Wetterdaten im Büro anzeigen
+  description: Zeigt die aktuellen Wetterdaten im Büro auf dem Browser-Modul an, wenn
+    nach dem Wetter gefragt wird.
+  triggers:
+  - trigger: conversation
+    command: wie ist das wetter
+  conditions: []
+  actions:
+  - action: browser_mod.navigate
+    metadata: {}
+    data:
+      browser_id:
+      - 7d3e3f4ab4dade4b7f5b1f30bede4943
+      path: http://homeassistant.local:8123/vaca-buro/wetter
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 30
+      milliseconds: 0
+  - action: browser_mod.navigate
+    metadata: {}
+    data:
+      browser_id:
+      - 7d3e3f4ab4dade4b7f5b1f30bede4943
+      path: http://homeassistant.local:8123/lovelace/home
+  mode: single
+- id: '1767129286122'
+  alias: Wikipedia – Suchanfrage über Sprachbefehl ausführen
+  description: Öffnet die Wikipedia-Suche im Browser des Büros, wenn der Sprachbefehl
+    'Wikipedia' erkannt wird.
+  triggers:
+  - trigger: conversation
+    command: Wikipedia
+  conditions: []
+  actions:
+  - action: browser_mod.navigate
+    metadata: {}
+    data:
+      browser_id:
+      - 7d3e3f4ab4dade4b7f5b1f30bede4943
+      path: http://homeassistant.local:8123/view-assist/infopic
+  mode: single
+- id: '1767160715221'
+  alias: Wikipedia – Suchanfrage über Sprachbefehl ausführen
+  description: Führt eine Wikipedia-Suche basierend auf einem Sprachbefehl aus und
+    gibt die Ergebnisse zurück.
+  use_blueprint:
+    path: dinki/blueprint-searchwikipedia.yaml
+- id: '1767161771382'
+  alias: Musikabspielung – Browser-Modul öffnen bei Abspielen
+  description: Öffnet das Browser-Modul mit der Musik-Assistenz-Ansicht, sobald die
+    Musikwiedergabe auf dem ausgewählten Gerät beginnt.
+  triggers:
+  - device_id: 6fd734926fd7241fbd280aba3a28eb86
+    domain: media_player
+    entity_id: a2a0bb78b98241656722a853edf0fa5a
+    type: playing
+    trigger: device
+  conditions: []
+  actions:
+  - action: browser_mod.navigate
+    metadata: {}
+    data:
+      path: http://192.168.178.42:8123/vaca-buro/musik
+      browser_id:
+      - f878a0058b8063436c1a3a8949ebcc35
+  mode: single
+- id: '1767269774936'
+  alias: Musikabspielung – Ansicht im Büro öffnen bei Abspielen
+  description: Öffnet die Ansicht für die Musikabspielung im Büro, sobald die Musik
+    auf dem ausgewählten Gerät beginnt.
+  triggers:
+  - device_id: 7b0e79b3b4365aef82563a4a10fc1d47
+    domain: media_player
+    entity_id: bb8c3338a9f901dae71a8708eebbbfa1
+    type: playing
+    trigger: device
+  conditions: []
+  actions:
+  - action: browser_mod.navigate
+    metadata: {}
+    data:
+      browser_id:
+      - f878a0058b8063436c1a3a8949ebcc35
+      path: http://192.168.178.42:8123/lovelace/musik-vaca-buro
+  mode: single
+- id: '1767270544419'
+  alias: 'Voice: Spiele Lied auf Büro-Player (nur Vaca Satellite)'
+  description: ''
+  triggers:
+  - command:
+    - Spiele das Lied {song}
+    - Spiel das Lied {song}
+    - Spiele {song}
+    - Spiel {song}
+    trigger: conversation
+  conditions:
+  - condition: state
+    entity_id: assist_satellite.vaca_f6d8de8a6
+    state: listening
+  actions:
+  - action: music_assistant.search
+    data:
+      config_entry_id: 01KB6A4PTTYSYGQ0M5N6KD3SHZ
+      search_query: "{% set raw = trigger.slots['song'] | default(states('sensor.vaca_f6d8de8a6_stt'),
+        true) %} {{ raw\n   | lower\n   | replace('spiele', '')\n   | replace('spiel',
+        '')\n   | replace('bitte', '')\n   | replace('das lied', '')\n   | replace('lied',
+        '')\n   | trim\n}}\n"
+      media_type:
+      - track
+      limit: 1
+      library_only: false
+    response_variable: ma_search
+  - condition: template
+    value_template: '{{ ma_search is defined and (ma_search.items | default([]) |
+      length) > 0 }}
+
+      '
+  - action: music_assistant.play_media
+    target:
+      device_id: 6fd734926fd7241fbd280aba3a28eb86
+    data:
+      media_id: '{{ ma_search.items[0].uri }}'
+      enqueue: replace
+  mode: single
+- id: '1767297662968'
+  alias: VACA – Büroansicht bei Sprachbefehl öffnen
+  description: Öffnet die Büroansicht in Browser Modul, sobald VACA zuhört oder nach
+    kurzer Verzögerung im Leerlauf ist.
+  triggers:
+  - trigger: state
+    entity_id:
+    - assist_satellite.vaca_f6d8de8a6
+    to:
+    - listening
+    id: hört zu
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id:
+        - hört zu
+      sequence:
+      - action: browser_mod.navigate
+        metadata: {}
+        data:
+          browser_id:
+          - f878a0058b8063436c1a3a8949ebcc35
+          path: http://192.168.178.42:8123/lovelace/intent-vaca-buro
+  mode: single
+- id: '1767303822737'
+  alias: Robobert – Reinigung starten/beenden melden (VACA Büro)
+  description: ''
+  use_blueprint:
+    path: dinki/blueprint-devicealerts.yaml
+    input:
+      satellite:
+      - sensor.vaca_buro
+      start_sensor: sensor.roborock_qrevo_curv_series_status
+      start_sensor_to: segment_cleaning
+      start_speech: Robobert startet die reinigung
+      start_alert:
+        alert_data:
+          icon: mdi:robot-vacuum
+          header: Robobert
+          line1: Reinigung wird gestartet
+          line2: ''
+      end_alert:
+        alert_data:
+          icon: mdi:robot-vacuum
+          header: Robobert
+          line1: Reinigung starten
+          line2: ''
+      end_speech: Reinigung beendet
+      end_sensor: sensor.roborock_qrevo_curv_series_status
+      end_sensor_from: returning_home
+      end_sensor_to: charging
+      satellite_use_all: false
+- id: '1767349334578'
+  alias: Personenstandort – Position aktualisieren (VACA)
+  description: Aktualisiert die Position einer Person über VACA und sendet eine Benachrichtigung,
+    falls die Person nicht zu Hause ist.
+  triggers:
+  - command:
+    - (localize|map|where is|wheres) [my] {person}
+    - (lokalisieren|karte|wo ist|wos ist|wo befindet sich|wo is) [mein|meine] {person}
+    trigger: conversation
+  conditions: []
+  actions:
+  - variables:
+      target_satellite_device: '{{ view_assist_entity(trigger.device_id) }}'
+      target_mediaplayer_device: '{{ state_attr(target_satellite_device, ''mediaplayer_device'')}}'
+      target_satellite_device_type: '{{ state_attr(target_satellite_device, ''type'')}}'
+      target_use_announce: '{{ state_attr(target_satellite_device, ''use_announce'')
+        }}'
+      language: de
+      view_locate: /view-assist/locate
+      view_info: /view-assist/info
+      map_mode: dark
+      input_defined_names: "{\"dado\":\"dado\",\"david\":\"dado\",\"dado jov\":\"dado\",\"dadojov\":\"dado\",\n
+        \"feri\":\"feri\",\"ferahnur\":\"feri\",\"fera\":\"feri\"}"
+      persons_name: '{{ input_defined_names | from_json }}'
+      slot_person_raw: '{{ trigger.slots.person | default('''') }}'
+      slot_person_key: "{{ slot_person_raw\n  | lower\n  | trim\n  | regex_replace('^(der|die|das)\\\\s+',
+        '')\n  | regex_replace('^(mein|meine|meinen|meinem|meiner)\\\\s+', '')\n  |
+        trim\n}}"
+      translations:
+        en:
+          responses:
+            person_away: '{person} is away.'
+            person_location: '{person} is at {location}'
+            person_undefined: '{person} hasn''t been defined'
+          last_update:
+            prefix: Last updated
+            now_label: now
+            minute_label: minutes ago
+            hour_label: hours ago
+            day_label: days ago
+        it:
+          responses:
+            person_away: '{person} è fuori casa.'
+            person_location: '{person} è nella zona {location}'
+            person_undefined: '{person} non è definita'
+          last_update:
+            prefix: Ultimo aggiornamento
+            now_label: ora
+            minute_label: minuti fa
+            hour_label: ore fa
+            day_label: giorni fa
+        de:
+          responses:
+            person_away: '{person} ist nicht zu Hause.'
+            person_location: '{person} ist in {location}'
+            person_undefined: '{person} wurde nicht definiert'
+          last_update:
+            prefix: Zuletzt aktualisiert
+            now_label: jetzt
+            minute_label: Minuten her
+            hour_label: Stunden her
+            day_label: Tage her
+  - if:
+    - condition: template
+      value_template: '{{ slot_person_key in persons_name }}'
+    then:
+    - variables:
+        person_source: '{{ ''person.'' + persons_name[slot_person_key] }}'
+        tracker_source: '{{ state_attr(person_source, ''source'') }}'
+        geocoded_source: '{% set geocoded = ''sensor.'' + tracker_source.split(''.'',
+          1)[1] + ''_geocoded_location'' %} {{ geocoded }}'
+        location_source: "{% if states(person_source) != 'not_home' %}\n  {{ state_translated(person_source)|capitalize
+          }}\n{% elif not states(geocoded_source) in ['unknown'] %}\n  {{ states(geocoded_source)
+          }}\n{% else %}\n  {{ 'Unknown Location' }}\n{% endif %}"
+        conversation_response: "{% if states(person_source) == 'not_home' %}\n  {{
+          translations[language]['responses']['person_away'].replace(\"{person}\",
+          persons_name[slot_person_key]) }}\n{% else %}\n  {{ translations[language]['responses']['person_location']\n
+          \   .replace(\"{person}\", persons_name[slot_person_key])\n    .replace(\"{location}\",
+          state_translated(person_source)) }}\n{% endif %}"
+        location_last_update_translated: "{% set last_changed = states[person_source].last_changed
+          %}\n{% set now = now() %}\n{% set diff = (now - last_changed).total_seconds()
+          %}\n{% set minutes = (diff // 60) | int %}\n{% set hours = (diff // 3600)
+          | int %}\n{% set days = (diff // 86400) | int %}\n\n{% if minutes < 1 %}\n
+          \ {{ translations[language]['last_update']['prefix']}}: {{ translations[language]['last_update']['now_label']}}\n{%
+          elif minutes < 60 %}\n  {{ translations[language]['last_update']['prefix']}}:
+          {{ minutes }} {{ translations[language]['last_update']['minute_label']}}\n{%
+          elif hours < 24 %}\n  {{ translations[language]['last_update']['prefix']}}:
+          {{ hours }} {{ translations[language]['last_update']['hour_label']}}\n{%
+          else %}\n  {{ translations[language]['last_update']['prefix']}}: {{ days
+          }} {{ translations[language]['last_update']['day_label']}}\n{% endif %}"
+    - set_conversation_response: '{{ conversation_response }}'
+    - action: view_assist.set_state
+      target:
+        entity_id: '{{ target_satellite_device }}'
+      data:
+        last_said: '{{ conversation_response }}'
+    - action: view_assist.set_state
+      target:
+        entity_id: '{{ target_satellite_device }}'
+      data:
+        locate_data: '{{ {''person'': person_source, ''tracker'': tracker_source,
+          ''geocoded'': geocoded_source, ''location_text'': location_source, ''location_last_change'':
+          location_last_update_translated, ''map_mode'': map_mode} }}'
+    - if:
+      - condition: template
+        value_template: '{% if target_satellite_device_type != ''audio_only'' %}true{%
+          else %}false{% endif %}'
+      then:
+    - action: view_assist.navigate
+      data:
+        device: '{{ target_satellite_device }}'
+        path: '{{ view_locate }}'
+    else:
+    - variables:
+        response_undefined: '{{ translations[language][''responses''][''person_undefined''].replace("{person}",
+          slot_person_raw) }}'
+    - action: view_assist.set_state
+      target:
+        entity_id: '{{ target_satellite_device }}'
+      data:
+        title: ''
+        message: '{{ response_undefined }}'
+        message_font_size: 6vw
+    - set_conversation_response: '{{ response_undefined }}'
+    - action: view_assist.set_state
+      target:
+        entity_id: '{{ target_satellite_device }}'
+      data:
+        last_said: '{{ response_undefined }}'
+    - action: view_assist.navigate
+      data:
+        device: '{{ target_satellite_device }}'
+        path: '{{ view_info }}'
+  mode: single
+- id: '1767470392696'
+  alias: "\U0001F436 Peanut – Gartenüberwachung (Uhrzeit & Standort) (category: Kameras)
+    (labels: kamera, notify, hund)"
+  description: ''
+  use_blueprint:
+    path: valentinfrlch/event_summary.yaml
+    input:
+      run_conditions:
+      - type: is_on
+        condition: device
+        device_id: 312866670fbb0318688f44922e1e1c78
+        entity_id: 52bf0c4d1c43587b22874cc53d707e51
+        domain: binary_sensor
+      camera_entities:
+      - camera.wall_e_hochauflosung
+      provider: 01KCW3JT98J5PCV2Q5NKV1YWJ9
+      message: 'Prüfe die aktuelle Uhrzeit und ob der Hund Peanut im Garten ist. Antworte
+        mit genau zwei Zeilen:
+
+        Uhrzeit: HH:MM
+
+        Peanut im Garten: Ja/Nein/Unklar
+
+        Keine weiteren Details. Erwähne keine Bilder oder Frames. Wenn Peanut nicht
+        eindeutig zu sehen ist: Unklar.'
+      notify_device:
+      - cb1e3ba8c10146a7872d930e73d6354c
+      preview_mode: Live Preview
+      analysis_mode: Live Preview
+      notification_time: at {{ now().strftime("%H:%M") }}
+      model: ministral-3:14b
+- id: '1767737867012'
+  alias: "\U0001F6A8 AI-Bewegungszusammenfassung (Vorgarten) – Live-Erkennung (Bewegungsmelder)"
+  description: Erstellt eine kurze Zusammenfassung von Bewegungen im Vorgarten basierend
+    auf Live-Videoanalyse. Bei Bewegung werden Personen und Aktivitäten erkannt und
+    als Benachrichtigung mit KI-generierter Zusammenfassung ausgegeben. Die Zusammenfassung
+    wird nur bei aktiver Gartenbelegung ausgelöst.
+  use_blueprint:
+    path: valentinfrlch/event_summary.yaml
+    input:
+      camera_entities:
+      - camera.gehweg
+      provider: 01KCW3JT98J5PCV2Q5NKV1YWJ9
+      notify_device:
+      - cb1e3ba8c10146a7872d930e73d6354c
+      preview_mode: Snapshot
+      analysis_mode: Snapshot
+      model: ministral-3:14b
+      tap_navigate: /lovelace/security
+      notification_sound: default
+      run_conditions:
+      - condition: state
+        entity_id: binary_sensor.vorgarten_all_occupancy
+        state:
+        - 'on'
+      motion_sensors:
+      - binary_sensor.vorgarten_all_occupancy
+      cooldown:
+        hours: 0
+        minutes: 1
+        seconds: 0
+      use_memory: true
+      message: 'Erstelle eine sehr kurze Zusammenfassung des Clips. Ignoriere Umgebung/Details.
+        Berichte nur: Bewegung von Personen/Tieren. Keine Frame-Liste. Das ist mein
+        Eingang zum Grundstück. Maximal  3 Sätze. Verwende keine Markdown Formatierung
+        in deiner Aussage.'
+      notification_delivery: Consolidated
+      notification_time: at {{ now().strftime("%H:%M") }}
+      notification_critical: true
+      max_tokens: 5000
+      file_path: /media/llmvision/snapshots_blueprint/{{ camera_file_path }}/last_motion.jpg
+      notification_channel: '{{ camera }} Snapshot'
+      tts_notification: false
+      notification_sticky: false
+      max_frames: 4
+      duration: 6
+- id: '1767739229176'
+  alias: "\U0001F6A8 AI-Bewegungszusammenfassung (Garten) – Live-Erkennung (Garten)
+    – KI-Snapshot"
+  description: Erstellt eine kurze Zusammenfassung von Bewegungen im Garten basierend
+    auf Live-Videoanalyse der Eingangstür. Bei erfasster Bewegung werden Personen
+    und Aktivitäten erkannt und als KI-generierte Benachrichtigung mit Snapshot ausgegeben.
+    Die Zusammenfassung ist auf maximal 3 Sätze begrenzt und enthält nur relevante
+    Informationen (Bewegung/Personen).
+  use_blueprint:
+    path: valentinfrlch/event_summary.yaml
+    input:
+      camera_entities:
+      - camera.garten
+      provider: 01KCW3JT98J5PCV2Q5NKV1YWJ9
+      notify_device:
+      - cb1e3ba8c10146a7872d930e73d6354c
+      preview_mode: Snapshot
+      analysis_mode: Snapshot
+      model: ministral-3:14b
+      tap_navigate: /lovelace/security
+      notification_sound: default
+      run_conditions:
+      - condition: state
+        entity_id: binary_sensor.garten_all_occupancy
+        state:
+        - 'on'
+      motion_sensors:
+      - binary_sensor.garten_all_occupancy
+      cooldown:
+        hours: 0
+        minutes: 1
+        seconds: 0
+      use_memory: true
+      message: 'Erstelle eine sehr kurze Zusammenfassung des Clips. Ignoriere Umgebung/Details.
+        Berichte nur: Bewegung und  Personen/Tiere. Keine Frame-Liste. Das ist mein
+        Garten. Maximal  3 Sätze. Verwende keine Markdown Formatierung in deiner Aussage.'
+      notification_delivery: Consolidated
+      notification_time: at {{ now().strftime("%H:%M") }}
+      notification_critical: true
+      max_tokens: 5000
+      file_path: /media/llmvision/snapshots_blueprint/{{ camera_file_path }}/last_motion.jpg
+      notification_channel: '{{ camera }} Snapshot'
+      tts_notification: false
+      notification_sticky: false
+      max_frames: 4
+      duration: 6
+- id: '1768313838386'
+  alias: "\U0001F6A8 AI-Bewegungszusammenfassung (Eingangstor) – Live-Erkennung (Eingangstor)"
+  description: Erstellt eine KI-basierte Zusammenfassung von Bewegungen am Eingangstor
+    und sendet diese als Benachrichtigung an das Büro-Tablet. Bei Bewegung wird direkt
+    zur Sicherheitsansicht navigiert.
+  use_blueprint:
+    path: valentinfrlch/event_summary.yaml
+    input:
+      run_conditions:
+      - condition: state
+        entity_id: binary_sensor.am_tor_all_occupancy
+        state:
+        - 'on'
+      camera_entities:
+      - camera.einfahrt
+      motion_sensors:
+      - binary_sensor.am_tor_all_occupancy
+      provider: 01KCW3JT98J5PCV2Q5NKV1YWJ9
+      model: ministral-3:14b
+      notify_device:
+      - cb1e3ba8c10146a7872d930e73d6354c
+      notification_time: at {{ now().strftime("%H:%M") }}
+      tap_navigate: /lovelace/security
+      message: 'Sage mir ob eine Person, Hund oder Katze sichtbar ist. Wenn du etwas
+        dergleichen erkennst, beginne deine Nachricht mit ALARM! Wenn nicht, dann
+        beschreibe mir die Aktivitäten, nicht die Umgebung. Fokusiere dich dabei um
+        bewegliche Objekte / Personen / Tiere. Verwende keine "*" in deiner Antwort.
+        Halte dich Kurz, maximal 2 Sätze. Die drei Bilder / Frames sind ein Video.
+        Generiere einen Kurzen deutschsprachigen Titel, lasse aber das "Titel:" weg.
+        Verwende kein Markdown zum Formatieren! '
+      max_tokens: 20000
+- id: '1768481056517'
+  alias: 'Todo – David: Neue Aufgabe hinzugefügt'
+  description: Benachrichtigt bei neuen Todo-Einträgen für David über die mobile App.
+  triggers:
+  - trigger: state
+    entity_id:
+    - todo.david
+    to:
+    from:
+  conditions: []
+  actions:
+  - action: notify.mobile_app_dado
+    metadata: {}
+    data:
+      message: Neues auf der Todo
+      data:
+        url: /lovelace/einkaufsliste
+        actions:
+        - action: OPEN_TODO
+          title: Öffnen
+          uri: /lovelace/einkaufsliste
+  mode: single
+- id: '1768481227272'
+  alias: 'Todo – Feri: Neue Aufgabe hinzugefügt'
+  description: Benachrichtigt Feri über neue Aufgaben in der Todo-Liste.
+  triggers:
+  - trigger: state
+    entity_id:
+    - todo.feri
+    to:
+    from:
+  conditions: []
+  actions:
+  - action: notify.mobile_app_ferahnur_iphone
+    metadata: {}
+    data:
+      message: Feri du hast eine neue Aufgabe auf deiner Todo-Liste
+      title: Todo
+      data:
+        url: /lovelace/einkaufsliste
+        actions:
+        - action: OPEN_TODO
+          title: Öffnen
+          uri: /lovelace/einkaufsliste
+  mode: single
+- id: '1768803387409'
+  alias: Garten Licht aus nach Mitternacht
+  description: ''
+  triggers:
+  - platform: time
+    at: 00:30:00
+  actions:
+  - target:
+      entity_id:
+      - light.aussenlicht_eingang
+    action: light.turn_off
+  mode: single
+  variables:
+    _cafe_metadata:
+      version: 1
+      strategy: native
+      nodes:
+        trigger_1768803327591:
+          x: -390
+          y: 105
+        action_1768803346191:
+          x: -150
+          y: 105
+      graph_id: ef606197-1bd6-4bb1-9982-db8a34d794ee
+      graph_version: 1
+- id: '1768961418115'
+  alias: 'Browser-Modul: Dado-Theme anpassen (Auto/Dunkel/Hell)'
+  description: Passt das Theme des Browser-Moduls basierend auf der Auswahl in 'input_select.dado_theme'
+    an. Unterstützt die Modi Auto (Systemeinstellungen), Dunkel und Hell.
+  triggers:
+  - trigger: state
+    entity_id:
+    - input_select.dado_theme
+    to:
+    - Auto
+    id: auto
+  - trigger: state
+    entity_id:
+    - input_select.dado_theme
+    to:
+    - Dark
+    id: dark
+  - trigger: state
+    entity_id:
+    - input_select.dado_theme
+    to:
+    - Light
+    id: light
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id:
+        - auto
+      sequence:
+      - action: browser_mod.set_theme
+        data:
+          browser_id:
+          - 3bc5f8cb0c96e7b8cc8273c4f175dbef
+          theme: auto
+          dark: auto
+    - conditions:
+      - condition: trigger
+        id:
+        - dark
+      sequence:
+      - action: browser_mod.set_theme
+        data:
+          browser_id:
+          - 3bc5f8cb0c96e7b8cc8273c4f175dbef
+          theme: auto
+          dark: dark
+    - conditions:
+      - condition: trigger
+        id:
+        - light
+      sequence:
+      - action: browser_mod.set_theme
+        data:
+          browser_id:
+          - 3bc5f8cb0c96e7b8cc8273c4f175dbef
+          theme: auto
+          dark: light
+  mode: single
+- id: '1768963518467'
+  alias: Gartenlicht um 04:00 einschalten, wenn Dienstplan = Feri
+  description: Schaltet das Außenlicht am Eingang um 04:00 Uhr ein, falls Feri im
+    Dienstplan für heute eingetragen ist.
+  triggers:
+  - at: 04:00:00
+    trigger: time
+  conditions:
+  - condition: template
+    value_template: "{% set msg = state_attr('calendar.dienstplan_2', 'message') %}
+      {% set start = state_attr('calendar.dienstplan_2', 'start_time') %} {{ msg ==
+      'Feri'\n   and start is not none\n   and as_datetime(start).date() == now().date()
+      }}\n"
+  actions:
+  - action: light.turn_on
+    data: {}
+    target:
+      entity_id: light.aussenlicht_eingang
+  mode: single
+- id: '1769146198215'
+  alias: Klarspüler Geschirrspüler fast leer - Dado
+  description: Benachrichtigt Dado, wenn der Klarspüler im Geschirrspüler fast leer
+    ist, entweder sofort oder nach kurzer Wartezeit, falls er nicht zu Hause ist.
+  triggers:
+  - trigger: state
+    entity_id:
+    - sensor.geschirrspuler_klarspuler
+    to:
+    - nearly_empty
+    from:
+    - full
+    id: normal_trigger
+  - trigger: state
+    entity_id:
+    - sensor.geschirrspuler_klarspuler
+    to:
+    - nearly_empty
+    from:
+    - unavailable
+    - unknown
+    id: from_unavailable
+  conditions:
+  - condition: or
+    conditions:
+    - condition: trigger
+      id: normal_trigger
+    - condition: and
+      conditions:
+      - condition: trigger
+        id: from_unavailable
+      - condition: template
+        value_template: '{{ (now() - state_attr(''automation.klarspuler_geschirrspuler_fast_leer_dado'',
+          ''last_triggered'') | default(now() - timedelta(hours=24), true)).total_seconds()
+          > 43200 }}'
+  actions:
+  - choose:
+    - conditions:
+      - condition: state
+        entity_id: person.dado
+        state: home
+      sequence:
+      - data:
+          title: Geschirrspüler
+          message: Klarspüler im Geschirrspüler ist fast leer!
+        action: notify.mobile_app_dado
+    default:
+    - wait_for_trigger:
+      - entity_id: person.dado
+        to: home
+        for: 00:01:00
+        trigger: state
+      timeout:
+        hours: 12
+        minutes: 0
+        seconds: 0
+        milliseconds: 0
+    - condition: state
+      entity_id: person.dado
+      state:
+      - home
+    - data:
+        title: Geschirrspüler
+        message: Klarspüler im Geschirrspüler ist fast leer!
+      action: notify.mobile_app_dado
+  mode: restart
+- id: '1769402145206'
+  alias: Musikabspielung über Music Assistant starten
+  description: Startet die Musikwiedergabe über den Music Assistant-Player
+  use_blueprint:
+    path: dinki/blueprint-playmusicwithmusicassistant.yaml
+    input:
+      language: de
+      ma_instance: 01KB6A4PTTYSYGQ0M5N6KD3SHZ
+- id: '1769549538613'
+  alias: Own Grundstück
+  description: Bewegungserkennung mit KI-Analyse
+  triggers:
+  - trigger: state
+    entity_id:
+    - binary_sensor.grundstuck_all_occupancy
+    to: 'on'
+  conditions:
+  - condition: template
+    value_template: '{{ (as_timestamp(now()) - as_timestamp(state_attr(''automation.own_grundstuck'',
+      ''last_triggered'') | default(0))) > 120 }}
+
+      '
+  actions:
+  - action: camera.snapshot
+    target:
+      entity_id: camera.einfahrt_schnappschusse_in_hochauflosung
+    data:
+      filename: /config/www/snapshots/einfahrt_{{ timestamp }}.jpg
+  - action: llmvision.stream_analyzer
+    data:
+      duration: 1
+      max_frames: 1
+      include_filename: true
+      max_tokens: 10000
+      generate_title: true
+      expose_images: true
+      provider: 01KCW3JT98J5PCV2Q5NKV1YWJ9
+      message: 'Analysiere das Bild. Beschreibe kurz wer oder was zu sehen ist. Handelt
+        es sich um eine Person, ein Tier oder ein Fahrzeug? Halte dich Kurz und ignoriere
+        die Umwelt. Verwende KEIN Markdown für die Antwort. Antworte im Format: TITEL:
+        [Kurzer prägnanter Titel, max 5 Wörter] BESCHREIBUNG: [Was ist zu sehen, wer/was
+        bewegt sich]
+
+        '
+      image_entity:
+      - camera.einfahrt_hochauflosung
+      remember: true
+      use_memory: true
+      target_width: 720
+    response_variable: analyse
+  - action: notify.mobile_app_dado
+    data:
+      title: "\U0001F6A8 {{ analyse.response_text.split('TITEL:')[1].split('BESCHREIBUNG:')[0]
+        | trim | default('Bewegung erkannt') }}\n"
+      message: '{{ analyse.response_text | default(''Analyse fehlgeschlagen'') }}'
+      data:
+        image: /local/snapshots/einfahrt_{{ now().strftime('%Y%m%d_%H%M%S') }}.jpg
+        channel: Überwachung
+        importance: high
+        push:
+          sound:
+            name: default
+            critical: 1
+  mode: single
+  max_exceeded: silent
+- id: '1769831665778'
+  alias: Büro Deckenlicht Einschalten bei Präsenz
+  description: Schaltet das Deckenlicht im Büro automatisch ein, wenn eine Bewegung
+    im Büro erkannt wird.
+  triggers:
+  - type: occupied
+    device_id: 5f8ce911b04b5f143a318560a190eda4
+    entity_id: faedb3844fe0b67a7f4477bf09e0d986
+    domain: binary_sensor
+    trigger: device
+  conditions: []
+  actions:
+  - action: light.turn_on
+    metadata: {}
+    target:
+      entity_id: light.deckenlicht_buro
+    data: {}
+  mode: single
+- id: '1770165957562'
+  alias: Feri - Work - New
+  description: ''
+  triggers:
+  - platform: state
+    id: work
+    entity_id:
+    - person.dado
+    to: Arbeit
+    alias: work
+  - platform: state
+    id: nowork
+    entity_id:
+    - person.dado
+    from: Arbeit
+    alias: nowork
+  actions:
+  - variables:
+      current_node: '{% if trigger.idx == "0" %}condition_1770165897645{% else %}condition_1770166010948{%
+        endif %}'
+      flow_context: {}
+  - alias: State Machine Loop
+    repeat:
+      until: '{{ current_node == "END" }}'
+      sequence:
+      - choose:
+        - conditions:
+          - condition: template
+            value_template: '{{ current_node == "condition_1770165897645" }}'
+          sequence:
+          - alias: dado
+            variables:
+              current_node: '{% if is_state(''input_boolean.feri_work_toggle_dado'',
+                ''on'') %}"action_1770165899118"{% else %}"END"{% endif %}'
+        - conditions:
+          - condition: template
+            value_template: '{{ current_node == "action_1770165899118" }}'
+          sequence:
+          - target:
+              entity_id:
+              - light.deckenlicht_buro
+            action: light.turn_on
+          - variables:
+              current_node: END
+        - conditions:
+          - condition: template
+            value_template: '{{ current_node == "condition_1770166010948" }}'
+          sequence:
+          - alias: dado
+            variables:
+              current_node: '{% if is_state(''input_boolean.feri_work_toggle_dado'',
+                ''on'') %}"action_1770166026439"{% else %}"END"{% endif %}'
+        - conditions:
+          - condition: template
+            value_template: '{{ current_node == "action_1770166026439" }}'
+          sequence:
+          - target:
+              entity_id:
+              - light.deckenlicht_buro
+            action: light.turn_off
+          - variables:
+              current_node: END
+        default:
+        - data:
+            message: 'C.A.F.E.: Unknown state "{{ current_node }}", ending flow'
+            level: warning
+          action: system_log.write
+        - variables:
+            current_node: END
+  mode: single
+  variables:
+    _cafe_metadata:
+      version: 1
+      strategy: native
+      nodes:
+        trigger_1770165895848:
+          x: 270
+          y: 150
+        condition_1770165897645:
+          x: 495
+          y: 105
+        action_1770165899118:
+          x: 795
+          y: 150
+        trigger_1770165976256:
+          x: 270
+          y: 270
+        condition_1770166010948:
+          x: 495
+          y: 270
+        action_1770166026439:
+          x: 795
+          y: 285
+      graph_id: 13662c30-585e-456c-83fe-40bb9d020c4d
+      graph_version: 1

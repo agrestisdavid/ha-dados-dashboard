@@ -1,0 +1,22 @@
+dados_vacuum_roboter_card:
+  default:
+    - entity: vacuum.roborock_qrevo_curv_series
+    - cards:
+        - type: custom:decluttering-card
+          template: dados_vacuum_roboter_control
+    - title_card:
+        type: custom:button-card
+        template:
+          - dados_vacuum_roboter
+        styles:
+          card:
+            - overflow: visible
+
+  card:
+    type: custom:decluttering-card
+    template: dados_expander_base
+    variables:
+      - entity: '[[entity]]'
+      - cards: '[[cards]]'
+      - title_card: '[[title_card]]'
+      - card_mod: '[[card_mod]]'

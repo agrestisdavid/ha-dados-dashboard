@@ -1,0 +1,61 @@
+dados_lights_area:
+  card:
+    type: vertical-stack
+    cards:
+      # - type: custom:auto-entities
+      #   card:
+      #     type: entities
+      #     card_mod:
+      #       style: |
+      #         ha-card {
+      #           background: transparent !important;
+      #           box-shadow: none !important;
+      #           border: 0 !important;
+      #         }
+      #         .card-content {
+      #           padding: 0 !important;
+      #         }
+      #   filter:
+      #     include:
+      #       - area: "[[area]]"
+      #         domain: light
+      #         label: nodimm
+      #         options:
+      #           type: custom:button-card
+      #           template: dados_light
+      #           variables:
+      #             entity: this.entity_id
+      #     exclude: []
+      - type: custom:auto-entities
+        card:
+          type: entities
+          card_mod:
+            style: |
+              ha-card {
+                background: transparent !important;
+                box-shadow: none !important;
+                border: 0 !important;
+              }
+              .card-content {
+                padding: 0 !important;
+              }
+        filter:
+          include:
+            - area: "[[area]]"
+              domain: light
+              label: nodimm
+              options:
+                type: custom:button-card
+                template: dados_light
+                variables:
+                  entity: this.entity_id
+
+            - area: "[[area]]"
+              domain: light
+              label: dimm
+              options:
+                type: custom:decluttering-card
+                template: dados_light_expander
+                variables:
+                  - entity: this.entity_id
+          exclude: []

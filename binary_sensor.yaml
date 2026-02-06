@@ -1,0 +1,5 @@
+#MeteoAlarm
+- platform: meteoalarm
+  country: "austria"
+  province: "Neusiedl am See"
+  language: de-DE

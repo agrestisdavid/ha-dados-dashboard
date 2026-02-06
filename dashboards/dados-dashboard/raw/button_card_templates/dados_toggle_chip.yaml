@@ -1,0 +1,66 @@
+dados_toggle_chip:
+  variables:
+    entity: ""
+    img_cell_background: var(--lavender)
+  type: custom:button-card
+  entity: '[[[ return variables.entity ]]]'
+  show_name: false
+  show_state: false
+  show_icon: true
+  tap_action:
+    action: toggle
+  icon: none
+  styles:
+    card:
+      - width: 50px
+      - height: 30px
+      - padding: 1px
+      - border-radius: 999px
+      - background: var(--contrast4)
+      - box-shadow: none
+      - overflow: visible
+      - --button-card-ripple-color: transparent !important
+      - --button-card-ripple-hover-opacity: 0 !important
+      - --ha-card-ripple-color: transparent !important
+      - --ha-ripple-hover-opacity: 0 !important
+
+    grid:
+      - grid-template-areas: "\"i\""
+      - grid-template-columns: 1fr
+      - grid-template-rows: 1fr
+    img_cell:
+      - width: 100%
+      - height: 100%
+      - padding: 0
+      - overflow: visible
+    icon:
+      - position: absolute
+      - top: 50%
+      - transform: translateY(-50%)
+      - left: 0px
+      - width: 30px
+      - height: 60px
+      - border-radius: 999px
+      - background: var(--contrast6)
+      - color: rgba(var(--contrast1-rgb), 1)
+      - box-shadow: none
+      - transition: left 220ms ease, background 220ms ease
+      - overflow: visible
+  state:
+    - value: "on"
+      icon: none
+      styles:
+        card:
+          - background: |
+              [[[
+                const v = (variables?.img_cell_background || 'var(--red)')
+                  .toString()
+                  .trim();
+                if (v.includes('-tint')) return v;
+                if (v.startsWith('var(')) return v.replace(/\)$/, '-tint)');
+                return v;
+              ]]]
+
+        icon:
+          - left: 20px
+          - background: "[[[ return variables.img_cell_background ]]]"

@@ -1,0 +1,82 @@
+dados_light_expander:
+  card:
+    type: custom:expander-card
+    grid_options:
+      columns: 12
+      rows: auto
+    title-card-clickable: true
+    title-card-button-overlay: true
+    clear-children: true
+    child-padding: 0px 5px
+    child-margin-top: -15px
+    clear: false
+    padding: 0px
+    icon: m3o:info
+    animation: true
+    arrow-color: var(--contrast16)
+    gap: 0px
+    expanded: false
+    overlay-margin: 17px 70px 0px 0px
+    button-background: var(--contrast3)
+    icon-rotate-degree: 0deg
+    templates: []
+    expanded-gap: 0px
+    expander-card-id: "[[entity]]"
+    show-button-users:
+      - vaca-kuche
+
+    title-card:
+      type: custom:button-card
+      template: dados_light
+      variables:
+        entity: "[[entity]]"
+        card_color: transparent
+        # expander-id: "[[entity]]"
+      styles:
+        card:
+          - overflow: visible
+
+    cards:
+      - type: custom:auto-entities
+        card:
+          type: entities
+        filter:
+          include:
+            - entity_id: "[[entity]]"
+              label: dimm
+              options:
+                type: custom:button-card
+                template: dados_light_brightness
+                variables:
+                  entity: "[[entity]]"
+            - entity_id: "[[entity]]"
+              label: temp
+              options:
+                type: custom:button-card
+                template: dados_light_temp
+                variables:
+                  entity: "[[entity]]"
+            - entity_id: "[[entity]]"
+              label: hue
+              options:
+                type: custom:button-card
+                template: dados_light_hue
+                variables:
+                  entity: "[[entity]]"
+          exclude: []
+    style: |2
+
+        .header-overlay {
+          height: unset !important;
+        }
+        button.header {
+          border-radius: 16px !important;
+          overflow: hidden !important;
+        }
+    card_mod:
+      style:
+        .: |
+          ha-card {
+            border-radius: 36px !important;
+            overflow: hidden !important;
+          }

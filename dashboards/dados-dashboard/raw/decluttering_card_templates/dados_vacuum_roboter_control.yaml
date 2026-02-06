@@ -1,0 +1,513 @@
+dados_vacuum_roboter_control:
+  default:
+    - expander_id: saugen_wahl
+    - t_all: input_boolean.saugen_alles
+    - t_living: input_boolean.saugen_wohnzimmer
+    - t_kitchen: input_boolean.saugen_kuche
+    - t_dining: input_boolean.saugen_esszimmer
+    - t_office: input_boolean.saugen_buro
+    - t_hall: input_boolean.saugen_flur
+    - t_guest: input_boolean.saugen_gastezimmer
+    - t_guestbath: input_boolean.saugen_gastebad
+    - t_entry: input_boolean.saugen_eingang
+    - mop_intensity: select.roborock_qrevo_curv_series_wisch_intensitat
+    - suction_select: input_select.robobert_saugleistung
+    - vacuum: vacuum.roborock_qrevo_curv_series
+    - script_start: script.saugen
+  card:
+    type: vertical-stack
+    cards:
+      # Raumauswahl Expander
+      - type: custom:expander-card
+        expander-card-id: '[[expander_id]]'
+        icon: mdi:none
+        expanded: false
+        animation: true
+        clear: true
+        clear-children: true
+        child-margin-top: 10px
+        child-padding: 0px
+        padding: 0px
+        expander-card-background: var(--contrast3)
+        title-card-button-overlay: true
+        overlay-margin: 0px 0px 0px 0px
+        title-card-clickable: false
+        title-card-padding: 0px
+        title-card:
+            type: custom:button-card
+            show_state: false
+            show_icon: false
+            show_name: false
+            tap_action:
+              action: none
+            styles:
+              card:
+                - background: transparent
+                - padding: 0px 12px 0px 12px
+                - border-radius: 16px
+                - height: 40px
+                - "--button-card-ripple-color": transparent !important
+                - "--button-card-ripple-hover-opacity": 0 !important
+                - "--ha-card-ripple-color": transparent !important
+                - "--ha-ripple-hover-opacity": 0 !important
+              grid:
+                - grid-template-areas: |
+                    "start start"
+                - grid-template-columns: 1fr
+                - grid-template-rows: 1fr
+                - column-gap: 10px
+              name:
+                - justify-self: start
+                - align-self: start
+                - font-size: 16px
+                - font-weight: 600
+                - color: red
+            custom_fields:
+              start:
+                card:
+                  type: custom:button-card
+                  show_state: false
+                  show_icon: false
+                  show_name: true
+                  name: Raumauswahl
+                  styles:
+                    card:
+                      - background: var(--coral)
+                      - padding: 12px
+                      - border-radius: 16px
+                      - height: 40px
+                      - "--button-card-ripple-color": transparent !important
+                      - "--button-card-ripple-hover-opacity": 0 !important
+                      - "--ha-card-ripple-color": transparent !important
+                      - "--ha-ripple-hover-opacity": 0 !important
+                    name:
+                      - justify-self: center
+                      - align-self: center
+                      - font-size: 14px
+                      - font-weight: 600
+                      - color: var(--contrast1)
+                  tap_action:
+                    action: fire-dom-event
+                    expander-card:
+                      data:
+                        expander-card-id: "[[expander_id]]"
+                        action: toggle
+
+
+          # type: custom:custom-features-card
+          # transparent: true
+          # features:
+          #   - type: custom:service-call
+          #     entries:
+          #       - type: button
+          #         entity_id: '[[t_all]]'
+          #         thumb: md3-filled
+          #         label: Raumauswahl
+          #         toggle_styles: false
+          #         styles: |-
+          #           :host {
+          #             --label-color: var(--black1);
+          #             --mdc-label-size: 25px;
+          #             --color: var(--alert);
+          #           }
+          #         tap_action:
+          #           action: fire-dom-event
+          #           expander-card:
+          #             data:
+          #               expander-card-id: '[[expander_id]]'
+          #               action: toggle
+          # card_mod:
+          #   style:
+          #     .: |
+          #       ha-card {
+          #         box-shadow: none !important;
+          #         border-radius: 14px !important;
+          #         padding: 0px 12px !important;
+          #       }
+        cards:
+          - type: custom:custom-features-card
+            transparent: true
+            feature_height: 28
+            features:
+              - type: custom:service-call
+                entries:
+                  - type: toggle
+                    entity_id: '[[t_all]]'
+                    tap_action:
+                      action: toggle
+                      target:
+                        entity_id: '[[t_all]]'
+                      data: {}
+                    thumb: checkbox
+                    label: Alles
+                    icon: mdi:home-floor-1
+                    checked_icon: fa6-solid:x
+                    styles: |-
+                      :host {
+                        --checkbox-checked-border-color: var(--contrast4);
+                        --checkbox-checked-icon-color: var(--red);
+                        --checkbox-unchecked-border-color: var(--contrast4);
+                      }
+              - type: custom:service-call
+                entries:
+                  - type: toggle
+                    entity_id: '[[t_living]]'
+                    tap_action:
+                      action: toggle
+                      target:
+                        entity_id: '[[t_living]]'
+                      data: {}
+                    thumb: checkbox
+                    label: Wohnen
+                    icon: m3o:weekend
+                    checked_icon: fa6-solid:x
+                styles: |-
+                  :host {
+                    --checkbox-checked-border-color: var(--contrast4);
+                    --checkbox-checked-icon-color: var(--red);
+                    --checkbox-unchecked-border-color: var(--contrast4);
+                  }
+              - type: custom:service-call
+                entries:
+                  - type: toggle
+                    entity_id: '[[t_kitchen]]'
+                    tap_action:
+                      action: toggle
+                      target:
+                        entity_id: '[[t_kitchen]]'
+                      data: {}
+                    thumb: checkbox
+                    label: Küche
+                    icon: m3o:chef-hat
+                    checked_icon: fa6-solid:x
+                    haptics: true
+                styles: |-
+                  :host {
+                    --checkbox-checked-border-color: var(--contrast4);
+                    --checkbox-checked-icon-color: var(--red);
+                    --checkbox-unchecked-border-color: var(--contrast4);
+                  }
+              - type: custom:service-call
+                entries:
+                  - type: toggle
+                    entity_id: '[[t_dining]]'
+                    tap_action:
+                      action: toggle
+                      target:
+                        entity_id: '[[t_dining]]'
+                      data: {}
+                    thumb: checkbox
+                    label: Essen
+                    icon: m3o:dine-lamp
+                    checked_icon: fa6-solid:x
+                styles: |-
+                  :host {
+                    --checkbox-checked-border-color: var(--contrast4);
+                    --checkbox-checked-icon-color: var(--red);
+                    --checkbox-unchecked-border-color: var(--contrast4);
+                  }
+              - type: custom:service-call
+                entries:
+                  - type: toggle
+                    entity_id: '[[t_office]]'
+                    tap_action:
+                      action: toggle
+                      target:
+                        entity_id: '[[t_office]]'
+                      data: {}
+                    thumb: checkbox
+                    label: Büro
+                    icon: m3o:desktop-windows
+                    checked_icon: fa6-solid:x
+                styles: |-
+                  :host {
+                    --checkbox-checked-border-color: var(--contrast4);
+                    --checkbox-checked-icon-color: var(--red);
+                    --checkbox-unchecked-border-color: var(--contrast4);
+                  }
+              - type: custom:service-call
+                entries:
+                  - type: toggle
+                    entity_id: '[[t_hall]]'
+                    tap_action:
+                      action: toggle
+                      target:
+                        entity_id: '[[t_hall]]'
+                      data: {}
+                    thumb: checkbox
+                    label: Flur
+                    icon: m3o:hallway
+                    checked_icon: fa6-solid:x
+                styles: |-
+                  :host {
+                    --checkbox-checked-border-color: var(--contrast4);
+                    --checkbox-checked-icon-color: var(--red);
+                    --checkbox-unchecked-border-color: var(--contrast4);
+                  }
+              - type: custom:service-call
+                entries:
+                  - type: toggle
+                    entity_id: '[[t_guest]]'
+                    tap_action:
+                      action: toggle
+                      target:
+                        entity_id: '[[t_guest]]'
+                      data: {}
+                    thumb: checkbox
+                    label: Gäste
+                    icon: m3o:hotel
+                    checked_icon: fa6-solid:x
+                styles: |-
+                  :host {
+                    --checkbox-checked-border-color: var(--contrast4);
+                    --checkbox-checked-icon-color: var(--red);
+                    --checkbox-unchecked-border-color: var(--contrast4);
+                  }
+              - type: custom:service-call
+                entries:
+                  - type: toggle
+                    entity_id: '[[t_guestbath]]'
+                    tap_action:
+                      action: toggle
+                      target:
+                        entity_id: '[[t_guestbath]]'
+                      data: {}
+                    thumb: checkbox
+                    label: Gästebad
+                    icon: m3o:shower
+                    checked_icon: fa6-solid:x
+                styles: |-
+                  :host {
+                    --checkbox-checked-border-color: var(--contrast4);
+                    --checkbox-checked-icon-color: var(--red);
+                    --checkbox-unchecked-border-color: var(--contrast4);
+                  }
+              - type: custom:service-call
+                entries:
+                  - type: toggle
+                    entity_id: '[[t_entry]]'
+                    tap_action:
+                      action: toggle
+                      target:
+                        entity_id: '[[t_entry]]'
+                      data: {}
+                    thumb: checkbox
+                    label: Eingang
+                    icon: m3o:door-front
+                    checked_icon: fa6-solid:x
+                styles: |-
+                  :host {
+                    --checkbox-checked-border-color: var(--contrast4);
+                    --checkbox-checked-icon-color: var(--red);
+                    --checkbox-unchecked-border-color: var(--contrast4);
+                  }
+        card_mod:
+          style:
+            .: |
+              ha-card {
+                box-shadow: none !important;
+                border-radius: 14px !important;
+                padding: 0px !important;
+              }
+      # Wischen
+      - type: custom:button-card
+        template: dados_selector
+        variables:
+          entity: '[[mop_intensity]]'
+          img_cell_background: var(--blue)
+          option1: "off"
+          option2: "mild"
+          option3: "intense"
+          label1: "off"
+          label2: "mild"
+          label3: "intense"
+          icon1: m3o:humidity-low
+          icon2: m3o:humidity-mid
+          icon3: m3o:humidity-high
+      # Saugen
+      - type: custom:button-card
+        template: dados_selector_helper
+        variables:
+          entity: '[[suction_select]]'
+          img_cell_background: var(--coral)
+          option1: "off"
+          option2: "max"
+          option3: "max_plus"
+          label1: "off"
+          label2: "max"
+          label3: "max_plus"
+          icon1: m3o:mode-fan-off
+          icon2: mdi:fan
+          icon3: mdi:fan-plus
+      - type: custom:button-card
+        entity: vacuum.roborock_qrevo_curv_series
+        show_state: false
+        show_icon: false
+        show_name: false
+        variables:
+          state_entity: vacuum.roborock_qrevo_curv_series
+        state:
+          - operator: template
+            value: >
+              [[[ return ['docked', 'charging'].includes(states[variables.state_entity]?.state?.toLowerCase()) ]]]
+            styles:
+              card:
+                - border-radius: 16px
+              grid:
+                - grid-template-areas: |
+                    "start start"
+                - grid-template-columns: 1fr 1fr
+                - grid-template-rows: 1fr
+                - column-gap: 10px
+                - row-gap: 10px
+              custom_fields:
+                start:
+                  - display: block
+                pause:
+                  - display: none
+                abort:
+                  - display: none
+
+
+        styles:
+          card:
+            - background: transparent
+            - padding: 0px 12px 22px 12px
+            - border-radius: 16px
+            - "--button-card-ripple-color": transparent !important
+            - "--button-card-ripple-hover-opacity": 0 !important
+            - "--ha-card-ripple-color": transparent !important
+            - "--ha-ripple-hover-opacity": 0 !important
+          grid:
+            - grid-template-areas: |
+                "pause abort"
+            - grid-template-columns: 1fr 1fr
+            - grid-template-rows: 1fr
+            - column-gap: 10px
+          name:
+            - justify-self: start
+            - align-self: start
+            - font-size: 16px
+            - font-weight: 600
+            - color: red
+          custom_fields:
+            start:
+              - display: none
+            pause:
+              - display: block
+            abort:
+              - display: block
+        custom_fields:
+          start:
+            card:
+              type: custom:button-card
+              show_icon: true
+              show_state: false
+              icon: m3rf:play-arrow
+              name: |
+                [[[
+                  return `<ha-icon icon="m3rf:play-arrow" style="--mdc-icon-size:20px;"></ha-icon> Start`;
+                ]]]
+              tap_action:
+                action: perform-action
+                perform_action: script.saugen
+                target:
+                  entity_id: '[[script_start]]'
+                data: {}
+              styles:
+                card:
+                  - border-radius: 14px
+                  - background: var(--peach)
+                  - height: 40px
+                  - padding: 0
+                grid:
+                  - grid-template-areas: "\"i n\""
+                  - grid-template-columns: auto auto
+                  - grid-template-rows: 1fr
+                  - justify-content: center
+                  - align-items: center
+                  - column-gap: 4px
+                name:
+                  - font-size: 14px
+                  - font-weight: 600
+                  - align-self: center
+                  - color: var(--contrast1)
+                icon:
+                  - width: 20px
+                  - height: 20px
+                  - align-self: center
+                img_cell:
+                  - align-self: center
+                  - display: flex
+                  - align-items: center
+                  - justify-content: center
+          pause:
+            card:
+              type: custom:button-card
+              show_icon: true
+              show_state: false
+              show_name: false
+              icon: mdi:pause
+              tap_action:
+                action: |
+                  [[[
+                    const s = (states[variables.state_entity]?.state || states[variables.vacuum]?.state || '').toLowerCase();
+                    if (s === 'cleaning') return 'vacuum.pause';
+                    if (s === 'idle') return 'vacuum.start';
+                    if (s === 'paused')   return 'vacuum.start';  
+                    return 'vacuum.pause';
+                  ]]]
+                target:
+                  entity_id: '[[[ return variables.vacuum ]]]'
+              state:
+                - operator: template
+                  value: >
+                    [[[ return ['pause', 'paused', 'idle'].includes(states[variables.state_entity]?.state?.toLowerCase()) ]]]
+                  icon: mdi:play
+              styles:
+                card:
+                  - border-radius: 14px
+                  - height: 40px
+                  - padding: 0
+                  - background-color: var(--peach)
+                icon:
+                  - width: 20px
+                  - height: 20px
+                  - align-self: center
+                  - color: var(--contrast1)
+                img_cell:
+                  - align-self: center
+                  - display: flex
+                  - align-items: center
+                  - justify-content: center
+          abort:
+            card:
+              type: custom:button-card
+              show_icon: true
+              show_state: false
+              show_name: false
+              icon: "mdi:stop"
+              tap_action:
+                action: perform-action
+                perform_action: vacuum.return_to_base
+                target:
+                  entity_id: '[[vacuum]]'
+                data: {}
+              styles:
+                card:
+                  - border-radius: 14px
+                  - height: 40px
+                  - padding: 0
+                  - background: var(--peach)
+                icon:
+                  - width: 20px
+                  - height: 20px
+                  - align-self: center
+                  - color: var(--contrast1)
+                img_cell:
+                  - align-self: center
+                  - display: flex
+                  - align-items: center
+                  - justify-content: center
+
+

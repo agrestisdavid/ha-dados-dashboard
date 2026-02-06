@@ -1,0 +1,412 @@
+type: sections
+title: Einkaufsliste
+path: einkaufsliste
+cards: []
+subview: true
+sections:
+  - type: grid
+    cards:
+      - type: custom:gap-card
+        grid_options:
+          columns: full
+          rows: 0.5
+      - type: custom:navbar-card
+        template: main
+      - type: custom:expander-card
+        cards:
+          - display_order: none
+            type: todo-list
+            entity: todo.einkaufsliste
+            hide_section_headers: false
+        title-card:
+          type: custom:button-card
+          variables:
+            entity: todo.einkaufsliste
+            name: Einkaufsliste
+            navigation_path: /lovelace/heizung
+            state_display: todo.einkaufsliste
+            img_cell_background: var(--orange)
+            icon_on: mdi:shopping-outline
+          entity: "[[[ return variables.entity ]]]"
+          icon: "[[[ return variables.icon_on ]]]"
+          show_state: true
+          state_display: >-
+            [[[ return states[variables.state_display]?.state + ' Artikel
+            sind auf der Einkaufsliste' || 'FEHLER'; ]]]
+          name: "[[[ return variables.name ]]]"
+          icon_tap_action:
+            action: none
+          tap_action:
+            action: fire-dom-event
+            expander-card:
+              data:
+                expander-card-id: einkaufsliste
+                action: toggle
+          styles:
+            grid:
+              - grid-template-columns: 55px 1fr
+              - grid-template-rows: min-content 1fr
+              - grid-template-areas: "'i n' 'i s'"
+            card:
+              - border-radius: 36px
+              - background: transparent
+              - padding: 12px
+              - height: 80px
+              - overflow: visible
+            img_cell:
+              - width: 45px
+              - height: 45px
+              - align-self: start
+              - margin-top: 5px
+              - background: "[[[ return variables.img_cell_background ]]]"
+              - border-radius: 18px
+              - box-shadow: |
+                  [[[
+                    const c = entity?.attributes?.rgb_color;
+                    const fbColor = variables?.img_cell_background || 'var(--orange)';    
+                    const colA = c ? `rgba(${c[0]}, ${c[1]}, ${c[2]}, 0.7)` : fbColor;
+                    const colB = c ? `rgba(${c[0]}, ${c[1]}, ${c[2]}, 0.8)` : fbColor;    
+                    return `-55px -50px 70px 20px ${colA}, -35px -35px 70px 10px ${colB}`;
+                  ]]]
+            icon:
+              - width: 32px
+              - color: var(--contrast2)
+            name:
+              - justify-self: start
+              - align-self: start
+              - margin-top: 9px
+              - font-size: 16px
+              - font-weight: 500
+              - color: var(--contrast16)
+              - letter-spacing: 0.4px
+              - padding-left: 3px
+            state:
+              - justify-self: start
+              - align-self: start
+              - font-size: 14px
+              - font-weight: 400
+              - color: var(--contrast10)
+              - letter-spacing: 0.6px
+              - margin-top: "-0px"
+              - padding-left: 3px
+        grid_options:
+          columns: full
+          rows: auto
+        title-card-clickable: true
+        title-card-button-overlay: true
+        clear-children: true
+        child-padding: 5px
+        child-margin-top: "-15px"
+        clear: false
+        padding: 0px
+        icon: mdi:plus
+        animation: true
+        arrow-color: var(--contrast16)
+        gap: 0px
+        expanded: false
+        overlay-margin: 20px 20px 0px 0px
+        style: |2-
+
+            .header-overlay {
+              height: unset !important;
+            }
+        expander-card-id: einkaufsliste
+        button-background: var(--contrast3)
+        icon-rotate-degree: 45deg
+        view_layout:
+          grid-area: heizung
+        card_mod:
+          style:
+            .: |
+              ha-card {
+                border-radius: 36px !important;
+                overflow: hidden !important;      
+                margin-top: 0px !important;
+              }
+      - type: custom:expander-card
+        cards:
+          - display_order: none
+            type: todo-list
+            entity: todo.david
+            hide_section_headers: false
+        title-card:
+          type: custom:button-card
+          variables:
+            entity: todo.david
+            name: David
+            navigation_path: /lovelace/heizung
+            state_display: todo.david
+            img_cell_background: var(--olive)
+            icon_on: m3o:face
+          entity: "[[[ return variables.entity ]]]"
+          icon: "[[[ return variables.icon_on ]]]"
+          show_state: true
+          state_display: >-
+            [[[ return states[variables.state_display]?.state + ' offene
+            Aufgaben' || 'FEHLER'; ]]]
+          name: "[[[ return variables.name ]]]"
+          icon_tap_action:
+            action: none
+          tap_action:
+            action: fire-dom-event
+            expander-card:
+              data:
+                expander-card-id: david
+                action: toggle
+          styles:
+            grid:
+              - grid-template-columns: 55px 1fr
+              - grid-template-rows: min-content 1fr
+              - grid-template-areas: "'i n' 'i s'"
+            card:
+              - border-radius: 36px
+              - background: var(--contrast2)
+              - padding: 12px
+              - height: 80px
+              - overflow: visible
+            img_cell:
+              - width: 45px
+              - height: 45px
+              - align-self: start
+              - margin-top: 5px
+              - background: "[[[ return variables.img_cell_background ]]]"
+              - border-radius: 18px
+              - box-shadow: |
+                  [[[
+                    const c = entity?.attributes?.rgb_color;
+                    const fbColor = variables?.img_cell_background || 'var(--olive)';    
+                    const colA = c ? `rgba(${c[0]}, ${c[1]}, ${c[2]}, 0.7)` : fbColor;
+                    const colB = c ? `rgba(${c[0]}, ${c[1]}, ${c[2]}, 0.8)` : fbColor;    
+                    return `-55px -50px 70px 20px ${colA}, -35px -35px 70px 10px ${colB}`;
+                  ]]]
+            icon:
+              - width: 32px
+              - color: var(--contrast2)
+            name:
+              - justify-self: start
+              - align-self: start
+              - margin-top: 9px
+              - font-size: 16px
+              - font-weight: 500
+              - color: var(--contrast16)
+              - letter-spacing: 0.4px
+              - padding-left: 3px
+            state:
+              - justify-self: start
+              - align-self: start
+              - font-size: 14px
+              - font-weight: 400
+              - color: var(--contrast10)
+              - letter-spacing: 0.6px
+              - margin-top: "-0px"
+              - padding-left: 3px
+        grid_options:
+          columns: full
+          rows: auto
+        title-card-clickable: true
+        title-card-button-overlay: true
+        clear-children: true
+        child-padding: 5px
+        child-margin-top: "-15px"
+        clear: false
+        padding: 0px
+        icon: mdi:plus
+        animation: true
+        arrow-color: var(--contrast16)
+        gap: 0px
+        expanded: false
+        overlay-margin: 20px 20px 0px 0px
+        style: |2-
+
+            .header-overlay {
+              height: unset !important;
+            }
+        expander-card-id: david
+        button-background: var(--contrast3)
+        icon-rotate-degree: 45deg
+        view_layout:
+          grid-area: heizung
+        card_mod:
+          style:
+            .: |
+              ha-card {
+                border-radius: 36px !important;
+                overflow: hidden !important;      
+                margin-top: 0px !important;
+              }
+      - type: custom:expander-card
+        cards:
+          - display_order: none
+            type: todo-list
+            entity: todo.feri
+            hide_section_headers: false
+        title-card:
+          type: custom:button-card
+          variables:
+            entity: todo.feri
+            name: Feri
+            navigation_path: /lovelace/heizung
+            state_display: todo.feri
+            img_cell_background: var(--lavender)
+            icon_on: m3o:face-4
+          entity: "[[[ return variables.entity ]]]"
+          icon: "[[[ return variables.icon_on ]]]"
+          show_state: true
+          state_display: >-
+            [[[ return states[variables.state_display]?.state + ' offene
+            Aufgaben' || 'FEHLER'; ]]]
+          name: "[[[ return variables.name ]]]"
+          icon_tap_action:
+            action: none
+          tap_action:
+            action: fire-dom-event
+            expander-card:
+              data:
+                expander-card-id: feri
+                action: toggle
+          styles:
+            grid:
+              - grid-template-columns: 55px 1fr
+              - grid-template-rows: min-content 1fr
+              - grid-template-areas: "'i n' 'i s'"
+            card:
+              - border-radius: 36px
+              - background: var(--contrast2)
+              - padding: 12px
+              - height: 80px
+              - overflow: visible
+            img_cell:
+              - width: 45px
+              - height: 45px
+              - align-self: start
+              - margin-top: 5px
+              - background: "[[[ return variables.img_cell_background ]]]"
+              - border-radius: 18px
+              - box-shadow: |
+                  [[[
+                    const c = entity?.attributes?.rgb_color;
+                    const fbColor = variables?.img_cell_background || 'var(--lavender)';    
+                    const colA = c ? `rgba(${c[0]}, ${c[1]}, ${c[2]}, 0.7)` : fbColor;
+                    const colB = c ? `rgba(${c[0]}, ${c[1]}, ${c[2]}, 0.8)` : fbColor;    
+                    return `-55px -50px 70px 20px ${colA}, -25px -25px 70px 10px ${colB}`;
+                  ]]]
+            icon:
+              - width: 32px
+              - color: var(--contrast2)
+            name:
+              - justify-self: start
+              - align-self: start
+              - margin-top: 9px
+              - font-size: 16px
+              - font-weight: 500
+              - color: var(--contrast16)
+              - letter-spacing: 0.4px
+              - padding-left: 3px
+            state:
+              - justify-self: start
+              - align-self: start
+              - font-size: 14px
+              - font-weight: 400
+              - color: var(--contrast10)
+              - letter-spacing: 0.6px
+              - margin-top: "-0px"
+              - padding-left: 3px
+        grid_options:
+          columns: full
+          rows: auto
+        title-card-clickable: true
+        title-card-button-overlay: true
+        clear-children: true
+        child-padding: 5px
+        child-margin-top: "-15px"
+        clear: false
+        padding: 0px
+        icon: mdi:plus
+        animation: true
+        arrow-color: var(--contrast16)
+        gap: 0px
+        expanded: false
+        overlay-margin: 20px 20px 0px 0px
+        style: |2-
+
+            .header-overlay {
+              height: unset !important;
+            }
+        expander-card-id: feri
+        button-background: var(--contrast3)
+        icon-rotate-degree: 45deg
+        view_layout:
+          grid-area: heizung
+        card_mod:
+          style:
+            .: |
+              ha-card {
+                border-radius: 36px !important;
+                overflow: hidden !important;      
+                margin-top: 0px !important;
+              }
+    column_span: 2
+  - type: grid
+    cards:
+      - type: vertical-stack
+        cards:
+          - type: custom:bubble-card
+            card_type: pop-up
+            hash: "#lichteran"
+            button_type: name
+            name: Lichter an
+            icon: m3o:light-group
+            scrolling_effect: false
+            modules:
+              - header-settings
+            more_info_popup:
+              bd_filter: blur(100px)
+              window_ani: rotate(360deg) translateY(150%)
+            sub_button:
+              main: []
+              bottom: []
+          - type: custom:decluttering-card
+            template: dados_active_lights
+      - type: vertical-stack
+        cards:
+          - type: custom:bubble-card
+            card_type: pop-up
+            hash: "#rollosoffen"
+            button_type: name
+            name: Rollos Offen
+            icon: mdi:blinds-open
+            scrolling_effect: false
+            sub_button:
+              main: []
+              bottom: []
+          - type: custom:auto-entities
+            card:
+              type: grid
+              columns: 1
+              square: false
+            card_param: cards
+            filter:
+              include:
+                - domain: cover
+                  state: open
+                  options:
+                    type: tile
+                    entity: this.entity_id
+                    name:
+                      - type: area
+                    icon: mdi:blinds
+                    show_entity_picture: false
+                    hide_state: false
+                    vertical: false
+                    features:
+                      - type: cover-open-close
+                      - type: cover-position
+                    features_position: bottom
+              exclude: []
+    column_span: 1
+max_columns: 2
+header:
+  card:
+    type: markdown
+    text_only: true
+    content: "# Erledigungen"

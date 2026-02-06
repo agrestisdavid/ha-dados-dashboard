@@ -1,0 +1,52 @@
+dados_light_brightness:
+  template: dados_slider
+  variables:
+    entity: null
+    icon: m3of:percent
+  custom_fields:
+    slider:
+      card:
+        type: custom:my-slider-v2
+        entity: "[[[ return variables.entity ]]]"
+        allowTapping: false
+        allowSliding: true
+        flipped: false
+        vertical: false
+        styles:
+          container:
+            - border-radius: 24px
+          card:
+            - margin-bottom: 0px
+            - border-radius: 24px
+            - height: 57px
+            - background: var(--contrast2)
+          progress:
+            - border-radius: 24px
+            - background: |
+                [[[
+                  const c = entity?.attributes?.rgb_color;
+                  return c ? `rgba(${c[0]}, ${c[1]}, ${c[2]}, 0.7)` : 'var(--yellow)';
+                ]]]
+          thumb:
+            - width: 3px
+            - height: 30%
+            - top: 36%
+            - margin-right: 11px
+            - border-radius: 5px
+            - background: var(--black1)
+          track:
+            - background: |
+                [[[
+                  if (entity?.state !== 'on') return 'var(--contrast3)';
+
+                  const c = entity?.attributes?.rgb_color;
+                  return c
+                    ? `rgba(${c[0]}, ${c[1]}, ${c[2]}, 0.1)`
+                    : 'var(--brightness-tint)';
+                ]]]
+        card_mod:
+          style: |
+            ha-card {
+              border-radius: 24px !important;
+              overflow: hidden;
+            }

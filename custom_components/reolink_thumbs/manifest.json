@@ -1,0 +1,14 @@
+{
+  "domain": "reolink_thumbs",
+  "name": "Reolink thumbs",
+  "codeowners": ["@cyr-ius"],
+  "config_flow": true,
+  "dependencies": ["reolink"],
+  "documentation": "https://github.com/cyr-ius/hass-reolink-thumbs",
+  "integration_type": "service",
+  "iot_class": "assumed_state",
+  "issue_tracker": "https://github.com/cyr-ius/hass-reolink-thumbs/issues",
+  "requirements": ["ffmpeg-python"],
+  "single_config_entry": true,
+  "version": "0.3.2"
+}

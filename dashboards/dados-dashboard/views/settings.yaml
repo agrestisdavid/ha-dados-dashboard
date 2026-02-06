@@ -1,0 +1,472 @@
+type: sections
+max_columns: 2
+title: Settings
+path: settings
+subview: true
+sections:
+  - type: grid
+    cards:
+      - type: custom:gap-card
+        grid_options:
+          columns: full
+          rows: 0.5
+  - type: custom:simple-tabs
+    show_fade: true
+    hide_inactive_tab_titles: true
+    background-color: var(--contrast2)
+    active-text-color: var(--black5)
+    active-background: var(--tabs)
+    hover-color: var(--contrast4)
+    border-color: var(--contrast2)
+    button_padding: 15px
+    default_tab: 1
+    tabs_gap: 10px
+    tabs:
+
+
+    - title: Home           #home
+      icon: m3r:home-and-garden
+      card:
+        type: vertical-stack
+        cards:
+
+          - type: custom:bubble-card      #hauseinstellungen
+            card_type: separator
+            name: Hauseinstellungen
+            icon: m3rf:settings
+            grid_options:
+              columns: full
+            sub_button:
+              main:
+                - content_layout: icon-left
+                  tap_action:
+                    action: toggle
+                  icon: m3of:info-i
+                  name: Mehr anzeigen
+                  show_name: true
+                  entity: input_boolean.hauseinstellungen_expander_toggle
+                  show_attribute: false
+                  attribute: editable
+                  show_state: false
+                  show_icon: false
+                  state_background: false
+              bottom: []
+            visibility:
+              - condition: user
+                users:
+                  - 6b9e364e8f1d413c99e8a3b82fa2f816
+                  - 65764a40005e42adb2ff5a9c98670e4c
+          - type: custom:decluttering-card  ##guestmode
+            template: dados_automation_card
+            variables:
+              - toggle_entity: input_boolean.hauseinstellungen_expander_toggle
+              - expander_id: guestmode
+              - title_card:
+                  type: custom:button-card
+                  template: dados_automation_header
+                  variables:
+                    img_cell_background: var(--orange)
+                    icon_on: m3rf:person
+                    icon_off: m3rf:person-off
+                    expander_id: guestmode
+                    name: "Gästemodus"
+                    entity: automation.lichter_bei_sonnenaufgang_untergang_anpassen_dado_feri_zu_hause
+                    state_display_entity: automation.lichter_bei_sonnenaufgang_untergang_anpassen_dado_feri_zu_hause       
+                  custom_fields:
+                    toggle:
+                      card:
+                        type: custom:button-card
+                        template: dados_toggle_chip
+                        variables:
+                          entity: automation.lichter_bei_sonnenaufgang_untergang_anpassen_dado_feri_zu_hause
+                          img_cell_background: var(--lavender)           
+              - cards:
+                  - type: custom:button-card
+                    template: dados_automation_decription
+                    variables:
+                      entity: automation.lichter_bei_sonnenaufgang_untergang_anpassen_dado_feri_zu_hause
+                      expander_id: guestmode
+                      description: "Schaltet bei Sonnenuntergang bestimmte Innen- und Außenlichter ein und schaltet sie bei Sonnenaufgang wieder aus."
+
+
+            section_mode: true
+            grid_options:
+              columns: full
+              rows: auto
+
+          - type: custom:bubble-card      #automationen
+            card_type: separator
+            name: Automationen
+            icon: m3o:automation
+            grid_options:
+              columns: full
+            sub_button:
+              main:
+                - content_layout: icon-left
+                  tap_action:
+                    action: toggle
+                  icon: m3of:info-i
+                  name: Mehr anzeigen
+                  show_name: true
+                  entity: input_boolean.automation_expander_toggle
+                  show_attribute: false
+                  attribute: editable
+                  show_state: false
+                  show_icon: false
+                  state_background: false
+              bottom: []
+            visibility:
+              - condition: user
+                users:
+                  - 6b9e364e8f1d413c99e8a3b82fa2f816
+                  - 65764a40005e42adb2ff5a9c98670e4c
+          - type: custom:decluttering-card  ##ambiente
+            template: dados_automation_card
+            variables:
+              - expander_id: ambiente
+              - title_card:
+                  type: custom:button-card
+                  template: dados_automation_header
+                  variables:
+                    img_cell_background: var(--yellow)
+                    icon_on: m3o:lightbulb
+                    icon_off: m3o:light-off
+                    expander_id: ambiente
+                    name: "Ambiente"
+                    entity: automation.lichter_bei_sonnenaufgang_untergang_anpassen_dado_feri_zu_hause
+                    state_display_entity: automation.lichter_bei_sonnenaufgang_untergang_anpassen_dado_feri_zu_hause       
+                  custom_fields:
+                    toggle:
+                      card:
+                        type: custom:button-card
+                        template: dados_toggle_chip
+                        variables:
+                          entity: automation.lichter_bei_sonnenaufgang_untergang_anpassen_dado_feri_zu_hause
+                          img_cell_background: var(--lavender)           
+              - cards:
+                  - type: custom:button-card
+                    template: dados_automation_decription
+                    variables:
+                      entity: automation.lichter_bei_sonnenaufgang_untergang_anpassen_dado_feri_zu_hause
+                      expander_id: ambiente
+                      description: "Schaltet bei Sonnenuntergang bestimmte Innen- und Außenlichter ein und schaltet sie bei Sonnenaufgang wieder aus."
+            section_mode: true
+            grid_options:
+              columns: full
+              rows: auto
+          - type: custom:decluttering-card  ##abwesend
+            template: dados_automation_card
+            variables:
+              - expander_id: abwesend
+              - title_card:
+                  type: custom:button-card
+                  template: dados_automation_header
+                  variables:
+                    img_cell_background: var(--orange)
+                    icon_on: mdi:home-export-outline
+                    icon_off: m3r:home-and-garden 
+                    expander_id: abwesend
+                    name: "Abwesendheitssimulation"
+                    entity: switch.abwesend
+                    state_display_entity: switch.abwesend       
+              
+              - cards:
+                  - type: custom:button-card
+                    template: dados_automation_decription
+                    variables:
+                      entity: switch.abwesend
+                      expander_id: abwesend
+                      description: "Simuliert Anwesenheit basierend auf die letzten sieben Tage."
+
+            section_mode: true
+            grid_options:
+              columns: full
+              rows: auto
+
+        section_mode: true
+        grid_options:
+          columns: full
+          rows: auto
+
+    - title: Account        #account
+      icon: m3o:account-circle
+      card:
+        type: vertical-stack
+        cards:
+
+
+          - type: custom:bubble-card      #theme
+            card_type: separator
+            name: Themes
+            icon: mdi:theme-light-dark
+            grid_options:
+              columns: full
+            visibility:
+              - condition: user
+                users:
+                  - 6b9e364e8f1d413c99e8a3b82fa2f816
+                  - 65764a40005e42adb2ff5a9c98670e4c
+            sub_button:
+              main: []
+              bottom: []
+          - type: custom:button-card        ##dado-iphone-theme
+            template: dados_button
+            variables:
+              entity: input_select.dado_theme
+              state_display_entity: input_select.dado_theme
+              icon_on: m3o:mobile
+              icon_off: m3o:mobile
+              name: "iPhone"
+              img_cell_background: var(--violet)
+            custom_fields:
+              toggle:
+                card:
+                  type: custom:button-card
+                  template: dados_selector_helper
+                  variables:
+                    entity: input_select.dado_theme
+                    img_cell_background: var(--tabs)
+                    option1: Auto
+                    option2: Dark
+                    option3: Light
+                    label1: Auto
+                    label2: Dark
+                    label3: Light
+                    icon1: mdi:theme-light-dark
+                    icon2: m3r:moon-stars
+                    icon3: m3r:sunny
+            section_mode: true
+            grid_options:
+              rows: auto
+              columns: full
+            visibility:
+              - condition: user
+                users:
+                  - 6b9e364e8f1d413c99e8a3b82fa2f816
+          - type: custom:bubble-card      #benachrichtigungen
+            card_type: separator
+            name: Benachrichtigungen
+            icon: m3r:notification-sound
+            grid_options:
+              columns: full
+            sub_button:
+              main:
+                - content_layout: icon-left
+                  tap_action:
+                    action: toggle
+                  icon: m3of:info-i
+                  name: Mehr anzeigen
+                  show_name: true
+                  entity: input_boolean.notify_expander_toggle
+                  show_attribute: false
+                  attribute: editable
+                  show_state: false
+                  show_icon: false
+                  state_background: false
+              bottom: []
+            visibility:
+              - condition: user
+                users:
+                  - 6b9e364e8f1d413c99e8a3b82fa2f816
+                  - 65764a40005e42adb2ff5a9c98670e4c
+
+
+          - type: custom:decluttering-card  ##feri_work
+
+
+            template: dados_automation_card
+            variables:
+              - toggle_entity: input_boolean.notify_expander_toggle
+
+              - expander_id: feri_work
+              - title_card:
+                  type: custom:button-card
+                  template: dados_automation_header
+                  variables:
+                    img_cell_background: var(--magenta)
+                    icon_on: m3o:location-on
+                    icon_off: m3o:location-off
+                    expander_id: feri_work
+                    name: "Notify Feri Arbeit"
+                    entity: automation.feri_arbeit
+                    state_display_entity: automation.feri_arbeit       
+              
+              - cards:
+                  - type: custom:button-card
+                    template: dados_automation_decription
+                    variables:
+                      entity: automation.feri_arbeit
+                      expander_id: feri_work
+                      description: "Feri kriegt eine Benachrichtigung mit einem Bild von Peanut, wenn sie in der Arbeit angekommen ist. Dado kriegt eine Benachrichtigung, dass Feri in der Arbeit angekommen ist."
+            section_mode: true
+            grid_options:
+              columns: full
+              rows: auto
+          - type: custom:decluttering-card  ##dado_todo
+            template: dados_automation_card
+            variables:
+              - toggle_entity: input_boolean.notify_expander_toggle
+
+
+              - expander_id: dado_todo
+              - title_card:
+                  type: custom:button-card
+                  template: dados_automation_header
+                  variables:
+                    img_cell_background: var(--blue)
+                    icon_on: m3r:notifications-active
+                    icon_off: m3r:notifications-off
+                    expander_id: dado_todo
+                    name: "Dado's Todo's"
+                    entity: automation.todo_david_neue_aufgabe_hinzugefugt
+                    state_display_entity: automation.todo_david_neue_aufgabe_hinzugefugt       
+              
+              - cards:
+                  - type: custom:button-card
+                    template: dados_automation_decription
+                    variables:
+                      entity: automation.todo_david_neue_aufgabe_hinzugefugt
+                      expander_id: dado_todo
+                      description: "Dado kriegt eine Benachrichtigung, bei einem neuen Eintrag auf seiner Todo-Liste."
+
+            section_mode: true
+            grid_options:
+              columns: full
+              rows: auto
+          - type: custom:decluttering-card  ##feri_todo
+            template: dados_automation_card
+            variables:
+              - toggle_entity: input_boolean.notify_expander_toggle
+
+              - expander_id: feri_todo
+              - title_card:
+                  type: custom:button-card
+                  template: dados_automation_header
+                  variables:
+                    img_cell_background: var(--magenta)
+                    icon_on: m3r:notifications-active
+                    icon_off: m3r:notifications-off
+                    expander_id: feri_todo
+                    name: "Feri's Todo's"
+                    entity: automation.todo_neue_aufgabe_fur_feri_hinzugefugt
+                    state_display_entity: automation.todo_neue_aufgabe_fur_feri_hinzugefugt       
+              
+              - cards:
+                  - type: custom:button-card
+                    template: dados_automation_decription
+                    variables:
+                      entity: automation.todo_neue_aufgabe_fur_feri_hinzugefugt
+                      expander_id: feri_todo
+                      description: "David kriegt eine Benachrichtigung, bei einem neuen Eintrag auf seiner Todo-Liste."
+
+            section_mode: true
+            grid_options:
+              columns: full
+              rows: auto
+
+
+    column_span: 2
+  - type: grid      #navbar
+    cards:
+      - type: custom:navbar-card
+        template: main   
+  - type: grid      #navbar-popups
+    cards:
+    - type: vertical-stack          ##lichteran-popup
+      cards:
+      - type: custom:bubble-card
+        card_type: pop-up
+        hash: "#lichteran"
+        button_type: name
+        name: Lichter an
+        icon: m3o:light-group
+        scrolling_effect: false
+        modules:
+        - header-settings
+        more_info_popup:
+          bd_filter: blur(100px)
+          window_ani: rotate(360deg) translateY(150%)
+        sub_button:
+          main: []
+          bottom: []
+      - type: custom:decluttering-card
+        template: dados_active_lights
+    - type: vertical-stack          ##rollosoffen-popup
+      cards:
+      - type: custom:bubble-card
+        card_type: pop-up
+        hash: "#rollosoffen"
+        button_type: name
+        name: Rollos Offen
+        icon: mdi:blinds-open
+        scrolling_effect: false
+      - type: custom:auto-entities
+        card:
+          type: grid
+          columns: 1
+          square: false
+        card_param: cards
+        filter:
+          include:
+          - domain: cover
+            state: open
+            options:
+              type: tile
+              entity: this.entity_id
+              name:
+              - type: area
+              icon: mdi:blinds
+              show_entity_picture: false
+              hide_state: false
+              vertical: false
+              features:
+              - type: cover-open-close
+              - type: cover-position
+              features_position: bottom
+          exclude: []
+    - type: vertical-stack      ##fensteroffen-popup
+      cards:
+        - type: custom:bubble-card
+          card_type: pop-up
+          hash: "#fensteroffen"
+          button_type: name
+          name: Fenster Offen
+          icon: mdi:blinds-open
+          scrolling_effect: false
+          sub_button:
+            main: []
+            bottom: []
+        - type: custom:auto-entities
+          card:
+            type: entities
+            card_mod:
+              style: |
+                ha-card {
+                  background: transparent !important;
+                  box-shadow: none !important;
+                  border: 0 !important;
+                }
+                .card-content {
+                  padding: 0 !important;
+                }
+          filter:
+            include:
+              - options:
+                  type: custom:button-card
+                  template: dados_alert
+                  variables:
+                    entity: this.entity_id
+                    img_cell_background: var(--red)
+                  state:
+                    - value: "on"
+                      icon: mdi:window-open-variant
+                    - value: "off"
+                      icon: mdi:window-closed-variant
+                label: fenster
+            exclude: []
+header:
+  card:
+    type: markdown
+    text_only: true
+    content: "# Einstellungen"
+badges: []

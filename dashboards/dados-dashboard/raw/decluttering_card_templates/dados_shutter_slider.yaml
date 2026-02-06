@@ -1,0 +1,37 @@
+dados_shutter_slider:
+  card:
+    type: custom:my-slider-v2
+    entity: "[[entity]]"
+    allowTapping: false
+    allowSliding: true
+    flipped: false
+    vertical: false
+    styles:
+      container:
+        - border-radius: 24px
+      card:
+        - margin-bottom: 0px
+        - border-radius: 24px
+        - height: 57px
+        - background: var(--contrast2)
+      progress:
+        - background: "[[img_cell_background]]"
+      thumb:
+        - width: 3px
+        - height: 30%
+        - top: 36%
+        - margin-right: 11px
+        - border-radius: 5px
+        - background: var(--black1)
+      track:
+        - background: |
+            [[[
+              if (entity.state == "closed") return "var(--lavender-tint)";
+              else return "var(--lavender-tint)";
+            ]]]
+    card_mod:
+      style: |
+        ha-card {
+          border-radius: 24px !important;
+          overflow: false;
+        }

@@ -1,0 +1,113 @@
+dados_base:
+  variables:
+    entity: sensor.dummy
+    state_display_entity: null
+    card_color: var(--contrast2)
+    card_height: 80px
+    card_border_radius: 36px
+    img_cell_background: var(--blue)
+    show_glow: true
+    name: 
+
+  name: |
+    [[[
+      if (variables.name) return variables.name;
+      if (variables.entity) return states[variables.entity]?.attributes?.friendly_name || "Set Entity";
+      return "Set Entity";
+    ]]]
+
+  entity: "[[[ return variables.entity ]]]"
+  state_display: >
+      [[[
+        const entityId = variables.state_display_entity ?? variables.entity;
+        const stateObj = states[entityId];
+
+        if (!stateObj) return '—';
+
+        if (hass.formatEntityState) return hass.formatEntityState(stateObj);
+
+        return stateObj.state ?? '—';
+      ]]]
+  triggers_update:
+    - '[[[ return variables.entity ]]]'
+    - '[[[ return variables.state_display_entity ]]]'
+
+  show_name: true
+  show_icon: true
+  show_state: true
+
+  icon_tap_action:
+    action: none
+  tap_action:
+    action: none
+  hold_action:
+    action: none
+  double_tap_action:
+    action: none
+
+  styles:
+    grid:
+      - grid-template-columns: 55px 1fr
+      - grid-template-rows: min-content 1fr
+      - grid-template-areas: "'i n' 'i s'"
+    card:
+      - border-radius: '[[[ return variables.card_border_radius || "36px" ]]]'
+      - background: "[[[ return variables.card_color ]]]"
+      - backdrop-filter: blur(20px) ###backdrop
+      - padding: 12px
+      - height: '[[[ return variables.card_height || "auto" ]]]'
+      - overflow: hidden
+      - --button-card-ripple-color: transparent !important
+      - --button-card-ripple-hover-opacity: 0 !important
+      - --ha-card-ripple-color: transparent !important
+      - --ha-ripple-hover-opacity: 0 !important
+
+
+    img_cell:
+      - width: 45px
+      - height: 45px
+      - align-self: start
+      - margin-top: 5px
+      - border-radius: 18px
+      - background: "[[[ return variables.img_cell_background ]]]"
+      - overflow: visible
+      - box-shadow: |
+          [[[
+            if (!variables.show_glow) return 'none';
+            const c = entity?.attributes?.rgb_color;
+            const fb = variables?.img_cell_background || 'var(--red)';
+            const colA = c ? `rgba(${c[0]}, ${c[1]}, ${c[2]}, 0.7)` : fb;
+            const colB = c ? `rgba(${c[0]}, ${c[1]}, ${c[2]}, 0.8)` : fb;
+            return `-55px -50px 70px 20px ${colA}, -35px -35px 70px 10px ${colB}`;
+          ]]]
+    icon:
+      - width: 32px
+      - color: var(--contrast2)
+    name:
+      - justify-self: start
+      - align-self: start
+      - margin-top: 9px
+      - font-size: 16px
+      - font-weight: 500
+      - color: var(--contrast16)
+      - letter-spacing: 0.4px
+      - padding-left: 3px
+    state:
+      - justify-self: start
+      - align-self: start
+      - font-size: 14px
+      - font-weight: 400
+      - color: var(--contrast12)
+      - letter-spacing: 0.6px
+      - margin-top: 0px
+      - padding-left: 3px
+    label:
+      - justify-self: start
+      - align-self: start
+      - font-size: 14px
+      - font-weight: 400
+      - color: var(--contrast12)
+      - letter-spacing: 0.6px
+      - margin-top: 0px
+      - padding-left: 3px
+      - display: none

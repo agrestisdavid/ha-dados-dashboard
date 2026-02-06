@@ -1,0 +1,388 @@
+navigate:
+  name: Navigate to a view
+  description: >
+    Command device to navigate to a certain view
+  fields:
+    device:
+      name: Device
+      description: The device to change screen on
+      example: "123434"
+      required: true
+      selector:
+        entity:
+          filter:
+            integration: view_assist
+    path:
+      name: View Path
+      description: Path in dashboard view
+      example: "/view-assist/clock"
+      required: true
+      selector:
+        text:
+    revert_timeout:
+      name: Revert timeout
+      description: >
+        Optional timeout in seconds to revert to the previous view.  If not set, uses the default configured timeout.
+      example: 30
+      required: false
+      default: 20
+      selector:
+        number:
+          min: 0
+          max: 120
+          step: 1
+set_state:
+  name: Set state or attributes
+  description: >
+    Set state or attributes of View Assist entity
+  target:
+    entity:
+      integration: view_assist
+      domain:
+        - sensor
+  fields:
+    state:
+      name: "State"
+      description: "Entity state"
+      selector:
+        text:
+set_timer:
+  name: Set a timer
+  description: Set an alarm, timer or reminder
+  fields:
+    entity_id:
+      name: "Entity ID"
+      description: "Entity id of the View Assist entity"
+      required: false
+      selector:
+        entity:
+          integration: view_assist
+          domain:
+            - sensor
+    device_id:
+      name: "Device ID"
+      description: "Device id of the voice satellite"
+      required: false
+      selector:
+        device:
+    type:
+      name: "Timer type"
+      description: "The type of timer - alarm, timer, reminder, command"
+      required: true
+      selector:
+        select:
+          options:
+            - "Alarm"
+            - "Timer"
+            - "Reminder"
+            - "Command"
+    name:
+      name: "Name"
+      description: "The name of the timer"
+      required: false
+      selector:
+        text:
+    time:
+      name: "Time sentence"
+      description: "A spoken like time sentence"
+      required: true
+      selector:
+        text:
+cancel_timer:
+  name: "Cancel timer"
+  description: "Cancel running timer"
+  fields:
+    timer_id:
+      name: "Timer ID"
+      description: "The id of the timer"
+      required: false
+      selector:
+        text:
+    entity_id:
+      name: "Entity ID"
+      description: "Entity id of the View Assist entity"
+      required: false
+      selector:
+        entity:
+          integration: view_assist
+          domain:
+            - sensor
+    device_id:
+      name: "Device ID"
+      description: "The id of the voice satellite device to cancel all timers for"
+      required: false
+      selector:
+        device:
+    remove_all:
+      name: "Remove all"
+      description: "Cancel all timers"
+      required: false
+      selector:
+        boolean:
+get_timers:
+  name: "Get timers"
+  description: "Get all timers or by timer id or device id"
+  fields:
+    timer_id:
+      name: "Timer ID"
+      description: "The id of the timer"
+      required: false
+      selector:
+        text:
+    entity_id:
+      name: "Entity ID"
+      description: "Entity id of the View Assist entity"
+      required: false
+      selector:
+        entity:
+          integration: view_assist
+          domain:
+            - sensor
+    device_id:
+      name: "Device ID"
+      description: "The id of the voice satellite device to get all timers for"
+      required: false
+      selector:
+        device:
+    name:
+      name: "Name"
+      description: "The name of the timer"
+      required: false
+      selector:
+        text:
+    include_expired:
+      name: "Include expired"
+      description: "Whether to include expired timers in the results"
+      required: false
+      selector:
+        boolean:
+snooze_timer:
+  name: Snooze a timer
+  description: Snooze an expired timer for a certain time
+  fields:
+    timer_id:
+      name: "Timer id"
+      description: "The id of the timer"
+      required: true
+      selector:
+        text:
+    time:
+      name: "Snooze duration"
+      description: "The snooze duration in minutes"
+      required: true
+      selector:
+        number:
+          min: 1
+          mode: box
+sound_alarm:
+  name: "Sound alarm"
+  description: "Sound alarm on a media device with an attempt to restore any already playing media"
+  fields:
+    entity_id:
+      name: "Entity ID"
+      description: "The media player to play the alarm on"
+      required: true
+      selector:
+        entity:
+          domain:
+            - media_player
+    media_file:
+      name: "Media file"
+      description: "Media file to use for alarm"
+      required: true
+      selector:
+        text:
+    max_repeats:
+      name: "Max repeats"
+      description: "The maximun number of times to repeat the alarm media file"
+      required: false
+      selector:
+        number:
+cancel_sound_alarm:
+  name: "Cancel sound alarm"
+  description: "Cancel a sounding alarm"
+  fields:
+    entity_id:
+      name: "Entity ID"
+      description: "The media player to cancel the alarm on"
+      required: false
+      selector:
+        entity:
+          domain:
+            - media_player
+broadcast_event:
+  name: "Broadcast Event"
+  description: "Send a custom event"
+  fields:
+    event_name:
+      name: "Event name"
+      description: "The name of the event"
+      required: true
+      selector:
+        text:
+    event_data:
+      name: "Event data"
+      description: "The event data variables to include in the event broadcast"
+      required: true
+      selector:
+        text:
+load_asset:
+  name: "Load asset"
+  description: "Install an asset from the View Assist directory or repository"
+  fields:
+    asset_class:
+      name: "Asset class"
+      description: "The type of asset to load"
+      required: true
+      selector:
+        select:
+          options:
+            - "dashboard"
+            - "views"
+            - "blueprints"
+    name:
+      name: "Name"
+      description: "The name of the asset"
+      required: true
+      selector:
+        text:
+    download_from_repo:
+      name: "Download from respository"
+      description: "Download from the github repository, overwriting any existing copy"
+      required: false
+      default: false
+      selector:
+        boolean:
+    download_from_dev_branch:
+      name: "From development branch"
+      description: "Download from the development branch for the very latest version.  Be warned, there maybe issues with this version"
+      required: false
+      default: false
+      selector:
+        boolean:
+    discard_dashboard_user_changes:
+      name: "Discard dashboard user changes"
+      description: "Discard any user changes to the dashboard when loading a new dashboard asset"
+      required: false
+      default: false
+      selector:
+        boolean:
+    backup_current_asset:
+      name: "Backup existing"
+      description: "Backup existing before updating"
+      required: false
+      default: false
+      selector:
+        boolean:
+save_asset:
+  name: "Save asset"
+  description: "Save asset to the View Assist directory"
+  fields:
+    asset_class:
+      name: "Asset class"
+      description: "The type of asset to load"
+      required: true
+      selector:
+        select:
+          options:
+            - "views"
+            - "blueprints"
+    name:
+      name: "Name"
+      description: "The name of the asset"
+      required: true
+      selector:
+        text:
+toggle_menu:
+  name: Toggle menu
+  description: Show or hide the menu for a View Assist entity
+  fields:
+    entity_id:
+      name: "Entity ID"
+      description: "The entity ID of the View Assist device"
+      required: true
+      selector:
+        entity:
+          integration: view_assist
+          domain:
+            - sensor
+    show:
+      name: "Show"
+      description: "Whether to show (true) or hide (false) the menu"
+      required: false
+      default: true
+      selector:
+        boolean:
+    timeout:
+      name: "Timeout"
+      description: "Optional timeout in seconds to automatically close the menu (overrides configured timeout)"
+      required: false
+      selector:
+        number:
+          min: 1
+          max: 300
+          step: 1
+add_status_item:
+  name: Add status item
+  description: Add one or more items to the menu/status bar of a View Assist entity
+  fields:
+    entity_id:
+      name: "Entity ID"
+      description: "The entity ID of the View Assist device"
+      required: true
+      selector:
+        entity:
+          integration: view_assist
+          domain:
+            - sensor
+    status_item:
+      name: "Status Item(s)"
+      description: "The status item(s) to add. Can be a single item or a list of items. Each item can be a system item name like 'weather' or a custom action format like 'view:weather|cloud'"
+      required: true
+      selector:
+        object:
+    menu:
+      name: "Add to Menu Items"
+      description: "If true, adds the item(s) to the configured menu items list that appears when the menu is toggled. If false, adds to status icons (always visible)."
+      required: false
+      default: false
+      selector:
+        boolean:
+    timeout:
+      name: "Timeout"
+      description: "Optional timeout in seconds after which the item(s) will be automatically removed"
+      required: false
+      selector:
+        number:
+          min: 1
+          max: 3600
+          step: 1
+remove_status_item:
+  name: Remove status item
+  description: Remove one or more items from the menu/status bar of a View Assist entity
+  fields:
+    entity_id:
+      name: "Entity ID"
+      description: "The entity ID of the View Assist device"
+      required: true
+      selector:
+        entity:
+          integration: view_assist
+          domain:
+            - sensor
+    status_item:
+      name: "Status Item(s)"
+      description: "The status item(s) to remove. Can be a single item or a list of items."
+      required: true
+      selector:
+        object:
+    menu:
+      name: "Remove from Menu Items"
+      description: "If true, removes the item(s) from the configured menu items list. If false, removes from status icons."
+      required: false
+      default: false
+      selector:
+        boolean:
+update_versions:
+  name: "Update version info"
+  description: "Get the latest version info of the dashboard, views and blueprints from the github repo"

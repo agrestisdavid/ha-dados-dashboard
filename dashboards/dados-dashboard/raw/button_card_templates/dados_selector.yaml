@@ -1,0 +1,213 @@
+dados_selector:
+  variables:
+    entity: select.roborock_qrevo_curv_series_wisch_intensitat
+    img_cell_background: var(--blue)
+    option1: "off"
+    option2: mild
+    option3: intense
+    label1: "off"
+    label2: mild
+    label3: intense
+    icon1: m3o:humidity-low
+    icon2: m3o:humidity-mid
+    icon3: m3o:humidity-high
+  show_name: false
+  show_icon: false
+  show_state: false
+  layout: vertical
+  tap_action:
+    action: none
+  styles:
+    card:
+      - background: transparent
+      - border-radius: 16px
+      - padding: 0px 12px
+      - position: relative
+      - overflow: hidden
+      - "--button-card-ripple-color": transparent !important
+      - "--button-card-ripple-hover-opacity": 0 !important
+      - "--ha-card-ripple-color": transparent !important
+      - "--ha-ripple-hover-opacity": 0 !important
+    grid:
+      - grid-template-areas: "\"slider\""
+      - grid-template-columns: 1fr
+      - grid-template-rows: 1fr
+  custom_fields:
+    slider:
+      card:
+        type: custom:button-card
+        entity: "[[[ return variables.entity ]]]"
+        show_name: false
+        show_state: false
+        show_icon: false
+        tap_action:
+          action: none
+        styles:
+          card:
+            - position: relative
+            - border-style: none
+            - background: |
+                [[[
+                  const v = (variables?.img_cell_background || 'var(--red)').trim();
+                  const rgb = v.includes('-rgb') ? v : v.replace(')', '-rgb)');
+                  return `rgba(${rgb}, 0.3)`;
+                ]]]
+            - border-radius: 16px
+            - padding: 0
+            - box-shadow: none
+            - overflow: visible
+          grid:
+            - grid-template-areas: "\"bg bg bg\" \"opt1 opt2 opt3\""
+            - grid-template-columns: repeat(3, 1fr)
+            - grid-template-rows: auto
+            - gap: 0
+          custom_fields:
+            bg:
+              - position: absolute
+              - height: 40px
+              - width: 33.333%
+              - background: "[[[ return variables.img_cell_background ]]]"
+              - box-shadow: none
+              - border-radius: 16px
+              - top: 0
+              - left: 0
+              - transition: left 0.6s cubic-bezier(0.2, 0, 0.4, 1)
+              - z-index: 0
+              - grid-area: bg
+            opt1:
+              - grid-area: opt1
+              - z-index: 1
+            opt2:
+              - grid-area: opt1
+              - z-index: 1
+            opt3:
+              - grid-area: opt1
+              - z-index: 1
+        state:
+          - value: "[[[ return variables.option1 ]]]"
+            styles:
+              custom_fields:
+                bg:
+                  - left: 0%
+          - value: "[[[ return variables.option2 ]]]"
+            styles:
+              custom_fields:
+                bg:
+                  - left: 33.3333%
+          - value: "[[[ return variables.option3 ]]]"
+            styles:
+              custom_fields:
+                bg:
+                  - left: 66.6666%
+        custom_fields:
+          bg: "[[[ return \"&nbsp;\"; ]]]"
+          opt1:
+            card:
+              type: custom:button-card
+              entity: "[[[ return variables.entity ]]]"
+              icon: "[[[ return variables.icon1 ]]]"
+              show_state: false
+              show_icon: true
+              show_name: false
+              tap_action:
+                action: call-service
+                service: select.select_option
+                service_data:
+                  entity_id: "[[[ return variables.entity ]]]"
+                  option: "[[[ return variables.option1 ]]]"
+              styles:
+                card:
+                  - background: transparent
+                  - height: 40px
+                  - box-shadow: none
+                  - "--button-card-ripple-color": transparent !important
+                  - "--button-card-ripple-hover-opacity": 0 !important
+                  - "--ha-card-ripple-color": transparent !important
+                  - "--ha-ripple-hover-opacity": 0 !important
+                  - border-radius: 6px
+                  - border: none
+                  - z-index: 1
+                icon:
+                  - color: var(--contrast2)
+                  - opacity: 1
+                  - transition: color 0.2s
+              state:
+                - value: "[[[ return variables.option1 ]]]"
+                  styles:
+                    icon:
+                      - color: var(--contrast1)
+                      - opacity: 1
+          opt2:
+            card:
+              type: custom:button-card
+              entity: "[[[ return variables.entity ]]]"
+              icon: "[[[ return variables.icon2 ]]]"
+              show_state: false
+              show_icon: true
+              show_name: false
+              tap_action:
+                action: call-service
+                service: select.select_option
+                service_data:
+                  entity_id: "[[[ return variables.entity ]]]"
+                  option: "[[[ return variables.option2 ]]]"
+              styles:
+                card:
+                  - background: transparent
+                  - height: 40px
+                  - box-shadow: none
+                  - "--button-card-ripple-color": transparent !important
+                  - "--button-card-ripple-hover-opacity": 0 !important
+                  - "--ha-card-ripple-color": transparent !important
+                  - "--ha-ripple-hover-opacity": 0 !important
+                  - border-radius: 6px
+                  - border: none
+                  - z-index: 1
+                icon:
+                  - color: var(--contrast2)
+                  - opacity: 1
+                  - transition: color 0.2s
+              state:
+                - value: "[[[ return variables.option2 ]]]"
+                  styles:
+                    icon:
+                      - color: var(--contrast1)
+                      - opacity: 1
+          opt3:
+            card:
+              type: custom:button-card
+              entity: "[[[ return variables.entity ]]]"
+              icon: "[[[ return variables.icon3 ]]]"
+              show_state: false
+              show_icon: true
+              show_name: false
+              tap_action:
+                action: call-service
+                service: select.select_option
+                service_data:
+                  entity_id: "[[[ return variables.entity ]]]"
+                  option: "[[[ return variables.option3 ]]]"
+              styles:
+                card:
+                  - background: transparent
+                  - height: 40px
+                  - box-shadow: none
+                  - "--button-card-ripple-color": transparent !important
+                  - "--button-card-ripple-hover-opacity": 0 !important
+                  - "--ha-card-ripple-color": transparent !important
+                  - "--ha-ripple-hover-opacity": 0 !important
+                  - border-radius: 6px
+                  - border: none
+                  - z-index: 1
+                icon:
+                  - font-size: 14px
+                  - font-weight: 500
+                  - color: var(--contrast2)
+                  - opacity: 1
+                  - transition: color 0.2s
+              state:
+                - value: "[[[ return variables.option3 ]]]"
+                  styles:
+                    icon:
+                      - color: var(--contrast1)
+                      - opacity: 1

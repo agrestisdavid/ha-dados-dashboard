@@ -1,0 +1,237 @@
+{
+    "config": {
+        "abort": {
+            "already_configured": "Service is already configured",
+            "no_port": "No port for endpoint",
+            "no_services": "No services found at endpoint"
+        },
+        "error": {
+            "cannot_connect": "Failed to connect"
+        },
+        "step": {
+            "hassio_confirm": {
+                "description": "Do you want to configure Home Assistant to connect to the Wyoming service provided by the add-on: {addon}?"
+            },
+            "user": {
+                "data": {
+                    "host": "Host",
+                    "port": "Port"
+                }
+            },
+            "zeroconf_confirm": {
+                "description": "Do you want to configure Home Assistant to connect to the Wyoming service {name}?",
+                "title": "Discovered Wyoming service"
+            }
+        }
+    },
+    "entity": {
+        "binary_sensor": {
+            "battery_charging": {
+                "name": "Battery charging"
+            },
+            "screen_on": {
+                "name": "Screen"
+            },
+            "motion_detected": {
+                "name": "Motion"
+            }
+        },
+        "button": {
+            "refresh": {
+                "name": "Refresh"
+            },
+            "screen_wake": {
+                "name": "Wake screen"
+            },
+            "screen_sleep": {
+                "name": "Sleep screen"
+            },
+            "wake": {
+                "name": "Wake"
+            }
+        },
+        "media_player": {
+            "media_player": {
+                "name": "Media Player",
+                "state": {
+                    "playing": "Playing",
+                    "paused": "Paused",
+                    "idle": "Idle"
+                }
+            }
+        },
+        "number": {
+            "mic_gain": {
+                "name": "Mic gain"
+            },
+            "screen_brightness": {
+                "name": "Screen brightness"
+            },
+            "notification_volume": {
+                "name": "Voice volume"
+            },
+            "motion_detection_sensitivity": {
+                "name": "Motion detection sensitivity"
+            },
+            "music_volume": {
+                "name": "Music volume"
+            },
+            "ducking_volume": {
+                "name": "Ducking volume"
+            },
+            "wake_word_threshold": {
+                "name": "Wake word threshold"
+            },
+            "zoom_level": {
+                "name": "Zoom level"
+            },
+            "raw_proximity_threshold": {
+              "name": "Proximity threshold"
+            },
+            "bump_sensitivity": {
+                "name": "Bump sensitivity"
+            }
+        },
+        "select": {
+            "noise_suppression_level": {
+                "name": "Noise suppression level",
+                "state": {
+                    "high": "High",
+                    "low": "Low",
+                    "max": "Max",
+                    "medium": "Medium",
+                    "off": "Off"
+                }
+            },
+            "pipeline": {
+                "name": "Assistant",
+                "state": {
+                    "preferred": "Preferred"
+                }
+            },
+            "vad_sensitivity": {
+                "name": "Finished speaking detection",
+                "state": {
+                    "aggressive": "Aggressive",
+                    "default": "Default",
+                    "relaxed": "Relaxed"
+                }
+            },
+            "wake_word": {
+                "name": "Wake word"
+            },
+            "wake_word_sound": {
+                "name": "Wake word sound",
+                "state": {
+                    "none": "None",
+                    "havpe": "Home Assistant",
+                    "alexa": "Alexa",
+                    "bubble": "Bubble",
+                    "ding": "Ding"
+                }
+            },
+            "screen_timeout": {
+                "name": "Screen timeout",
+                "state": {
+                    "15": "15 seconds",
+                    "30": "30 seconds",
+                    "60": "1 minute",
+                    "120": "2 minutes",
+                    "300": "5 minutes",
+                    "600": "10 minutes",
+                    "1800": "30 minutes"
+                }
+            }
+        },
+        "sensor": {
+            "stt": {
+                "name": "STT"
+            },
+            "tts": {
+                "name": "TTS"
+            },
+            "intent": {
+                "name": "Intent"
+            },
+            "light_level": {
+                "name": "Light level"
+            },
+            "orientation": {
+                "name": "Orientation",
+                "state": {
+                    "unknown": "Unknown",
+                    "portrait": "Portrait",
+                    "landscape": "Landscape"
+                }
+            },
+            "battery_level": {
+                "name": "Battery"
+            },
+            "app_version": {
+                "name": "App version"
+            },
+            "current_path": {
+                "name": "Current path"
+            },
+            "last_motion": {
+                "name": "Last motion"
+            }
+        },
+        "switch": {
+            "mute": {
+                "name": "Mute"
+            },
+            "screen_on": {
+                "name": "Screen"
+            },
+            "swipe_refresh": {
+                "name": "Swipe to refresh"
+            },
+            "screen_auto_brightness": {
+                "name": "Auto brightness"
+            },
+            "screen_always_on": {
+                "name": "Screen always on"
+            },
+            "do_not_disturb": {
+                "name": "Do not disturb"
+            },
+            "dark_mode": {
+                "name": "Dark mode"
+            },
+            "diagnostics_enabled": {
+                "name": "On screen diagnostics"
+            },
+            "continue_conversation": {
+                "name": "Continue conversation"
+            },
+            "alarm": {
+                "name": "Alarm"
+            },
+            "enable_motion_detection": {
+                "name": "Motion detection"
+            },
+            "screen_on_wake_word": {
+                "name": "Screen on with wake word"
+            },
+            "screen_on_bump": {
+                "name": "Screen on with bump"
+            },
+            "screen_on_proximity": {
+                "name": "Screen on with proximity"
+            },
+            "screen_on_motion": {
+                "name": "Screen on with motion"
+            },
+            "advanced_gain": {
+                "name": "Advanced gain control"
+            },
+            "voice_enhancer": {
+                "name": "Voice enhancer"
+            },
+            "screen_saver": {
+                "name": "Screen saver"
+            }
+        }
+    }
+}

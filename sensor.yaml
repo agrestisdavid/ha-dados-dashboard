@@ -1,0 +1,6 @@
+# - platform: mqtt_room
+#   device_id: "phone:davidiphonebt"
+#   state_topic: "espresense/devices/phone:davidiphonebt"
+#   away_timeout: 5
+#   name: "David iPhone BT"
+#   unique_id: 41f5afe2-dba8-4482-9770-212b17e704cb

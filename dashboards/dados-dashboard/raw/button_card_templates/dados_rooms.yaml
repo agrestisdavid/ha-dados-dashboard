@@ -1,0 +1,84 @@
+dados_rooms:
+  template: dados_base
+  variables:
+    entity: ""
+    icon_on: m3o:lightbulb
+    icon_off: m3o:lightbulb
+    name: ""
+    card_color: var(--contrast2)
+    card_height: 80px
+    navigation_path: ""
+    temp_sensor: ""
+    img_cell_background: var(--blue)
+
+  entity: '[[[ return variables.entity ]]]'
+  icon: '[[[ return variables.icon_on ]]]'
+  show_state: true
+  name: '[[[ return variables.name ]]]'
+
+
+  tap_action:
+    action: navigate
+    navigation_path: '[[[ return variables.navigation_path ]]]'
+
+  icon_tap_action:
+    action: toggle
+
+  state_display: |
+    [[[
+      if (entity.state === 'on') {
+        const bri = entity.attributes.brightness;
+
+        if (bri !== undefined) {
+          const pct = Math.round((bri / 255) * 100);
+          return pct + '%';
+        }
+        return 'Ein';
+      }
+
+      const temp_entity_id = variables.temp_sensor;
+      if (!temp_entity_id) {
+        return '-';
+      }
+
+      const temp = states[temp_entity_id]?.state;
+
+      if (!temp || temp === 'unavailable' || temp === 'unknown') {
+        return '-';
+      }
+
+      const num = parseFloat(temp);
+      if (isNaN(num)) {
+        return temp;
+      }
+
+      return num.toFixed(1) + '°C';
+    ]]]
+
+  state:
+    - value: "off"
+      icon: '[[[ return variables.icon_off ]]]'
+      styles:
+        state:
+          - opacity: 1
+    - value: "on"
+      icon: '[[[ return variables.icon_on ]]]'
+      styles:
+        img_cell:
+          - background: var(--yellow)
+
+  styles:
+    img_cell:
+      - background: |
+          [[[
+            const c = entity?.attributes?.rgb_color;
+            if (c) {
+              return `rgba(${c[0]}, ${c[1]}, ${c[2]}, 0.7)`;
+            }
+            return variables?.img_cell_background || 'var(--yellow)';
+          ]]]
+
+  section_mode: true
+  grid_options:
+    rows: 2
+    columns: 6

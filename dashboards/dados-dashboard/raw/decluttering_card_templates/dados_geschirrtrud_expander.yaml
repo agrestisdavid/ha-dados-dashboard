@@ -1,0 +1,471 @@
+dados_geschirrtrud_expander:
+  card:
+    type: custom:expander-card
+    title: Expander Card
+    cards:
+      - type: tile
+        entity: select.geschirrspuler_ausgewahltes_programm_2
+        vertical: false
+        features:
+          - type: custom:service-call
+            entries:
+              - type: toggle
+                entity_id: switch.geschirrspuler_einschalter_2
+                icon: >-
+                  {{ iif(is_state('switch.geschirrspuler_einschalter_2',
+                  'on'), 'mdi:power', 'mdi:power-off') }}
+                tap_action:
+                  action: toggle
+                  target:
+                    entity_id: switch.geschirrspuler_einschalter_2
+                  data: {}
+                haptics: true
+                thumb: default
+                checked_icon: mdi:power-off
+                unchecked_icon: mdi:power
+                styles: |
+                  :host {
+                    --color: var(--blue);
+                    --mdc-icon-size: 25px; 
+                    --icon-color: var(--white1)
+                  }
+          - type: select-options
+          - type: custom:service-call
+            entries:
+              - type: button
+                entity_id: vacuum.roborock_qrevo_curv_series
+                icon: m3of:play-arrow
+                tap_action:
+                  action: perform-action
+                  perform_action: vacuum.start
+                  target:
+                    entity_id:
+                      - vacuum.roborock_qrevo_curv_series
+                  data: {}
+                thumb: default
+                toggle_styles: true
+                styles: |-
+                  :host {
+                    --mdc-icon-size: 30px;
+                    --color: var(--contrast6);
+                    --icon-color: var(--contrast15);
+                  }
+          - type: custom:service-call
+            entries:
+              - type: button
+                entity_id: sensor.geschirrspuler_salz_fast_leer
+                icon: mdi:shaker-outline
+                value_attribute: options
+                label: >-
+                  {{ iif(is_state('sensor.geschirrspuler_salz', 'full'),
+                  'Voll', 'LEER!') }}
+                thumb: transparent
+              - type: button
+                entity_id: sensor.geschirrspuler_klarspuler
+                icon: m3o:glass-cup
+                value_attribute: options
+                label: >-
+                  {{ iif(is_state('sensor.geschirrspuler_klarspuler', 'full'),
+                  'Voll', 'LEER!') }}
+                thumb: transparent
+            styles: |-
+              :host {
+                --mdc-icon-size: 25px; 
+                --icon-color: var(--contrast15);
+                --label-color: var(--contrast15);
+              }
+        features_position: bottom
+        card_mod:
+          style:
+            .: |
+              ha-card {
+                background: transparent !important;
+                box-shadow: none !important;
+                border: none !important;
+                margin-top: 0px;
+              }
+              ha-card .content {
+                display: none !important;
+              }
+    title-card:
+      type: custom:button-card
+      variables:
+        entity: sensor.geschirrspuler_betriebszustand
+        icon_on: mdi:dishwasher
+        icon_alert: mdi:dishwasher-alert
+        icon_off: mdi:dishwasher-off
+        name: Geschirrtrud
+        navigation_path: "#geschirrspüler"
+        img_cell_background: var(--blue)
+        bar: sensor.geschirrspuler_programm_fortschritt
+        percent: sensor.geschirrspuler_programm_fortschritt
+        state_display: sensor.geschirrspuler_aktives_programm_de
+        state_active: sensor.geschirrspuler_betriebszustand
+        state_startin: sensor.geschirrspuler_start_in
+        state_remaining: sensor.geschirrspuler_verbleibende_programmlaufzeit
+        value_on: ready
+        value_run: run
+        value_off: inactive
+        value_alert: error
+        value_action: actionrequired
+        value_finished: finished
+        value_pause: pause
+        value_aborting: aborting
+        value_start: delayedstart
+      entity: "[[[ return variables.entity ]]]"
+      icon: "[[[ return variables.icon_on ]]]"
+      show_state: true
+      state_display: "[[[ return states[variables.state_display]?.state || '—'; ]]]"
+      name: "[[[ return variables.name ]]]"
+      label: |-
+        [[[
+          const ok = s => s && s !== 'unknown' && s !== 'unavailable';
+          const toHHMM = v => {
+            if (!ok(v)) return '—';
+            if (typeof v === 'string' && v.includes(':')) return v;
+            const n = Number(v);
+            if (!isFinite(n)) return String(v);
+            const m = Math.max(0, Math.round(n * 60));
+            return `${String(Math.floor(m/60)).padStart(2,'0')}:${String(m%60).padStart(2,'0')}`;
+          };
+          const p = states[variables.percent]?.state;
+          const t = states[variables.state_remaining]?.state;
+          return `${ok(p) ? p + '%' : '—'} - ${toHHMM(t)}`;
+        ]]]
+      show_label: true
+      tap_action:
+        action: fire-dom-event
+        expander-card:
+          data:
+            expander-card-id: geschirrtrud
+            action: toggle
+      icon_tap_action:
+        action: none
+      state:
+        - value: "[[[ return variables.value_off ]]]"
+          icon: "[[[ return variables.icon_off ]]]"
+          label: "[[[ return states[variables.state_active]?.state || '—'; ]]]"
+          styles:
+            grid:
+              - grid-template-columns: 55px 1fr
+              - grid-template-rows: min-content 1fr 1fr
+              - grid-template-areas: "'i n' 'i l'"
+            custom_fields:
+              bar:
+                - display: none
+            state:
+              - display: none
+        - value: "[[[ return variables.value_on ]]]"
+          icon: "[[[ return variables.icon_off ]]]"
+          label: |
+            [[[
+              const v = Number(states[variables.state_startin]?.state);
+              if (isNaN(v)) return 'Bereit';
+              const totalSeconds = Math.round(v * 3600);
+              if (totalSeconds === 0) return 'Bereit';
+              const hours = Math.floor(totalSeconds / 3600);
+              const minutes = Math.floor((totalSeconds % 3600) / 60);
+              const seconds = totalSeconds % 60;
+              return (hours > 0)
+                ? `${String(hours).padStart(2,'0')}:${String(minutes).padStart(2,'0')}`
+                : `${String(minutes).padStart(2,'0')}:${String(seconds).padStart(2,'0')}`;
+            ]]]
+          styles:
+            grid:
+              - grid-template-columns: 55px 1fr
+              - grid-template-rows: min-content 1fr
+              - grid-template-areas: "'i n' 'i l'"
+            state:
+              - display: none
+            custom_fields:
+              bar:
+                - display: none
+        - value: "[[[ return variables.value_start ]]]"
+          icon: "[[[ return variables.icon_on ]]]"
+          label: |
+            [[[
+              const v = Number(states[variables.state_startin]?.state);
+              if (isNaN(v)) return 'Bereit';
+              const totalSeconds = Math.round(v * 3600);
+              if (totalSeconds === 0) return 'Bereit';
+              const hours = Math.floor(totalSeconds / 3600);
+              const minutes = Math.floor((totalSeconds % 3600) / 60);
+              const seconds = totalSeconds % 60;
+              return (hours > 0)
+                ? `${String(hours).padStart(2,'0')}:${String(minutes).padStart(2,'0')}`
+                : `${String(minutes).padStart(2,'0')}:${String(seconds).padStart(2,'0')}`;
+            ]]]
+          styles:
+            grid:
+              - grid-template-columns: 55px 1fr
+              - grid-template-rows: min-content 1fr
+              - grid-template-areas: "'i n' 'i l'"
+            state:
+              - display: none
+            custom_fields:
+              bar:
+                - display: none
+        - value: "[[[ return variables.value_run ]]]"
+          icon: "[[[ return variables.icon_on ]]]"
+          styles:
+            grid:
+              - grid-template-columns: 55px 1fr
+              - grid-template-rows: min-content 1fr 1fr
+              - grid-template-areas: "'i s' 'i l' 'bar bar' "
+            name:
+              - display: none
+            card:
+              - height: 120px
+            state:
+              - justify-self: start
+              - align-self: start
+              - margin-top: 9px
+              - font-size: 16px
+              - font-weight: 500
+              - color: var(--contrast16)
+              - letter-spacing: 0.4px
+              - padding-left: 3px
+            label:
+              - justify-self: start
+              - align-self: start
+              - font-size: 14px
+              - font-weight: 400
+              - color: var(--contrast10)
+              - letter-spacing: 0.6px
+              - margin-top: "-0px"
+              - padding-left: 3px
+        - value: "[[[ return variables.value_pause ]]]"
+          icon: "[[[ return variables.icon_on ]]]"
+          label: "[[[ return states[variables.state_active]?.state || '—'; ]]]"
+          styles:
+            grid:
+              - grid-template-columns: 55px 1fr
+              - grid-template-rows: min-content 1fr 1fr
+              - grid-template-areas: "'i l' 'i s' 'bar bar' "
+            name:
+              - display: none
+            label:
+              - justify-self: start
+              - align-self: start
+              - margin-top: 9px
+              - font-size: 16px
+              - font-weight: 500
+              - color: var(--contrast16)
+              - letter-spacing: 0.4px
+              - padding-left: 3px
+            state:
+              - justify-self: start
+              - align-self: start
+              - font-size: 14px
+              - font-weight: 400
+              - color: var(--contrast10)
+              - letter-spacing: 0.6px
+              - margin-top: "-0px"
+              - padding-left: 3px
+        - value: "[[[ return variables.value_alert ]]]"
+          icon: "[[[ return variables.icon_alert ]]]"
+          label: "[[[ return states[variables.state_active]?.state || '—'; ]]]"
+          styles:
+            grid:
+              - grid-template-columns: 55px 1fr
+              - grid-template-rows: min-content 1fr 1fr
+              - grid-template-areas: "'i l' 'i n' "
+            state:
+              - display: none
+            label:
+              - justify-self: start
+              - align-self: start
+              - margin-top: 9px
+              - font-size: 16px
+              - font-weight: 500
+              - color: var(--contrast16)
+              - letter-spacing: 0.4px
+              - padding-left: 3px
+            name:
+              - justify-self: start
+              - align-self: start
+              - font-size: 14px
+              - font-weight: 400
+              - color: var(--contrast10)
+              - letter-spacing: 0.6px
+              - margin-top: "-0px"
+              - padding-left: 3px
+            custom_fields:
+              bar:
+                - display: none
+        - value: "[[[ return variables.value_action ]]]"
+          icon: "[[[ return variables.icon_alert ]]]"
+          label: "[[[ return states[variables.state_active]?.state || '—'; ]]]"
+          styles:
+            grid:
+              - grid-template-columns: 55px 1fr
+              - grid-template-rows: min-content 1fr 1fr
+              - grid-template-areas: "'i l' 'i n' "
+            state:
+              - display: none
+            label:
+              - justify-self: start
+              - align-self: start
+              - margin-top: 9px
+              - font-size: 16px
+              - font-weight: 500
+              - color: var(--contrast16)
+              - letter-spacing: 0.4px
+              - padding-left: 3px
+            name:
+              - justify-self: start
+              - align-self: start
+              - font-size: 14px
+              - font-weight: 400
+              - color: var(--contrast10)
+              - letter-spacing: 0.6px
+              - margin-top: "-0px"
+              - padding-left: 3px
+            custom_fields:
+              bar:
+                - display: none
+        - value: "[[[ return variables.value_aborting ]]]"
+          icon: "[[[ return variables.icon_alert ]]]"
+          label: "[[[ return states[variables.state_active]?.state || '—'; ]]]"
+          styles:
+            grid:
+              - grid-template-columns: 55px 1fr
+              - grid-template-rows: min-content 1fr 1fr
+              - grid-template-areas: "'i l' 'i n' "
+            state:
+              - display: none
+            label:
+              - justify-self: start
+              - align-self: start
+              - margin-top: 9px
+              - font-size: 16px
+              - font-weight: 500
+              - color: var(--contrast16)
+              - letter-spacing: 0.4px
+              - padding-left: 3px
+            name:
+              - justify-self: start
+              - align-self: start
+              - font-size: 14px
+              - font-weight: 400
+              - color: var(--contrast10)
+              - letter-spacing: 0.6px
+              - margin-top: "-0px"
+              - padding-left: 3px
+            custom_fields:
+              bar:
+                - display: none
+        - value: "[[[ return variables.value_finished ]]]"
+          icon: "[[[ return variables.icon_off ]]]"
+          label: "[[[ return states[variables.state_active]?.state || '—'; ]]]"
+          styles:
+            grid:
+              - grid-template-columns: 55px 1fr
+              - grid-template-rows: min-content 1fr 1fr
+              - grid-template-areas: "'i n' 'i l'"
+            custom_fields:
+              bar:
+                - display: none
+            state:
+              - display: none
+      styles:
+        grid:
+          - grid-template-columns: 55px 1fr
+          - grid-template-rows: min-content 1fr 1fr
+          - grid-template-areas: "'i n' 'i s' 'bar bar'"
+        card:
+          - background: var(--contrast2)
+          - border-radius: 36px
+          - padding: 12px
+          - height: 80px
+        img_cell:
+          - width: 45px
+          - height: 45px
+          - align-self: start
+          - margin-top: 5px
+          - background: "[[[ return variables.img_cell_background ]]]"
+          - border-radius: 18px
+        icon:
+          - width: 32px
+          - color: var(--contrast2)
+        name:
+          - justify-self: start
+          - align-self: start
+          - margin-top: 9px
+          - font-size: 16px
+          - font-weight: 500
+          - color: var(--contrast16)
+          - letter-spacing: 0.4px
+          - padding-left: 3px
+        state:
+          - justify-self: start
+          - align-self: start
+          - font-size: 14px
+          - font-weight: 400
+          - color: var(--contrast10)
+          - letter-spacing: 0.6px
+          - margin-top: "-0px"
+          - padding-left: 3px
+        label:
+          - justify-self: start
+          - align-self: start
+          - font-size: 14px
+          - font-weight: 400
+          - color: var(--contrast10)
+          - letter-spacing: 0.6px
+          - margin-top: "-0px"
+          - padding-left: 3px
+        custom_fields:
+          bar:
+            - justify-self: start
+            - align-self: center
+            - margin-top: 0px
+            - margin-left: 10px
+            - width: 90%
+            - border-radius: 26px
+            - background: var(--contrast3)
+            - height: 18px
+      custom_fields:
+        bar: |
+          [[[
+            const id = variables.bar;
+            if (!id) return '';
+
+            const bg = variables.img_cell_background;
+            if (!bg) return '';
+
+            const ent = states[id];
+            if (!ent) return '';
+
+            const raw = Number(ent.state);
+            if (isNaN(raw)) return '';
+
+            const pct = Math.max(0, Math.min(100, raw));
+            return `<div style="background:${bg}; height:32px; width:${pct}%"></div>`;
+          ]]]
+    section_mode: true
+    title-card-clickable: true
+    title-card-button-overlay: true
+    overlay-margin: 28px 5px 0px 0px
+    clear-children: true
+    child-padding: 0px
+    child-margin-top: 0px
+    clear: false
+    padding: 0px
+    animation: true
+    arrow-color: var(--black10)
+    gap: 0px
+    title-card-padding: 0px
+    expanded: false
+    icon: mdi:none
+    expander-card-id: geschirrtrud
+    show-button-users:
+      - vaca-kuche
+    card_mod:
+      style:
+        .: |
+          ha-card {
+            border-radius: 36px !important;
+            overflow: hidden !important;
+            margin-top: -0px !important;
+          }

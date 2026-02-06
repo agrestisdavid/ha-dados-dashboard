@@ -1,0 +1,17 @@
+kiosk_mode: !include raw/kiosk/kiosk_mode.yaml
+navbar-templates: !include raw/navbar/main.yaml
+
+button_card_templates: !include_dir_merge_named raw/button_card_templates
+decluttering_templates: !include_dir_merge_named raw/decluttering_card_templates
+title: dados-dashboard
+
+views:
+  - !include views/home.yaml
+  - !include views/floors.yaml
+  - !include views/security.yaml
+  - !include views/todo.yaml
+  - !include views/settings.yaml
+
+  - !include views/heating.yaml
+  - !include views/homelab.yaml
+  - !include views/music.yaml

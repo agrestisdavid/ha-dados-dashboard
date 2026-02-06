@@ -1,0 +1,3113 @@
+title: Home
+path: home
+type: sections
+max_columns: 2
+cards: []
+dense_section_placement: false
+badges: []
+
+icon: mdi:home
+header:         #Title
+  layout: center
+  badges_position: bottom
+  badges_wrap: wrap
+  card:
+    type: markdown
+    text_only: true
+    content: "# Mansion"
+sections:
+- type: grid
+  cards:
+    - type: custom:gap-card
+      grid_options:
+        columns: full
+        rows: 0.5
+      # visibility:
+      #   - condition: screen
+      #     media_query: "(min-width: 768px)"
+  column_span: 2
+
+
+- type: grid      #map-left
+  cards:
+  - type: vertical-stack        
+    cards:
+    - type: custom:button-card      ##gap-over-map
+      entity: light.dummy
+      tap_action:
+        action: none
+      styles:
+        card:
+        - background: transparent
+        - height: 70px
+      section_mode: true
+      grid_options:
+        rows: 1
+        columns: 6
+      visibility:
+      - condition: screen
+        media_query: "(min-width: 768px)"
+    - type: map                     ##map
+      entities:
+      - entity: person.dado
+      - entity: person.feri
+      theme_mode: auto
+      grid_options:
+        columns: full
+        rows: 6.5
+      hours_to_show: 12
+      visibility:
+      - condition: screen
+        media_query: "(min-width: 768px)"
+      card_mod:
+        style:
+          .: |
+            ha-card {
+              border-radius: 46px !important;
+              overflow: hidden !important;
+              margin-top: 0px !important;
+  visibility:
+  - condition: screen
+    media_query: "(min-width: 768px)"
+  column_span: 1
+- type: grid      #simple-tabs
+  cards:
+  - type: custom:simple-tabs
+    show_fade: true
+    hide_inactive_tab_titles: true
+    background-color: var(--contrast2)
+    active-text-color: var(--black5)
+    active-background: var(--tabs)
+    hover-color: var(--contrast4)
+    border-color: var(--contrast2)
+    button_padding: 15px
+    default_tab: 3
+    tabs_gap: 10px
+    tabs:
+    - title: David          #dado-tab
+      icon: m3o:face
+      id: david
+      conditions:
+      - user:
+        - 6b9e364e8f1d413c99e8a3b82fa2f816
+      card:
+        type: vertical-stack
+        cards:
+          - type: custom:decluttering-card
+            template: dados_oven_card       
+            variables:
+              - card_mod:
+                  style: |
+                    ha-card {
+                      border-radius: 36px !important;
+                      overflow: hidden !important;
+                    }
+          - type: custom:button-card
+            template:
+              - dados_device_card
+            variables:
+              name: Backberta
+              card_color: var(--contrast2)
+              card_height: 80px
+              show_glow: true
+              entity: sensor.ofen_betriebszustand
+              state_display_entity: sensor.ofen_betriebszustand
+              icon_on: m3rf:oven
+              icon_off: m3r:oven
+              icon_alert: m3o:settings-alert
+              img_cell_background: var(--brown)
+              bar_entity: sensor.ofen_programmfortschritt
+              percent: sensor.ofen_programmfortschritt
+              state_startin: sensor.ofen_start_in
+              state_remaining: sensor.ofen_verbleibende_programmlaufzeit
+              state_active_program: sensor.ofen_aktives_programm
+              value_run: run
+              value_off: inactive
+              value_on: ready
+              value_alert: error
+              value_action: actionrequired
+              value_error_message: sensor.ofen_betriebszustand
+              value_finished: finished
+              value_paused: pause
+              value_aborting: aborting
+              value_start: delayedstart
+              value_returning: returning
+
+
+
+    - title: Feri           #feri-tab
+      icon: m3o:face-4
+      id: feri
+      conditions:
+      - user:
+        - 65764a40005e42adb2ff5a9c98670e4c
+      card:
+        type: markdown
+        content: Content 2
+    - title: Home           #home-tab
+      icon: m3r:home-and-garden
+      card:
+        type: custom:layout-card
+        layout_type: custom:grid-layout
+        layout:
+          grid-gap: 5px
+          grid-template-columns: 1fr 1fr
+          grid-template-rows: min-content 130px min-content min-content min-content
+          grid-template-areas: |
+            "kalendar kalendar"
+            "wetter müll"
+            "heizung alarm"
+            "robo geschirr"
+            "music music"
+        cards:
+        - view_layout:
+            grid-area: kalendar
+          type: custom:button-card
+          entity: calendar.dienstplan_2
+          show_state: false
+          show_name: false
+          show_icon: true
+          icon: mdi:calendar-month
+          tap_action:
+            action: navigate
+            navigation_path: "#kalender"
+          styles:
+            grid:
+            - grid-template-areas: '"i cal"'
+            - grid-template-columns: 55px 1fr
+            - grid-template-rows: 1fr
+            card:
+            - padding: 12px
+            - border-radius: 46px
+            - background-color: var(--contrast2)
+            icon:
+            - color: var(--contrast2)
+            - width: 40px
+            - height: 40px
+            img_cell:
+            - grid-area: i
+            - justify-self: center
+            - align-self: start
+            - width: 45px
+            - height: 45px
+            - background: var(--peach)
+            - border-radius: 38%
+            - margin-top: 7px
+            - margin-right: "-12px"
+            custom_fields:
+              cal:
+              - grid-area: cal
+              - align-self: flex-start
+              - justify-self: start
+              - width: 100%
+              - text-align: left
+              - padding: 10px
+              - margin-left: "-10px"
+              - border-radius: 36px
+              - overflow: hidden
+              - margin-top: "-18px"
+          custom_fields:
+            cal:
+              card:
+                type: custom:calendar-card-pro
+                entities:
+                - calendar.dienstplan_2
+                days_to_show: 7
+                compact_days_to_show: 1
+                compact_events_to_show: 1
+                compact_events_complete_days: true
+                title: ""
+                background_color: transparent
+                accent_color: var(--red)
+                vertical_line_width: 6px
+                first_day_of_week: monday
+                show_current_week_number: false
+                week_separator_width: 1px
+                week_separator_color: var(--contrast15)
+                month_separator_width: 1px
+                month_separator_color: transparent
+                today_indicator: pulse
+                today_indicator_position: 5% 50%
+                today_indicator_color: transparent
+                day_font_size: 14px
+                show_month: false
+                time_24h: true
+                weather:
+                  position: event
+                  date:
+                    show_conditions: true
+                    show_high_temp: true
+                    show_low_temp: false
+                    icon_size: 14px
+                    font_size: 12px
+                    color: var(--primary-text-color)
+                  event:
+                    show_conditions: true
+                    show_temp: true
+                    icon_size: 14px
+                    font_size: 12px
+                    color: var(--primary-text-color)
+                tap_action:
+                  action: navigate
+                  navigation_path: "#kalender"
+                hold_action:
+                  action: expand
+                card_mod:
+                  style:
+                    .: |
+                      ha-card {
+                        border-radius: 46px !important;
+                      }
+          extra_styles: |
+            ha-card::before {
+              content: "";
+              position: absolute;
+              top: -20%;
+              left: -40%;
+              width: 60%;
+              height: 60%;
+              background: radial-gradient(
+                circle,
+                rgba(var(--red-rgb), 0.95) 0%,
+                rgba(var(--peach-rgb), 0.75) 35%,
+                rgba(var(--peach-rgb), 0.75) 70%
+              );
+              filter: blur(60px);
+              z-index: 0;
+              pointer-events: none;
+            }
+
+          section_mode: true
+          grid_options:
+            rows: auto
+            columns: 12
+          card_mod:
+            style:
+              .: |
+                ha-card {
+                  overflow: hidden !important;
+                  margin-top: -0px !important;
+                  max-height: 130px;
+                }
+        - view_layout:
+            grid-area: wetter
+          type: custom:button-card
+          template: dados_base
+          variables:
+            entity: weather.forecast_home
+            navigation_path: "#wetter"
+            state_display_entity: sensor.zuhause_outdoor_temperature
+            img_cell_background: var(--sky)
+            card_height: ""
+          name: >
+            [[[
+              const stateObj = states[variables.entity];
+              if (!stateObj) return 'Unbekannt';
+
+              const s = stateObj.state;
+              if (s === 'unavailable' || s === 'unknown') return 'Unbekannt';
+              return hass.formatEntityState ? hass.formatEntityState(stateObj) : s;
+            ]]]
+
+          icon: mdi:weather-sunny
+          state:
+          - value: fog
+            icon: m3o:foggy
+
+          - value: rainy
+            icon: m3o:rainy
+
+          - value: cloudy
+            icon: m3o:cloud
+
+          - value: partlycloudy
+            icon: m3o:partly-cloudy-day
+
+          - value: sunny
+            icon: m3o:sunny
+
+          - value: clear-night
+
+            icon: mdi:weather-night
+          - value: hail
+            icon: m3o:weather-hail
+
+          - value: lightning
+            icon: mdi:weather-lightning
+
+          - value: lightning-rainy
+            icon: mdi:weather-lightning-rainy
+
+          - value: pouring
+            icon: mdi:weather-pouring
+
+          - value: snowy
+            icon: mdi:weather-snowy
+
+          - value: snowy-rainy
+            icon: mdi:weather-snowy-rainy
+
+          - value: windy
+            icon: mdi:weather-windy
+
+          - value: windy-variant
+            icon: mdi:weather-windy-variant
+
+          - value: exceptional
+            icon: mdi:weather-tornado
+          tap_action:
+            action: navigate
+            navigation_path: "[[[ return variables.navigation_path ]]]"
+          styles:
+            card:
+            - height: '[[[ return variables.card_height ]]]'
+
+          section_mode: true
+          grid_options:
+            rows: 2
+            columns: 6
+          card_mod:
+            style:
+              .: |
+                ha-card {
+                  margin-top: -15px !important;
+                }
+        - view_layout:
+            grid-area: müll
+          type: custom:button-card
+          template: dados_dynamic_state
+          variables: 
+            card_height: ""
+
+
+          # template: dados_base
+          # variables:
+          #   entity: input_boolean.mull_tiles_switch
+          #   state_display_entity: sensor.zuhause_outdoor_temperature
+          #   img_cell_background: var(--sand)
+          #   card_height: ""
+          # show_name: true
+          # show_state: true
+          # tap_action:
+          #   action: toggle
+          # icon: m3o:auto-delete
+          # name: |
+          #   [[[
+          #     return states['sensor.nachste_tonne']?.state || '';
+          #   ]]]
+          # state_display: |
+          #   [[[
+          #     return states['sensor.mullkalender_countdown']?.state || '';
+          #   ]]]
+          # state:
+          # - value: "on"
+          #   styles:
+          #     custom_fields:
+          #       stat1:
+          #       - display: none
+          # styles:
+          #   card:
+          #   - height: '[[[ return variables.card_height ]]]'
+
+          #   grid:
+          #   - grid-template-areas: |
+          #       "i n"
+          #       "i s"
+          #       "stat1 stat1"
+          #   - grid-template-columns: 55px 1fr
+          #   - grid-template-rows: min-content 1fr 1fr
+          #   img_cell:
+          #   # - justify-self: start
+          #   - align-self: start
+          #   - background: |
+          #       [[[
+          #         const entries = [
+          #           { key: 'gelb',   days: Number(states['sensor.gelber_sack']?.state) },
+          #           { key: 'papier', days: Number(states['sensor.papier']?.state) },
+          #           { key: 'rest',   days: Number(states['sensor.restmull']?.state) },
+          #           { key: 'bio',    days: Number(states['sensor.biomull']?.state) },
+          #         ];
+          #         const colorMap = {
+          #           gelb: 'var(--yellow)', papier: 'var(--red)',
+          #           rest: 'var(--white6)', bio: 'var(--sand)'
+          #         };
+          #         const valid = entries.filter(e => !isNaN(e.days));
+          #         if (!valid.length) return 'var(--contrast2)';
+          #         const today = valid.find(e => e.days === 0);
+          #         if (today) return colorMap[today.key];
+          #         valid.sort((a,b)=>a.days-b.days);
+          #         return colorMap[valid[0].key];
+          #       ]]]
+          #   - overflow: visible
+          #   custom_fields:
+          #     stat1:
+          #     - justify-self: start
+          #     - align-self: center
+          #     - margin-left: 0px
+          #     - width: 100%
+          #     - padding-top: 0px
+          #     - overflow: visible
+          # custom_fields:
+          #   stat1: |
+          #     [[[
+          #       const entries = [
+          #         { key: 'gelb',   sensor: 'sensor.gelber_sack',  label:'mdi:recycle',         days: Number(states['sensor.gelber_sack']?.state || 999) },
+          #         { key: 'papier', sensor: 'sensor.papier',       label:'mdi:package-variant', days: Number(states['sensor.papier']?.state || 999) },
+          #         { key: 'rest',   sensor: 'sensor.restmull',     label:'mdi:trash-can',       days: Number(states['sensor.restmull']?.state || 999) },
+          #         { key: 'bio',    sensor: 'sensor.biomull',      label:'mdi:leaf',            days: Number(states['sensor.biomull']?.state || 999) },
+          #       ];
+
+          #       const colorMap = {
+          #         gelb:'var(--yellow)', papier:'var(--red)', rest:'var(--white7)', bio:'var(--sand)'
+          #       };
+
+          #       const valid = entries.filter(e => !isNaN(e.days) && e.days > 0);
+          #       if (!valid.length) return '';
+
+          #       valid.sort((a,b)=>a.days-b.days);
+
+          #       if (valid.length <= 1) return '';
+
+          #       const pills = valid.slice(1).map(e=>{
+          #         const v = states[e.sensor]?.state ?? '-';
+          #         return `
+          #           <div style="display:flex;align-items:center;gap:4px;
+          #             padding:3px 9px;margin-right:6px;background:${colorMap[e.key]};
+          #             border-radius:12px;font-size:13px;font-weight:600;color:var(--contrast2);">
+          #             <ha-icon icon="${e.label}" style="--mdc-icon-size:14px;"></ha-icon>
+          #             <span>${v}</span>
+          #           </div>`;
+          #       }).join('');
+
+          #       return `<div style="display:flex;flex-direction:row;flex-wrap:nowrap;width:100%;">${pills}</div>`;
+          #     ]]]
+          section_mode: true
+          grid_options:
+            rows: 2
+            columns: 6
+          card_mod:
+            style:
+              .: |
+                ha-card {
+                  margin-top: -15px !important;
+                }
+        - view_layout:    #Heizung
+            grid-area: heizung
+          type: custom:decluttering-card
+          template: dados_heating_card
+          variables:
+            - card_mod:
+                style: |
+                  ha-card {
+                    border-radius: 36px !important;
+                    overflow: hidden !important;
+                    padding-bottom: 0px !important;
+                    margin-top: -30px !important;
+                    max-height: 135px !important; 
+                  }
+        - view_layout:    #Alarm
+            grid-area: alarm
+          type: custom:decluttering-card
+          template: dados_expander_base
+          variables:
+            - entity: alarm_control_panel.alarmo
+            - card_mod:
+                style: |
+                  ha-card {
+                    border-radius: 36px !important;
+                    overflow: hidden !important;
+                    padding-bottom: 0px !important;
+                    margin-top: -30px !important;
+                    max-height: 135px !important; 
+                  }
+
+            - cards:
+                - type: tile
+                  entity: alarm_control_panel.alarmo
+                  vertical: false
+                  features:
+                  - type: alarm-modes
+                    modes:
+                      - armed_home
+                      - armed_night
+                      - armed_away
+                      - disarmed
+                  features_position: bottom
+                  card_mod:
+                    style:
+                      .: |
+                        ha-card {
+                          background: transparent !important;
+                          box-shadow: none !important;
+                          border: none !important;
+                          margin-top: 0px;
+                        }
+
+                        ha-card .content {
+                          display: none !important;
+                        }
+                      hui-card-features $:
+                        hui-card-feature $:
+                          hui-alarm-modes-card-feature $:
+                            ha-control-select $: |
+                              .container {
+                                background-color: rgba(var(--contrast2-rgb), 1) !important;  
+                                border-radius: 13px !important;
+                                padding: 0px !important;
+                              }
+            - title_card:
+                type: custom:button-card
+                template: dados_alarm_card
+                styles:
+                  card:
+                    - overflow: visible
+        - view_layout:    #Robobert
+            grid-area: robo
+          type: custom:decluttering-card
+          template: dados_vacuum_roboter_card
+          variables:
+            - card_mod:
+                style: |
+                  ha-card {
+                    border-radius: 36px !important;
+                    overflow: hidden !important;
+                    padding-bottom: 0px !important;
+                    margin-top: -15px !important;
+                  }
+        - view_layout:    #Geschirrtrud
+            grid-area: geschirr
+          type: custom:decluttering-card
+          template: dados_dishwasher_card
+          variables:
+            - card_mod:
+                style: |
+                  ha-card {
+                    border-radius: 36px !important;
+                    overflow: hidden !important;
+                    padding-bottom: 0px !important;
+                    margin-top: -15px !important;
+                  }
+
+        - type: custom:expander-card
+          cards:
+          - type: vertical-stack
+            cards:
+            - type: custom:simple-tabs
+              background-color: var(--contrast2)
+              active-text-color: var(--black5)
+              active-background: var(--orange)
+              hover-color: var(--contrast4)
+              border-color: var(--contrast2)
+              button_padding: 15px
+              default_tab: 1
+              tabs:
+              - title: Alle
+                icon: m3o:speaker-group
+                card:
+                  type: custom:mediocre-media-player-card
+                  entity_id: media_player.master_2
+                  use_art_colors: false
+                  tap_opens_popup: false
+                  action: {}
+                  search:
+                    enabled: true
+                    show_favorites: true
+                    entity_id: media_player.master_2
+                  ma_entity_id: media_player.master_2
+                  ma_favorite_button_entity_id: >-
+                    button.master_2_aktuellen_titel_favorisieren
+                  grid_options:
+                    columns: 12
+                    rows: auto
+                  card_mod:
+                    style: |
+                      ha-card {
+                        /* Basic card settings */
+                        border-radius: 48px;
+                        background: var(--contrast2);
+                        padding: 1px;
+                        height: 100%;
+                        overflow: hidden;
+                      }
+                      .mmpc-y7xf1k{
+                        /* Song title */
+                        font-size: 20px !important;
+                        color: var(--contrast17);
+                      }
+                      .mmpc-15k4zg8 {
+                        border-radius: 33px;  
+
+                      }
+                      .mmpc-1chqau7{
+                        min-height: 56px !important;
+                        margin-top: -06px !important;
+                      }
+                      .mmpc-k5toxk {
+                        /* Album art */
+                        opacity: 1;
+                        border-radius: 33px !important; 
+                      }
+                      .mmpc-1f3tpgo{
+                        overflow: hidden;
+                      }
+                      .mmpc-1xi7ch2 {
+                        height: 50px !important;
+                      }
+                      .mmpc-b95f0i {
+                      /* Padding between album art and text */
+                        padding-left: 10px ;
+
+                      }
+                      .mmpc-1etnzp2{
+                      /* Icon size of buttons */
+                        --mmpc-icon-button-size: 32px !important;
+                      }
+                      .mmpc-10fhhtb{
+                        border-top: 0px;
+                      }
+                      .mmpc-ppkt1e{
+                        border-radius: 14px;
+                      }
+                      #base-ui-P0-0{
+                        background-color: var(--contrast3) !important;
+                      }
+                      .mmpc-1btfyb6{
+                        background-color: var(--contrast3);
+                      }
+                      .mmpc-1etnzp2{
+                        --mmpc-icon-button-size: 32px !important;
+                      }
+
+
+                      .mmpc-uh38j9 {
+                        display: none !important;
+                      }   
+                      .mmpc-1huiqle {
+                        display: none !important;
+                      }
+              - title: Küche
+                icon: m3o:chef-hat
+                card:
+                  type: custom:mediocre-media-player-card
+                  entity_id: media_player.vaca_kuche_media_player
+                  use_art_colors: false
+                  tap_opens_popup: false
+                  search:
+                    enabled: true
+                    show_favorites: true
+                    entity_id: media_player.vaca_kuche_media_player
+                  ma_entity_id: media_player.vaca_kuche_media_player
+                  ma_favorite_button_entity_id: >-
+                    button.vaca_kuche_media_player_aktuellen_titel_favorisieren
+                  grid_options:
+                    columns: 12
+                    rows: auto
+                  card_mod:
+                    style: >
+                      ha-card {
+                        /* Basic card settings */
+                        border-radius: 48px;
+                        background: var(--contrast2);
+                        padding: 1px;
+                        height: 100%;
+                        overflow: visible;
+                      }
+
+                      .mmpc-y7xf1k{
+                        /* Song title */
+                        font-size: 20px !important;
+                        color: var(--contrast17);
+                      }
+
+                      .mmpc-15k4zg8 {
+                        border-radius: 33px;  
+
+                      }
+
+                      .mmpc-1chqau7{
+                        min-height: 56px !important;
+                        margin-top: -06px !important;
+                      }
+
+                      .mmpc-k5toxk {
+                        /* Album art */
+                        opacity: 1;
+                        border-radius: 33px !important; 
+                      }
+
+                      .mmpc-1f3tpgo{
+                        overflow: hidden;
+                      }
+
+                      .mmpc-1xi7ch2 {
+                        height: 50px !important;
+                      }
+
+                      .mmpc-b95f0i {
+
+                      /* Padding between album art and text */
+                        padding-left: 10px ;
+
+                      }
+
+                      .mmpc-1etnzp2{
+
+                      /* Icon size of buttons */
+                        --mmpc-icon-button-size: 32px !important;
+                      }
+
+                      .mmpc-10fhhtb{
+                        border-top: 0px;
+                      }
+
+                      .mmpc-ppkt1e{
+                        border-radius: 14px;
+                      }
+
+                      #base-ui-P0-0{
+                        background-color: var(--contrast3) !important;
+                      }
+
+                      .mmpc-1btfyb6{
+                        background-color: var(--contrast3);
+                      }
+
+                      .mmpc-1etnzp2{
+                        --mmpc-icon-button-size: 32px !important;
+                      }
+
+                      .mmpc-17t3dnt > button:nth-child(2) ha-icon {
+                        --mdc-icon-size: 20px !important;
+                        color: var(--contrast16) !important;
+                      }
+
+                      .mmpc-17t3dnt > button:nth-child(1) ha-icon {
+                        --mdc-icon-size: 20px !important;
+                        color: var(--contrast16) !important;
+                      }
+
+                      .mmpc-uh38j9 {
+                        display: none !important;
+                      }   
+
+                      .mmpc-1huiqle {
+                        display: none !important;
+                      }
+              - title: Büro
+                icon: m3o:desktop-windows
+                card:
+                  type: custom:mediocre-media-player-card
+                  entity_id: media_player.buro
+                  use_art_colors: false
+                  tap_opens_popup: false
+                  action: {}
+                  search:
+                    enabled: true
+                    show_favorites: true
+                    entity_id: media_player.buro
+                  ma_entity_id: media_player.buro
+                  card_mod:
+                    style: |
+                      ha-card {
+                        /* Basic card settings */
+                        border-radius: 48px;
+                        background: var(--contrast2);
+                        padding: 1px;
+                        height: 100%;
+                        overflow: hidden;
+                      }
+                      .mmpc-y7xf1k{
+                        /* Song title */
+                        font-size: 20px !important;
+                        color: var(--contrast17);
+                      }
+                      .mmpc-15k4zg8 {
+                        border-radius: 33px;  
+
+                      }
+                      .mmpc-1chqau7{
+                        min-height: 56px !important;
+                        margin-top: -06px !important;
+                      }
+                      .mmpc-k5toxk {
+                        /* Album art */
+                        opacity: 1;
+                        border-radius: 33px !important; 
+                      }
+                      .mmpc-1f3tpgo{
+                        overflow: hidden;
+                      }
+                      .mmpc-1xi7ch2 {
+                        height: 50px !important;
+                      }
+                      .mmpc-b95f0i {
+                      /* Padding between album art and text */
+                        padding-left: 10px ;
+
+                      }
+                      .mmpc-1etnzp2{
+                      /* Icon size of buttons */
+                        --mmpc-icon-button-size: 32px !important;
+                      }
+                      .mmpc-10fhhtb{
+                        border-top: 0px;
+                      }
+                      .mmpc-ppkt1e{
+                        border-radius: 14px;
+                      }
+                      #base-ui-P0-0{
+                        background-color: var(--contrast3) !important;
+                      }
+                      .mmpc-1btfyb6{
+                        background-color: var(--contrast3);
+                      }
+                      .mmpc-1etnzp2{
+                        --mmpc-icon-button-size: 32px !important;
+                      }
+
+                      .mmpc-ct9q29{
+                        display: none !important;
+
+                      }
+                      .mmpc-uh38j9 {
+                        display: none !important;
+                      }   
+                      .mmpc-1huiqle {
+                        display: none !important;
+                      }
+                  grid_options:
+                    columns: 12
+                    rows: auto
+              - title: Wohnen
+                icon: m3o:weekend
+                card:
+                  type: markdown
+                  content: Content for Tab 2
+              - title: Essen
+                icon: m3o:dine-heart
+                card:
+                  type: custom:mediocre-media-player-card
+                  entity_id: media_player.esszimmer
+                  use_art_colors: false
+                  tap_opens_popup: false
+                  action: {}
+                  search:
+                    enabled: true
+                    show_favorites: true
+                    entity_id: media_player.esszimmer
+                  ma_entity_id: media_player.esszimmer
+                  ma_favorite_button_entity_id: >-
+                    button.esszimmer_aktuellen_titel_favorisieren
+                  grid_options:
+                    columns: 12
+                    rows: auto
+                  card_mod:
+                    style: |
+                      ha-card {
+                        /* Basic card settings */
+                        border-radius: 48px;
+                        background: var(--contrast2);
+                        padding: 1px;
+                        height: 100%;
+                        overflow: hidden;
+                      }
+                      .mmpc-y7xf1k{
+                        /* Song title */
+                        font-size: 20px !important;
+                        color: var(--contrast17);
+                      }
+                      .mmpc-15k4zg8 {
+                        border-radius: 33px;  
+
+                      }
+                      .mmpc-1chqau7{
+                        min-height: 56px !important;
+                        margin-top: -06px !important;
+                      }
+                      .mmpc-k5toxk {
+                        /* Album art */
+                        opacity: 1;
+                        border-radius: 33px !important; 
+                      }
+                      .mmpc-1f3tpgo{
+                        overflow: hidden;
+                      }
+                      .mmpc-1xi7ch2 {
+                        height: 50px !important;
+                      }
+                      .mmpc-b95f0i {
+                      /* Padding between album art and text */
+                        padding-left: 10px ;
+
+                      }
+                      .mmpc-1etnzp2{
+                      /* Icon size of buttons */
+                        --mmpc-icon-button-size: 32px !important;
+                      }
+                      .mmpc-10fhhtb{
+                        border-top: 0px;
+                      }
+                      .mmpc-ppkt1e{
+                        border-radius: 14px;
+                      }
+                      #base-ui-P0-0{
+                        background-color: var(--contrast3) !important;
+                      }
+                      .mmpc-1btfyb6{
+                        background-color: var(--contrast3);
+                      }
+                      .mmpc-1etnzp2{
+                        --mmpc-icon-button-size: 32px !important;
+                      }
+
+
+                      .mmpc-uh38j9 {
+                        display: none !important;
+                      }   
+                      .mmpc-1huiqle {
+                        display: none !important;
+                      }
+              hide_inactive_tab_titles: true
+            grid_options:
+              rows: auto
+              columns: full
+          title-card:
+            type: custom:button-card
+            variables:
+              entity: media_player.master
+              name: Musik
+              navigation_path: /lovelace/musik2
+              state_display: sensor.aktive_musik_raume
+              img_cell_background: var(--orange)
+              icon_on: mdi:music
+            entity: "[[[ return variables.entity ]]]"
+            icon: "[[[ return variables.icon_on ]]]"
+            show_state: true
+            state_display: >-
+              [[[ return states[variables.state_display]?.state || 'FEHLER'; ]]]
+            name: "[[[ return variables.name ]]]"
+            icon_tap_action:
+              action: none
+            tap_action:
+              action: fire-dom-event
+              expander-card:
+                data:
+                  expander-card-id: musik
+                  action: toggle
+            styles:
+              grid:
+              - grid-template-columns: 55px 1fr
+              - grid-template-rows: min-content 1fr
+              - grid-template-areas: "'i n' 'i s'"
+              card:
+              - border-radius: 36px
+              - background: transparent
+              - padding: 12px
+              - height: 80px
+              - overflow: visible
+              - --button-card-ripple-color: transparent !important
+              - --button-card-ripple-hover-opacity: 0 !important
+              - --ha-card-ripple-color: transparent !important
+              - --ha-ripple-hover-opacity: 0 !important
+
+
+              img_cell:
+              - width: 45px
+              - height: 45px
+              - align-self: start
+              - margin-top: 5px
+              - background: "[[[ return variables.img_cell_background ]]]"
+              - border-radius: 18px
+              - box-shadow: >
+                  -35px -30px 70px 20px rgba(var(--orange-rgb), .7), -5px -5px 70px 10px rgba(var(--sand-rgb), .8)
+              - overflow: visible
+              icon:
+              - width: 32px
+              - color: var(--contrast2)
+              name:
+              - justify-self: start
+              - align-self: start
+              - margin-top: 9px
+              - font-size: 16px
+              - font-weight: 500
+              - color: var(--contrast16)
+              - letter-spacing: 0.4px
+              - padding-left: 3px
+              state:
+              - justify-self: start
+              - align-self: start
+              - font-size: 14px
+              - font-weight: 400
+              - color: var(--contrast10)
+              - letter-spacing: 0.6px
+              - margin-top: "-0px"
+              - padding-left: 3px
+          grid_options:
+            columns: 12
+            rows: auto
+          title-card-clickable: true
+          title-card-button-overlay: true
+          clear-children: false
+          child-padding: 5px
+          child-margin-top: "0px"
+          clear: false
+          padding: 0px
+          icon: mdi:none
+          animation: true
+          arrow-color: var(--contrast2)
+          gap: 0px
+          expanded: false
+          overlay-margin: 28px 5px 0px 0px
+          style: |2-
+            
+              .header-overlay {
+                height: unset !important;
+              }
+          expander-card-id: musik
+          show-button-users:
+          - vaca-kuche
+          view_layout:
+            grid-area: music
+          card_mod:
+            style:
+              .: |
+                ha-card {
+                  border-radius: 36px !important;
+                  overflow: hidden !important;
+
+                  margin-top: -15px !important;
+                }
+        grid_options:
+          columns: 12
+          rows: auto
+    - title: Probleme       #probleme-tab
+      icon: line-md:bell-alert-loop
+      badge: "{{ (states('sensor.probleme_count') | int(0)) >= 1 }}"
+      card:
+        type: vertical-stack
+        cards:
+        - type: custom:bubble-card
+          card_type: separator
+          icon: ''
+          name: Benachrichtigungen
+        - type: custom:button-card
+          template: dados_boiler     
+        - type: custom:button-card
+          template: dados_weather_alert
+          visibility:
+          - condition: state
+            entity: binary_sensor.meteoalarm
+            state_not: "off"
+
+        - type: custom:auto-entities
+          show_empty: false
+          card:
+            type: grid
+            columns: 1
+            square: false
+          card_param: cards
+          filter:
+            include:
+            - entity_id: sensor.backofen_betriebszustand
+              state: /^(error|actionrequired)$/
+              options:
+                type: custom:button-card
+                template: dados_alert
+                variables:
+                  entity: this.entity_id
+            - entity_id: sensor.geschirrspuler_betriebszustand
+              state: /^(error|actionrequired)$/
+              options:
+                type: custom:button-card
+                template: dados_alert
+                variables:
+                  entity: this.entity_id
+            - entity_id: sensor.geschirrspuler_betriebszustand_2
+              state: /^(error|actionrequired)$/
+              options:
+                type: custom:button-card
+                template: dados_alert
+                variables:
+                  entity: this.entity_id
+
+            - entity_id: sensor.ofen_betriebszustand
+              state: /^(error|actionrequired)$/
+              options:
+                type: custom:button-card
+                template: dados_alert
+                variables:
+                  entity: this.entity_id
+            - entity_id: sensor.roborock_qrevo_curv_series_status
+              state: /^(charger_disconnected|charging_problem|error)$/
+              options:
+                type: custom:button-card
+                template: dados_alert
+                variables:
+                  entity: this.entity_id
+            - entity_id: sensor.waschmaschine
+              state: /^(failure|program_interrupted|service)$/
+              options:
+                type: custom:button-card
+                template: dados_alert
+                variables:
+                  entity: this.entity_id
+            - entity_id: sensor.geschirrspuler_klarspuler
+              state: /^(empty|nearly_empty)$/
+              options:
+                type: custom:button-card
+                template: dados_alert
+                variables:
+                  entity: this.entity_id
+            - entity_id: sensor.geschirrspuler_salz
+              state: /^(empty|nearly_empty)$/
+              options:
+                type: custom:button-card
+                template: dados_alert
+                variables:
+                  entity: this.entity_id
+            - entity_id: binary_sensor.geschirrspuler_aquastop_aufgetreten
+              state: "on"
+              options:
+                type: custom:button-card
+                template: dados_alert
+                variables:
+                  entity: this.entity_id
+            - entity_id: binary_sensor.geschirrspuler_maschinenreinigung
+              state: "on"
+              options:
+                type: custom:button-card
+                template: dados_alert
+                variables:
+                  entity: this.entity_id
+            - entity_id: >-
+                binary_sensor.roborock_qrevo_curv_series_wasserknappheit
+              state: "on"
+              options:
+                type: custom:button-card
+                template: dados_alert
+                variables:
+                  entity: this.entity_id
+            - entity_id: binary_sensor.waschmaschine_problem
+              state: "on"
+              options:
+                type: custom:button-card
+                template: dados_alert
+                variables:
+                  entity: this.entity_id
+            - entity_id: sensor.roborock_qrevo_curv_series_dock_dock_fehler
+              state: >-
+                /^(duct_blockage|water_empty|waste_water_tank_full|maintenance_brush_jammed|dirty_tank_latch_open|no_dustbin|cleaning_tank_full_or_blocked)$/
+              options:
+                type: custom:button-card
+                template: dados_alert
+                variables:
+                  entity: this.entity_id
+        - type: custom:button-card
+          template: dados_alert
+          variables:
+            entity: sensor.dummy
+            img_cell_background: var(--green)
+          name: Keine Fehler
+          state_display: Alles im grünen Bereich
+          visibility:
+          - condition: state
+            entity: sensor.probleme_count
+            state: "0"
+        - type: custom:bubble-card
+          card_type: separator
+          name: Kameraaktivität
+          icon: ""
+          sub_button: []
+        - type: custom:llmvision-card
+          entity: calendar.llm_vision_timeline
+          number_of_hours: 72
+          number_of_events: 3
+          language: de
+          camera_filters: []
+          custom_colors:
+            people:
+            - 254
+            - 88
+            - 88
+            vehicles:
+            - 176
+            - 98
+            - 254
+            packages:
+            - 106
+            - 60
+            - 22
+            animals:
+            - 31
+            - 87
+            - 255
+            nature:
+            - 95
+            - 191
+            - 101
+            entities:
+            - 198
+            - 112
+            - 255
+  - type: custom:expander-card #waschmaschine-need-edit
+    title: Expander Card
+    cards:
+    - type: tile
+      entity: switch.waschmaschine_stromversorgung
+      vertical: false
+      features:
+      - type: custom:service-call
+        entries:
+        - type: button
+          entity_id: switch.waschmaschine_stromversorgung
+          tap_action:
+            action: perform-action
+            perform_action: switch.turn_off
+            target:
+              entity_id:
+              - switch.waschmaschine_stromversorgung
+            data: {}
+          haptics: true
+          thumb: default
+          toggle_styles: false
+          icon: mdi:power-plug-off
+          styles: |-
+            :host {
+              --opacity: 1;
+              --mdc-icon-size: 30px;
+              --color: var(--contrast3);
+              --icon-color: var(--contrast15);
+            }
+      features_position: bottom
+      card_mod:
+        style:
+          .: |
+            ha-card {
+              background: transparent !important;
+              box-shadow: none !important;
+              border: none !important;
+              margin-top: 0px;
+            }
+
+            ha-card .content {
+              display: none !important;
+            }
+    title-card:
+      type: custom:button-card
+      variables:
+        entity: switch.waschmaschine_stromversorgung
+        icon_on: mdi:washing-machine
+        icon_alert: mdi:washing-machine-alert
+        icon_off: mdi:washing-machine-off
+        name: Miele Kitic
+        navigation_path: "#waschmaschine"
+        img_cell_background: var(--peach)
+        bar: sensor.waschmaschine_fortschritt
+        percent: sensor.waschmaschine_fortschritt
+        state_display: sensor.waschmaschine_betriebszustand_deutsch
+      entity: "[[[ return variables.entity ]]]"
+      icon: "[[[ return variables.icon_on ]]]"
+      show_state: true
+      state_display: "[[[ return states[variables.state_display]?.state ; ]]]"
+      name: "[[[ return variables.name ]]]"
+      label: |
+        [[[
+          return states['sensor.waschmaschine_aktives_programm_deutsch']?.state;
+        ]]]
+      show_label: true
+      tap_action:
+        action: navigate
+        navigation_path: "[[[ return variables.navigation_path ]]]"
+      icon_tap_action:
+        action: none
+      state:
+      - value: "on"
+        styles:
+          grid:
+          - grid-template-columns: 55px 1fr
+          - grid-template-rows: min-content 1fr 1fr
+          - grid-template-areas: "'i l' 'i bar'"
+          name:
+          - display: none
+          custom_fields:
+            bar:
+            - display: block
+            - margin-left: 3px
+          label:
+          - justify-self: start
+          - align-self: start
+          - margin-top: 9px
+          - margin-left: 2px
+          - font-size: 16px
+          - font-weight: 500
+          - color: var(--contrast16)
+          - letter-spacing: 0.4px
+          - padding-left: 3px
+          - display: block
+          state:
+          - justify-self: start
+          - align-self: start
+          - font-size: 14px
+          - font-weight: 400
+          - color: var(--contrast10)
+          - letter-spacing: 0.6px
+          - margin-top: "-0px"
+          - padding-left: 3px
+          - display: none
+      styles:
+        grid:
+        - grid-template-columns: 55px 1fr
+        - grid-template-rows: min-content 1fr 1fr
+        - grid-template-areas: "'i n' 'i s'"
+        card:
+        - background: var(--contrast2)
+        - border-radius: 36px
+        - padding: 12px
+        - height: 80px
+        img_cell:
+        - width: 45px
+        - height: 45px
+        - align-self: start
+        - margin-top: 5px
+        - background: "[[[ return variables.img_cell_background ]]]"
+        - border-radius: 18px
+        icon:
+        - width: 32px
+        - color: var(--contrast2)
+        name:
+        - justify-self: start
+        - align-self: start
+        - margin-top: 9px
+        - font-size: 16px
+        - font-weight: 500
+        - color: var(--contrast16)
+        - letter-spacing: 0.4px
+        - padding-left: 3px
+        state:
+        - justify-self: start
+        - align-self: start
+        - font-size: 14px
+        - font-weight: 400
+        - color: var(--contrast10)
+        - letter-spacing: 0.6px
+        - margin-top: "-0px"
+        - padding-left: 3px
+        label:
+        - justify-self: start
+        - align-self: start
+        - font-size: 14px
+        - font-weight: 400
+        - color: var(--contrast10)
+        - letter-spacing: 0.6px
+        - margin-top: "-0px"
+        - padding-left: 3px
+        - display: none
+        custom_fields:
+          bar:
+          - justify-self: start
+          - align-self: center
+          - margin-top: 0px
+          - margin-left: 10px
+          - width: 90%
+          - border-radius: 26px
+          - background: var(--contrast3)
+          - height: 18px
+          - display: none
+      custom_fields:
+        bar: |
+          [[[
+            const id = variables.bar;              
+            if (!id) return '';  
+
+            const bg = variables.img_cell_background;              
+            if (!bg) return '';        
+
+            const ent = states[id];
+            if (!ent) return '';
+
+            const raw = Number(ent.state);
+            if (isNaN(raw)) return '';
+
+            const pct = Math.max(0, Math.min(100, raw)); 
+
+            return `<div style="background:${bg}; height:32px; width:${pct}%"></div>`;
+          ]]]
+      section_mode: true
+      grid_options:
+        rows: auto
+        columns: 6
+    grid_options:
+      columns: 6
+      rows: auto
+    title-card-clickable: false
+    title-card-button-overlay: true
+    overlay-margin: 28px 5px 0px 0px
+    clear-children: true
+    child-padding: 0px
+    child-margin-top: 0px
+    clear: false
+    padding: 0px
+    icon: m3of:arrow-drop-down
+    animation: true
+    arrow-color: var(--contrast10)
+    gap: 0px
+    title-card-padding: 0px
+    expanded: false
+    visibility:
+    - condition: state
+      entity: switch.waschmaschine_stromversorgung
+      state: "on"
+    view_layout:
+      grid-area: geschirr
+    card_mod:
+      style:
+        .: |
+          ha-card {
+            border-radius: 36px !important;
+            overflow: hidden !important;
+            margin-top: -0px !important;
+          }
+- type: grid      #ende-erreicht
+  cards:
+  - type: custom:gap-card
+    grid_options:
+      columns: 24
+      rows: 6
+  - type: markdown
+    content: Du hast das Ende erreicht.. 👀
+    text_only: true
+    card_mod:
+      style: |
+        ha-card {
+          text-align: center;
+        }
+    grid_options:
+      columns: full
+  - type: custom:gap-card
+    grid_options:
+      columns: full
+      rows: 1
+  visibility:
+  - condition: screen
+    media_query: "(min-width: 0px)"
+  column_span: 2
+- type: grid      #navbar
+  cards:
+  - type: custom:navbar-card
+    template: main
+    visibility:
+    - condition: user
+      users:
+      - 65764a40005e42adb2ff5a9c98670e4c
+      - 6b9e364e8f1d413c99e8a3b82fa2f816
+      - 6f5563b187e545dca243d70635a22db3
+      - 9d112777b4e44b3d9826635e6b722703
+  visibility:
+  - condition: screen
+    media_query: "(min-width: 0px)"
+  column_span: 2
+- type: grid      #navbar-popups
+  cards:
+  - type: vertical-stack          ##lichteran-popup
+    cards:
+    - type: custom:bubble-card
+      card_type: pop-up
+      hash: "#lichteran"
+      button_type: name
+      name: Lichter an
+      icon: m3o:light-group
+      scrolling_effect: false
+      modules:
+      - header-settings
+      more_info_popup:
+        bd_filter: blur(100px)
+        window_ani: rotate(360deg) translateY(150%)
+      sub_button:
+        main: []
+        bottom: []
+    - type: custom:decluttering-card
+      template: dados_active_lights
+  - type: vertical-stack          ##rollosoffen-popup
+    cards:
+    - type: custom:bubble-card
+      card_type: pop-up
+      hash: "#rollosoffen"
+      button_type: name
+      name: Rollos Offen
+      icon: mdi:blinds-open
+      scrolling_effect: false
+    - type: custom:auto-entities
+      card:
+        type: grid
+        columns: 1
+        square: false
+      card_param: cards
+      filter:
+        include:
+        - domain: cover
+          state: open
+          options:
+            type: tile
+            entity: this.entity_id
+            name:
+            - type: area
+            icon: mdi:blinds
+            show_entity_picture: false
+            hide_state: false
+            vertical: false
+            features:
+            - type: cover-open-close
+            - type: cover-position
+            features_position: bottom
+        exclude: []
+
+
+  column_span: 2
+
+- type: grid      #popup-container
+  cards:
+  - type: vertical-stack          ##geschirr-popup
+    cards:
+    - type: custom:bubble-card
+      card_type: pop-up
+      hash: "#geschirrspuler"
+      button_type: name
+      name: Geschirrspüler
+      icon: m3o:dishwasher-gen
+      bg_color: var(--contrast2)
+    - type: custom:bubble-card
+      card_type: button
+      button_type: state
+      entity: timer.geschirrspuler
+      show_name: false
+      show_last_changed: false
+      show_last_updated: false
+      show_attribute: true
+      attribute: duration
+    - type: custom:timer-bar-card
+      entity: timer.geschirrspuler
+      invert: false
+      bar_direction: ltr
+      bar_width: 60%
+      mushroom:
+        layout: horizontal
+        color: purple
+      name: Endzeit
+    - type: tile
+      entity: switch.geschirrspuler_einschalter
+      name: Einschalten
+      vertical: false
+      features:
+      - type: toggle
+      features_position: inline
+    - type: tile
+      entity: select.geschirrspuler_ausgewahltes_programm
+      name: Programm
+      icon: m3o:dishwasher-gen
+      color: purple
+      hide_state: true
+      vertical: false
+      features:
+      - type: select-options
+      features_position: inline
+    - type: tile
+      entity: >-
+        select.siemens_015040396425007581_bsh_common_option_startinrelative
+      name: Start Zeit
+      color: purple
+      vertical: false
+      features:
+      - type: numeric-input
+        style: buttons
+      features_position: inline
+    - type: tile
+      entity: button.015040396425007581_start_pause
+      name: Start
+      color: purple
+      hide_state: false
+      state_content: last_changed
+      vertical: false
+      features:
+      - type: button
+      features_position: inline
+    - type: tile
+      grid_options:
+        columns: 24
+        rows: 1
+      entity: sensor.geschirrspuler_tur
+      color: purple
+      hide_state: false
+      vertical: false
+      features_position: bottom
+    - type: horizontal-stack
+      cards:
+      - type: tile
+        visibility:
+        - condition: state
+          entity: sensor.geschirrspuler_salz_fast_leer
+          state: confirmed
+        entity: sensor.geschirrspuler_salz_fast_leer
+        name: Salz leer!
+        icon: mdi:shaker
+        color: red
+        show_entity_picture: false
+        hide_state: false
+        vertical: false
+        features_position: bottom
+      - type: tile
+        entity: sensor.geschirrspuler_klarspuler_fast_leer
+        name: Klarspüler leer!
+        icon: m3o:glass-cup
+        color: red
+        vertical: false
+        features_position: bottom
+        visibility:
+        - condition: state
+          entity: sensor.geschirrspuler_klarspuler_fast_leer
+          state: confirmed
+  - type: vertical-stack          ##ofen-popup
+    cards:
+    - type: custom:bubble-card
+      card_type: pop-up
+      hash: "#ofen"
+      button_type: name
+      name: Ofen
+      icon: m3o:dishwasher-gen
+      bg_color: var(--contrast2)
+    - type: tile
+      entity: switch.backofen_einschalter
+      name: Einschalten
+      vertical: false
+      features:
+      - type: toggle
+      features_position: inline
+    - type: tile
+      entity: select.backofen_ausgewahltes_programm
+      name: Programm
+      icon: m3o:dishwasher-gen
+      color: purple
+      hide_state: true
+      vertical: false
+      features:
+      - type: select-options
+      features_position: inline
+    - type: tile
+      grid_options:
+        columns: 24
+        rows: 1
+      entity: sensor.backofen_tur
+      color: purple
+      hide_state: false
+      vertical: false
+      features_position: bottom
+    - type: custom:bubble-card
+      card_type: button
+      button_type: state
+      tap_action:
+        action: perform-action
+        target:
+          entity_id: button.ofen_start
+        perform_action: button.press
+      entity: input_button.ofen_start
+  - type: vertical-stack          ##dado-popup
+    cards:
+    - type: custom:bubble-card
+      card_type: pop-up
+      hash: "#dado"
+      button_type: name
+      name: Dado
+      icon: m3o:person
+    - type: map
+      entities:
+      - entity: person.dado
+      theme_mode: auto
+      hours_to_show: 12
+    - type: custom:vehicle-info-card
+      name: E 300 de T-Modell
+      entity: sensor.nd665fd_car
+      model_name: E 300 de T-Modell
+      selected_language: system
+      show_slides: true
+      show_map: false
+      show_buttons: true
+      show_header_info: true
+      show_background: true
+      enable_map_popup: true
+      enable_services_control: false
+      show_error_notify: false
+      device_tracker: ""
+      map_popup_config:
+        hours_to_show: 0
+        default_zoom: 14
+        theme_mode: auto
+        use_zone_name: true
+      selected_theme:
+        theme: default
+        mode: auto
+      extra_configs:
+        tire_card_custom:
+          background: ""
+          horizontal: false
+          image_size: 100
+          value_size: 100
+          top: 50
+          left: 50
+        images_swipe:
+          max_height: 150
+          max_width: 450
+          autoplay: false
+          loop: true
+          delay: 5000
+          speed: 500
+          effect: fade
+        mini_map_height: 150
+        show_address: true
+        section_order:
+        - images_slider
+        - header_info
+        - buttons
+      button_grid:
+        use_swiper: false
+        rows_size: 2
+      services:
+        auxheat: false
+        charge: true
+        doorsLock: false
+        engine: false
+        preheat: true
+        sendRoute: false
+        sigPos: false
+        sunroof: false
+        windows: false
+      use_custom_cards:
+        vehicle_card: false
+        trip_card: false
+        eco_card: false
+        tyre_card: false
+      images:
+      - url: /local/benz/ext/benz-1.png
+        title: benz-1.png
+      - url: /local/benz/ext/benz-2.png
+        title: benz-2.png
+      - url: /local/benz/ext/benz-3.png
+        title: benz-3.png
+      - url: /local/benz/ext/benz-4.png
+        title: benz-4.png
+      - url: /local/benz/ext/benz-5.png
+        title: benz-5.png
+      - url: /local/benz/ext/benz-6.png
+        title: benz-6.png
+      - url: /local/benz/ext/benz-7.png
+        title: benz-7.png
+      - url: /local/benz/ext/benz-8.png
+        title: benz-8.png
+      - url: /local/benz/ext/benz-9.png
+        title: benz-9.png
+      - url: /local/benz/ext/benz-10.png
+        title: benz-10.png
+      - url: /local/benz/ext/benz-11.png
+        title: benz-11.png
+      - url: /local/benz/ext/benz-12.png
+        title: benz-12.png
+      - url: /local/benz/ext/benz-13.png
+        title: benz-13.png
+      - url: /local/benz/ext/benz-14.png
+        title: benz-14.png
+      - url: /local/benz/ext/benz-15.png
+        title: benz-15.png
+      - url: /local/benz/ext/benz-16.png
+        title: benz-16.png
+      - url: /local/benz/ext/benz-17.png
+        title: benz-17.png
+      - url: /local/benz/ext/benz-18.png
+        title: benz-18.png
+      - url: /local/benz/ext/benz-19.png
+        title: benz-19.png
+      - url: /local/benz/ext/benz-20.png
+        title: benz-20.png
+      - url: /local/benz/ext/benz-21.png
+        title: benz-21.png
+      - url: /local/benz/ext/benz-22.png
+        title: benz-22.png
+      - url: /local/benz/ext/benz-23.png
+        title: benz-23.png
+      - url: /local/benz/ext/benz-24.png
+        title: benz-24.png
+      - url: /local/benz/ext/benz-25.png
+        title: benz-25.png
+      - url: /local/benz/ext/benz-26.png
+        title: benz-26.png
+      - url: /local/benz/ext/benz-27.png
+        title: benz-27.png
+      - url: /local/benz/ext/benz-28.png
+        title: benz-28.png
+      - url: /local/benz/ext/benz-29.png
+        title: benz-29.png
+      - url: /local/benz/ext/benz-30.png
+        title: benz-30.png
+      - url: /local/benz/ext/benz-31.png
+        title: benz-31.png
+      - url: /local/benz/ext/benz-32.png
+        title: benz-32.png
+      - url: /local/benz/ext/benz-33.png
+        title: benz-33.png
+      - url: /local/benz/ext/benz-34.png
+        title: benz-34.png
+      - url: /local/benz/ext/benz-35.png
+        title: benz-35.png
+      - url: /local/benz/ext/benz-36.png
+        title: benz-36.png
+      show_image_index: false
+      trip_button:
+        button_type: default
+        icon: mdi:map
+        primary: Kilometerstand
+        hide: false
+  - type: vertical-stack          ##feri-popup
+    cards:
+    - type: custom:bubble-card
+      card_type: pop-up
+      hash: "#feri"
+      button_type: name
+      name: Feri
+      icon: m3o:person-2
+    - type: map
+      entities:
+      - entity: person.feri
+      theme_mode: auto
+      hours_to_show: 12
+  - type: vertical-stack          ##musik-popup
+    cards:
+    - type: custom:bubble-card
+      card_type: pop-up
+      hash: "#musik"
+      button_type: name
+      name: Musik
+      show_icon: false
+      show_name: true
+      scrolling_effect: false
+      show_header: false
+    - type: custom:mediocre-massive-media-player-card
+      entity_id: media_player.main
+      mode: panel
+      action:
+        hold_action:
+          action: navigate
+          navigation_path: /lovelace/musik
+      speaker_group:
+        entity_id: media_player.main
+        entities:
+        - entity: media_player.homepod_mini_2
+          name: Küche
+        - entity: media_player.sonos_symfonisk
+          name: Symfonisk
+        - entity: media_player.appletv_4k
+          name: AppleTV 4K
+        - media_player.main
+      search:
+        enabled: true
+        show_favorites: true
+      ma_entity_id: media_player.main
+      ma_favorite_button_entity_id: button.main_aktuellen_titel_favorisieren
+  - type: vertical-stack          ##kalender-popup
+    cards:
+    - type: custom:bubble-card
+      card_type: pop-up
+      hash: "#kalender"
+      button_type: name
+      show_header: true
+      name: Dienstplan
+      icon: m3o:calendar-month
+      scrolling_effect: false
+      show_name: true
+      sub_button:
+        main:
+        - icon: m3o:calendar-add-on
+          state_background: false
+          show_background: true
+          tap_action:
+            action: navigate
+            navigation_path: "#addevent"
+          name: Hinzufügen
+          show_name: true
+        bottom: []
+    - entities:
+      - entity: calendar.dienstplan_2
+      days_to_show: 14
+      compact_days_to_show: 14
+      compact_events_to_show: 14
+      title: ""
+      background_color: var(--contrast2)
+      accent_color: var(--red)
+      vertical_line_width: 4px
+      first_day_of_week: monday
+      show_current_week_number: false
+      week_separator_width: 1px
+      week_separator_color: var(--contrast15)
+      month_separator_width: 1px
+      month_separator_color: var(--red)
+      today_indicator: pulse
+      today_indicator_position: 5% 50%
+      today_indicator_color: var(--red)
+      day_font_size: 14px
+      show_month: false
+      time_24h: true
+      weather:
+        position: event
+        date:
+          show_conditions: true
+          show_high_temp: true
+          show_low_temp: false
+          icon_size: 14px
+          font_size: 12px
+          color: var(--primary-text-color)
+        event:
+          show_conditions: true
+          show_temp: true
+          icon_size: 14px
+          font_size: 12px
+          color: var(--primary-text-color)
+      tap_action:
+        action: expand
+      hold_action:
+        action: expand
+      type: custom:calendar-card-pro
+  - type: vertical-stack          ###Wetter-PopUp
+    cards:
+      - type: custom:bubble-card
+        card_type: pop-up
+        hash: "#wetter"
+        button_type: name
+        name: Wetter
+        icon: mdi:sun-clock
+        sub_button:
+          main: []
+          bottom: []
+      - type: vertical-stack
+        cards:
+          - type: custom:button-card
+            template: dados_weather_alert
+
+          - type: custom:mod-card
+            style: |
+              ha-card {
+                background: var(--contrast1);   
+                border-radius: 36px;
+                padding: 0px;
+                box-shadow: none;
+              }
+            card:
+              type: custom:paper-buttons-row
+              styles:
+                justify-content: flex-start
+                flex-wrap: wrap
+                font-size: 12.5px
+                font-weight: 500
+                font-family: Roboto
+                margin: 6px 0 20px 0
+                width: 100%
+              buttons:
+                - layout: name
+                  name: Draußen hat es
+                  styles:
+                    button:
+                      flex-basis: 1
+                      flex-shrink: 0
+                    name:
+                      color: var(--contrast17)
+                  tap_action:
+                    action: none
+                - layout: name|icon
+                  entity: weather.forecast_home
+                  name: |-
+                    {{ state_attr('weather.forecast_home', 'temperature') }} {{
+                      state_attr('weather.forecast_home', 'temperature_unit')
+                    }}, {{ state_translated('weather.forecast_home') }}
+                  icon: |-
+                    {% set s = states('weather.forecast_home') %} {% set map = {
+                      'clear-night':'mdi:weather-night',
+                      'cloudy':'mdi:weather-cloudy',
+                      'fog':'mdi:weather-fog',
+                      'hail':'mdi:weather-hail',
+                      'lightning':'mdi:weather-lightning',
+                      'lightning-rainy':'mdi:weather-lightning-rainy',
+                      'partlycloudy':'mdi:weather-partly-cloudy',
+                      'pouring':'mdi:weather-pouring',
+                      'rainy':'mdi:weather-rainy',
+                      'snowy':'mdi:weather-snowy',
+                      'snowy-rainy':'mdi:weather-snowy-rainy',
+                      'sunny':'mdi:weather-sunny',
+                      'windy':'mdi:weather-windy',
+                      'windy-variant':'mdi:weather-windy-variant',
+                      'exceptional':'mdi:weather-tornado'
+                    } %} {{ map.get(s, 'mdi:weather-cloudy') }}
+                  tap_action:
+                    action: none
+                  styles:
+                    icon:
+                      color: var(--black5)
+                    name:
+                      color: var(--black5)
+                      font-weight: bold
+                    button:
+                      padding: 2px 8px
+                      background-color: var(--sky)
+                      border-radius: 24px
+                      flex-basis: 1
+                      flex-shrink: 0
+                      display: flex
+                - layout: name
+                  name: bei gefühlten
+                  styles:
+                    button:
+                      flex-basis: 1
+                      flex-shrink: 0
+                    name:
+                      color: var(--contrast17)
+                  tap_action:
+                    action: none
+                - layout: name
+                  entity: weather.forecast_home
+                  name: >-
+                    {{ states('sensor.openweathermap_gefuhlte_temperatur')  }} {{
+                    state_attr('weather.forecast_home', 'temperature_unit') }}
+                  tap_action:
+                    action: none
+                  styles:
+                    name:
+                      color: var(--black5)
+                      font-weight: bold
+                    button:
+                      padding: 2px 8px
+                      background-color: var(--peach)
+                      border-radius: 24px
+                      flex-basis: 1
+                      flex-shrink: 0
+                      display: flex
+                - layout: name
+                  name: Die Windgeschwindigkeit beträgt
+                  styles:
+                    button:
+                      flex-basis: 1
+                      flex-shrink: 0
+                    name:
+                      color: var(--contrast17)
+                  tap_action:
+                    action: none
+                - layout: name
+                  entity: weather.forecast_home
+                  name: >-
+                    {% set w = state_attr('weather.forecast_home','wind_speed') |
+                    float(0) %} {% set u =
+                    state_attr('weather.forecast_home','wind_speed_unit') %} {{ w |
+                    round(1) }} {{ u }}
+                  tap_action:
+                    action: none
+                  styles:
+                    name:
+                      color: var(--black5)
+                      font-weight: bold
+                    button:
+                      padding: 2px 8px
+                      background-color: var(--vanilla)
+                      border-radius: 24px
+                      flex-basis: 1
+                      flex-shrink: 0
+                      display: flex
+          - type: custom:weather-forecast-extended-card
+            entity: weather.forecast_home
+            header_attributes: []
+            show_header: true
+            hourly_forecast: false
+            daily_forecast: false
+            orientation: vertical
+            use_night_header_backgrounds: true
+            header_chips:
+              - type: attribute
+                attribute: ""
+              - type: attribute
+                attribute: ""
+              - type: attribute
+                attribute: ""
+            header_temperature_entity: sensor.zuhause_outdoor_temperature
+            show_sun_times: false
+            card_mod:
+              style:
+                .: |
+                  ha-card .temp,
+                  ha-card .condition {
+                    color: rgba(var(--peach-rgb), 0) !important;
+                    background-color: rgba(0, 0, 0, 0) !important;
+                  }
+          - type: custom:weather-forecast-extended-card
+            entity: weather.forecast_home
+            header_attributes:
+              - wind_speed
+            show_header: false
+            hourly_forecast: true
+            daily_forecast: false
+            orientation: vertical
+            use_night_header_backgrounds: true
+            header_chips:
+              - type: attribute
+                attribute: wind_speed
+              - type: attribute
+                attribute: ""
+              - type: attribute
+                attribute: ""
+            header_temperature_entity: sensor.zuhause_outdoor_temperature
+          - type: custom:weather-forecast-extended-card
+            entity: weather.forecast_home
+            header_attributes:
+              - wind_speed
+            show_header: false
+            hourly_forecast: false
+            daily_forecast: true
+            orientation: vertical
+            use_night_header_backgrounds: true
+            header_chips:
+              - type: attribute
+                attribute: wind_speed
+              - type: attribute
+                attribute: ""
+              - type: attribute
+                attribute: ""
+            header_temperature_entity: sensor.zuhause_outdoor_temperature
+          - type: custom:simple-tabs
+            show_fade: true
+            hide_inactive_tab_titles: true
+            background-color: var(--contrast2)
+            active-text-color: var(--black5)
+            active-background: var(--tabs)
+            hover-color: var(--contrast4)
+            border-color: var(--contrast2)
+            button_padding: 15px
+            default_tab: 1
+            tabs:
+              - title: Regen
+                icon: m3o:rainy
+                card:
+                  type: vertical-stack
+                  cards:
+                    - type: custom:mod-card
+                      card:
+                        type: iframe
+                        url: >-
+                          https://embed.windy.com/embed.html?type=map&location=coordinates&metricRain=mm&metricTemp=°C&metricWind=km/h&zoom=8&overlay=rain&product=ecmwf&level=surface&lat=47.857&lon=17.182&width=800&height=600
+                      style: |
+                        ha-card {
+                          padding: 0;
+                          height: 350px !important;
+                          width: 100% !important;
+                          overflow: hidden;
+                        }
+                        iframe {
+                          width: 100% !important;
+                          height: 100% !important;
+                        }
+              - title: Wind
+                icon: m3o:wind-power
+                card:
+                  type: vertical-stack
+                  cards:
+                    - type: custom:mod-card
+                      card:
+                        type: iframe
+                        url: >-
+                          https://embed.windy.com/embed4.html?lat=48.2081&lon=16.3713&width=800&height=600
+                      style: |
+                        ha-card {
+                          padding: 0;
+                          height: 350px !important;
+                          width: 100% !important;
+                          overflow: hidden;
+                        }
+                        iframe {
+                          width: 100% !important;
+                          height: 100% !important;
+                        }
+          - type: custom:lunar-phase-card
+            entity: ""
+            12hr_format: false
+            calendar_modal: true
+            compact_view: true
+            default_card: base
+            hide_buttons: false
+            mile_unit: false
+            moon_position: left
+            number_decimals: 2
+            selected_language: de
+            show_background: true
+            southern_hemisphere: false
+            use_custom: false
+            use_default: true
+            use_entity: false
+            graph_config:
+              graph_type: default
+              y_ticks: false
+              x_ticks: false
+              show_time: true
+              show_current: true
+              show_highest: true
+              y_ticks_position: left
+              y_ticks_step_size: 30
+              time_step_size: 30
+              show_Temp: true
+            font_customize:
+              header_font_size: medium
+              header_font_style: capitalize
+              header_font_color: ""
+              label_font_size: small
+              label_font_style: none
+              label_font_color: ""
+              hide_label: false
+            latitude: 47.9400395
+            longitude: 17.0835344
+            location:
+              city: ""
+              country: Österreich
+            custom_background: >-
+              https://cdn.jsdelivr.net/gh/ngocjohn/lunar-phase-card@1.7.3/background/moon_bg_2.png
+            theme:
+              selected_theme: default
+            compact_mode: default
+            hide_items: []    
+        grid_options:
+          rows: auto
+  - type: vertical-stack          ##Robobert-Popup
+    cards:
+    - type: custom:bubble-card
+      card_type: pop-up
+      hash: "#robobert"
+      button_type: state
+      entity: vacuum.roborock_qrevo_curv_series
+      modules: []
+      more_info_popup:
+        center: false
+        window_ani: translateY(150%)
+        bd_filter: blur(30px)
+        border: none
+        bg_color: var(--contrast2)
+        top: 40px
+        bottom: auto
+        max_height: calc(100% - 72px)
+        dt_width: 60vw
+        b_radius: 66px
+        window_speed: all 0.4s ease
+    - type: custom:xiaomi-vacuum-map-card
+      map_source:
+        camera: image.roborock_qrevo_curv_series_erdgeschoss_custom
+      calibration_source:
+        camera: true
+      entity: vacuum.roborock_qrevo_curv_series
+      vacuum_platform: Roborock
+      title: ""
+      map_modes:
+      - name: Saugen ohne Wischen
+        icon: mdi:vacuum-outline
+        selection_type: ROOM
+        max_selections: 10
+        run_immediately: false
+        variables:
+          fan_speed_saugen: max_plus
+          fan_speed_wischen: "off"
+          mop_mode: standard
+          mop_intensity_saugen: "off"
+          mop_intensity_wischen: mild
+        service_call_schema:
+          service: script.saugen_max_plus_wischen_aus
+          service_data:
+            vacuum_entity: vacuum.roborock_qrevo_curv_series
+            segments: "[[selection]]"
+        predefined_selections:
+        - id: "1"
+          icon:
+            name: mdi:broom
+            x: 18125
+            "y": 20050
+          label:
+            text: 1
+            x: 18125
+            "y": 20050
+            offset_y: 35
+          outline:
+          - - 16500
+            - 18200
+          - - 19750
+            - 18200
+          - - 19750
+            - 21900
+          - - 16500
+            - 21900
+        - id: "2"
+          icon:
+            name: mdi:broom
+            x: 22600
+            "y": 20300
+          label:
+            text: 2
+            x: 22600
+            "y": 20300
+            offset_y: 35
+          outline:
+          - - 20250
+            - 18200
+          - - 24950
+            - 18200
+          - - 24950
+            - 22400
+          - - 20250
+            - 22400
+        - id: "3"
+          icon:
+            name: mdi:broom
+            x: 26975
+            "y": 20175
+          label:
+            text: 3
+            x: 26975
+            "y": 20175
+            offset_y: 35
+          outline:
+          - - 24950
+            - 18250
+          - - 29000
+            - 18250
+          - - 29000
+            - 22100
+          - - 24950
+            - 22100
+        - id: "4"
+          icon:
+            name: mdi:broom
+            x: 18850
+            "y": 29325
+          label:
+            text: 4
+            x: 18850
+            "y": 29325
+            offset_y: 35
+          outline:
+          - - 16200
+            - 26500
+          - - 21500
+            - 26500
+          - - 21500
+            - 32150
+          - - 16200
+            - 32150
+        - id: "5"
+          icon:
+            name: mdi:broom
+            x: 26875
+            "y": 24300
+          label:
+            text: 5
+            x: 26875
+            "y": 24300
+            offset_y: 35
+          outline:
+          - - 24800
+            - 22500
+          - - 28950
+            - 22500
+          - - 28950
+            - 26100
+          - - 24800
+            - 26100
+        - id: "6"
+          icon:
+            name: mdi:broom
+            x: 23075
+            "y": 24950
+          label:
+            text: 6
+            x: 23075
+            "y": 24950
+            offset_y: 35
+          outline:
+          - - 21500
+            - 23800
+          - - 24650
+            - 23800
+          - - 24650
+            - 26100
+          - - 21500
+            - 26100
+        - id: "7"
+          icon:
+            name: mdi:broom
+            x: 16650
+            "y": 22925
+          label:
+            text: 7
+            x: 16650
+            "y": 22925
+            offset_y: 35
+          outline:
+          - - 15800
+            - 22300
+          - - 17500
+            - 22300
+          - - 17500
+            - 23550
+          - - 15800
+            - 23550
+        - id: "8"
+          icon:
+            name: mdi:broom
+            x: 20400
+            "y": 24200
+          label:
+            text: 8
+            x: 20400
+            "y": 24200
+            offset_y: 35
+          outline:
+          - - 16050
+            - 21950
+          - - 24750
+            - 21950
+          - - 24750
+            - 26450
+          - - 16050
+            - 26450
+      two_finger_pan: false
+    - type: custom:xiaomi-vacuum-map-card
+      map_source:
+        camera: image.roborock_qrevo_curv_series_erdgeschoss_custom
+      calibration_source:
+        camera: true
+      entity: vacuum.roborock_qrevo_curv_series
+      vacuum_platform: Roborock
+      title: ""
+      map_modes:
+      - name: Saugen ohne Wischen
+        icon: mdi:vacuum-outline
+        selection_type: ROOM
+        max_selections: 10
+        run_immediately: false
+        variables:
+          fan_speed_saugen: max_plus
+          fan_speed_wischen: "off"
+          mop_mode: standard
+          mop_intensity_saugen: "off"
+          mop_intensity_wischen: mild
+        service_call_schema:
+          service: script.saugen_max_plus_wischen_aus
+          service_data:
+            vacuum_entity: vacuum.roborock_qrevo_curv_series
+            segments: "[[selection]]"
+        predefined_selections:
+        - id: "1"
+          icon:
+            name: mdi:broom
+            x: 18150
+            "y": 20200
+          label:
+            text: Küche
+            x: 18150
+            "y": 20200
+            offset_y: 35
+          outline:
+          - - 16500
+            - 18200
+          - - 19800
+            - 18200
+          - - 19800
+            - 22200
+          - - 16500
+            - 22200
+        - id: "2"
+          icon:
+            name: mdi:broom
+            x: 22600
+            "y": 20300
+          label:
+            text: Esszimmer
+            x: 22600
+            "y": 20300
+            offset_y: 35
+          outline:
+          - - 20250
+            - 18200
+          - - 24950
+            - 18200
+          - - 24950
+            - 22400
+          - - 20250
+            - 22400
+        - id: "3"
+          icon:
+            name: mdi:broom
+            x: 26975
+            "y": 20175
+          label:
+            text: Büro
+            x: 26975
+            "y": 20175
+            offset_y: 35
+          outline:
+          - - 24950
+            - 18250
+          - - 29000
+            - 18250
+          - - 29000
+            - 22100
+          - - 24950
+            - 22100
+        - id: "4"
+          icon:
+            name: mdi:broom
+            x: 18825
+            "y": 29325
+          label:
+            text: Wohnzimmer
+            x: 18825
+            "y": 29325
+            offset_y: 35
+          outline:
+          - - 16150
+            - 26500
+          - - 21500
+            - 26500
+          - - 21500
+            - 32150
+          - - 16150
+            - 32150
+        - id: "5"
+          icon:
+            name: mdi:broom
+            x: 26875
+            "y": 24300
+          label:
+            text: Gästezimmer
+            x: 26875
+            "y": 24300
+            offset_y: 35
+          outline:
+          - - 24800
+            - 22500
+          - - 28950
+            - 22500
+          - - 28950
+            - 26100
+          - - 24800
+            - 26100
+        - id: "6"
+          icon:
+            name: mdi:broom
+            x: 23150
+            "y": 24950
+          label:
+            text: Gästebad
+            x: 23150
+            "y": 24950
+            offset_y: 35
+          outline:
+          - - 21700
+            - 23800
+          - - 24600
+            - 23800
+          - - 24600
+            - 26100
+          - - 21700
+            - 26100
+        - id: "7"
+          icon:
+            name: mdi:broom
+            x: 16625
+            "y": 22925
+          label:
+            text: Eingang
+            x: 16625
+            "y": 22925
+            offset_y: 35
+          outline:
+          - - 15800
+            - 22300
+          - - 17450
+            - 22300
+          - - 17450
+            - 23550
+          - - 15800
+            - 23550
+        - id: "8"
+          icon:
+            name: mdi:broom
+            x: 20400
+            "y": 24350
+          label:
+            text: Flur
+            x: 20400
+            "y": 24350
+            offset_y: 35
+          outline:
+          - - 16050
+            - 22250
+          - - 24750
+            - 22250
+          - - 24750
+            - 26450
+          - - 16050
+            - 26450
+      two_finger_pan: false
+  - type: vertical-stack          ##notify-popup
+    cards:
+    - type: custom:bubble-card
+      card_type: pop-up
+      hash: "#notify"
+      button_type: name
+      name: Notify
+      icon: line-md:bell-alert-loop
+      sub_button:
+        main:
+        - icon: mdi:security
+          tap_action:
+            action: navigate
+            navigation_path: /lovelace/security
+          name: Security
+          show_name: true
+        bottom: []
+    - type: custom:bubble-card
+      card_type: separator
+      name: Kameraaktivität
+      icon: mdi:cctv
+      sub_button: []
+    - type: custom:llmvision-card
+      entity: calendar.llm_vision_timeline
+      number_of_hours: 24
+      number_of_events: 3
+      language: de
+      camera_filters: []
+      custom_colors:
+        people:
+        - 254
+        - 88
+        - 88
+        vehicles:
+        - 176
+        - 98
+        - 254
+        packages:
+        - 106
+        - 60
+        - 22
+        animals:
+        - 31
+        - 87
+        - 255
+        nature:
+        - 95
+        - 191
+        - 101
+        entities:
+        - 198
+        - 112
+        - 255
+    - type: custom:bubble-card
+      card_type: separator
+      icon: mdi:alert
+      name: Benachrichtigungen
+    - type: custom:auto-entities
+      show_empty: false
+      card:
+        type: grid
+        columns: 1
+        square: false
+      card_param: cards
+      filter:
+        include:
+        - options:
+            type: tile
+          entity_id: sensor.backofen_betriebszustand
+          state: /^(error|actionrequired)$/
+        - options:
+            type: tile
+          entity_id: sensor.geschirrspuler_betriebszustand
+          state: /^(error|actionrequired)$/
+        - options:
+            type: tile
+          entity_id: sensor.ofen_betriebszustand
+          state: /^(error|actionrequired)$/
+        - options:
+            type: tile
+          entity_id: sensor.roborock_qrevo_curv_series_status
+          state: /^(charger_disconnected|charging_problem|error)$/
+        - options:
+            type: tile
+          entity_id: sensor.waschmaschine
+          state: /^(failure|program_interrupted|service)$/
+        - options:
+            type: tile
+          entity_id: sensor.geschirrspuler_klarspuler
+          state: /^(empty|nearly_empty)$/
+        - options:
+            type: tile
+          entity_id: sensor.geschirrspuler_salz
+          state: /^(empty|nearly_empty)$/
+        - options:
+            type: tile
+          entity_id: binary_sensor.geschirrspuler_aquastop_aufgetreten
+          state: "on"
+        - options:
+            type: tile
+          entity_id: binary_sensor.geschirrspuler_maschinenreinigung
+          state: "on"
+        - options:
+            type: tile
+          entity_id: binary_sensor.roborock_qrevo_curv_series_wasserknappheit
+          state: "on"
+        - options:
+            type: tile
+          entity_id: binary_sensor.waschmaschine_problem
+          state: "on"
+        - options:
+            type: tile
+          entity_id: sensor.roborock_qrevo_curv_series_dock_dock_fehler
+          state: >-
+            /^(duct_blockage|water_empty|waste_water_tank_full|maintenance_brush_jammed|dirty_tank_latch_open|no_dustbin|cleaning_tank_full_or_blocked)$/
+    - type: markdown
+      content: Keine Fehler, alles ist okay.
+      text_only: true
+      visibility:
+      - condition: state
+        entity: sensor.probleme_count
+        state: "0"
+  - type: vertical-stack          ##profile-popup
+    cards:
+    - type: custom:bubble-card
+      card_type: pop-up
+      hash: "#profil"
+      button_type: name
+      name: Wo ist?
+      icon: m3o:person
+    - type: custom:button-card
+      variables:
+        entity: sensor.dado_iphone_bt_presense_area
+        navigation_path: "#dado"
+      name: Dado
+      entity: "[[[ return variables.entity ]]]"
+      show_state: true
+      show_name: true
+      tap_action:
+        action: navigate
+        navigation_path: "[[[ return variables.navigation_path ]]]"
+      icon_tap_action:
+        action: none
+      styles:
+        grid:
+        - grid-template-columns: 1fr min-content
+        - grid-template-rows: 1fr
+        - grid-template-areas: "'n s'"
+        card:
+        - background: var(--contrast1)
+        - border-radius: 36px
+        - padding: 12px
+        img_cell:
+        - display: none
+        icon:
+        - display: none
+        name:
+        - justify-self: start
+        - align-self: start
+        - margin-top: 0px
+        - font-size: 16px
+        - font-weight: 700
+        - color: var(--contrast16)
+        - letter-spacing: 0.4px
+        - padding-left: 0px
+        state:
+        - justify-self: start
+        - align-self: start
+        - font-size: 14px
+        - font-weight: 400
+        - color: var(--contrast10)
+        - letter-spacing: 0.6px
+        - margin-top: "-0px"
+        - padding-left: 0px
+        - display: visible
+      section_mode: true
+      grid_options:
+        rows: auto
+        columns: full
+    - type: map
+      entities:
+      - entity: person.dado
+      theme_mode: auto
+      hours_to_show: 12
+    - type: custom:button-card
+      variables:
+        entity: sensor.feri_iphone_bt_area
+        navigation_path: "#feri"
+      name: Feri
+      entity: "[[[ return variables.entity ]]]"
+      show_state: true
+      show_name: true
+      tap_action:
+        action: navigate
+        navigation_path: "[[[ return variables.navigation_path ]]]"
+      icon_tap_action:
+        action: none
+      styles:
+        grid:
+        - grid-template-columns: 1fr min-content
+        - grid-template-rows: 1fr
+        - grid-template-areas: "'n s'"
+        card:
+        - background: var(--contrast1)
+        - border-radius: 36px
+        - padding: 12px
+        img_cell:
+        - display: none
+        icon:
+        - display: none
+        name:
+        - justify-self: start
+        - align-self: start
+        - margin-top: 0px
+        - font-size: 16px
+        - font-weight: 700
+        - color: var(--contrast16)
+        - letter-spacing: 0.4px
+        - padding-left: 0px
+        state:
+        - justify-self: start
+        - align-self: start
+        - font-size: 14px
+        - font-weight: 400
+        - color: var(--contrast10)
+        - letter-spacing: 0.6px
+        - margin-top: "-0px"
+        - padding-left: 0px
+        - display: visible
+      section_mode: true
+      grid_options:
+        rows: auto
+        columns: full
+    - type: map
+      entities:
+      - entity: person.feri
+      theme_mode: auto
+      hours_to_show: 12
+  - type: vertical-stack          ##addevent-popup
+    cards:
+    - type: custom:bubble-card
+      card_type: pop-up
+      hash: "#addevent"
+      button_type: name
+      name: Dienst hinzufügen
+      icon: m3o:calendar-add-on
+      sub_button:
+        main: []
+        bottom: []
+    - type: custom:custom-features-card
+      features:
+      - type: custom:service-call
+        entries:
+        - type: selector
+          entity_id: input_select.event_title
+          options:
+          - entity_id: input_select.event_title
+            option: David
+            tap_action:
+              action: perform-action
+              perform_action: input_select.select_option
+              data:
+                option: David
+              target:
+                entity_id: input_select.event_title
+            label: David
+            styles: |-
+              :host {
+                --label-color: {{ "var(--black1)" if is_state(config.entity, config.option) else "var(--white10)"  }};
+                --mdc-label-size: 25px;
+                --color: {{ "var(--tabs2)" if is_state(config.entity, config.option) else "var(--contrast4)"  }};
+              }
+            icon: ""
+          - entity_id: input_select.event_title
+            option: Feri
+            tap_action:
+              action: perform-action
+              perform_action: input_select.select_option
+              data:
+                option: Feri
+              target:
+                entity_id: input_select.event_title
+            label: Feri
+            styles: |-
+              :host {
+                --label-color: {{ "var(--black1)" if is_state(config.entity, config.option) else "var(--white10)"  }};
+                --mdc-label-size: 25px;
+                --color: {{ "var(--tabs2)" if is_state(config.entity, config.option) else "var(--contrast4)"  }};
+              }
+          haptics: true
+          thumb: md3-filled
+      transparent: false
+    - type: custom:custom-features-card
+      features:
+      - type: custom:service-call
+        entries:
+        - type: selector
+          entity_id: input_select.event_description
+          options:
+          - entity_id: input_select.event_description
+            option: Auswärtsruhe
+            tap_action:
+              action: perform-action
+              perform_action: input_select.select_option
+              data:
+                option: Auswärtsruhe
+              target:
+                entity_id: input_select.event_description
+            icon: mdi:home-export-outline
+            styles: |-
+              :host {
+                --icon-color: {{ "var(--black11)" if is_state(config.entity, config.option) else "var(--white10)"  }};
+                --mdc-label-size: 25px;
+                --color: {{ "var(--tabs2)" if is_state(config.entity, config.option) else "var(--contrast4)"  }};
+
+              }
+          - entity_id: input_select.event_description
+            option: Heimruhe
+            tap_action:
+              action: perform-action
+              perform_action: input_select.select_option
+              data:
+                option: Heimruhe
+              target:
+                entity_id: input_select.event_description
+            icon: m3o:home
+            styles: |-
+              :host {
+                --icon-color: {{ "var(--black11)" if is_state(config.entity, config.option) else "var(--white10)"  }};
+                --mdc-label-size: 25px;
+                --color: {{ "var(--tabs2)" if is_state(config.entity, config.option) else "var(--contrast4)"  }};
+
+              }
+          haptics: true
+          thumb: md3-tonal
+          styles: |-
+            :host {
+              --label-color: {{ "var(--black1)" if is_state(config.entity, config.option) else "var(--black6)"  }};
+              --mdc-label-size: 25px;
+              --color: {{ "var(--tabs2)" if is_state(config.entity, config.option) else "var(--contrast4)"  }};
+
+            }
+      transparent: false
+    - type: horizontal-stack
+      cards:
+      - type: markdown
+        content: |
+          #### Anfang
+        text_only: true
+        card_mod:
+          style: |
+            ha-card, ha-markdown {
+              text-align: center !important;
+            }
+      - type: markdown
+        content: |
+          #### Ende
+        text_only: true
+        card_mod:
+          style: |
+            ha-card, ha-markdown {
+              text-align: center !important;
+            }
+    - type: horizontal-stack
+      cards:
+      - type: custom:time-picker-card
+        entity: input_datetime.event_start
+        hide:
+          name: true
+        minute_step: 1
+        card_mod:
+          style: |
+            :host {
+              --time-picker-elements-background-color: var(--contrast2);
+            }
+      - type: custom:time-picker-card
+        entity: input_datetime.event_end
+        hide:
+          name: true
+        minute_step: 1
+        card_mod:
+          style: |
+            :host {
+              --time-picker-elements-background-color: var(--contrast2);
+            }
+    - type: horizontal-stack
+      cards:
+      - type: tile
+        entity: input_datetime.event_start
+        name: Anfang
+        hide_state: true
+        vertical: false
+        features:
+        - type: date-set
+        features_position: bottom
+        card_mod:
+          style:
+            .: |
+              ha-card {
+                background: transparent !important;
+                box-shadow: none !important;
+                border: none !important;
+                margin-top: 0px;
+              }
+
+              ha-card .content {
+                display: none !important;
+              }
+      - type: tile
+        entity: input_datetime.event_end
+        name: Ende
+        hide_state: true
+        vertical: false
+        features:
+        - type: date-set
+        features_position: bottom
+        card_mod:
+          style:
+            .: |
+              ha-card {
+                background: transparent !important;
+                box-shadow: none !important;
+                border: none !important;
+                margin-top: 0px;
+              }
+
+              ha-card .content {
+                display: none !important;
+              }
+    - type: custom:custom-features-card
+      features:
+      - type: custom:service-call
+        entries:
+        - type: button
+          entity_id: script.dienstplan_kalender_event_erstellen
+          label: Dienst hinzufügen
+          thumb: md3-filled
+          toggle_styles: false
+          icon: m3o:calendar-check
+          tap_action:
+            action: perform-action
+            perform_action: script.dienstplan_kalender_event_erstellen
+            target:
+              entity_id: script.dienstplan_kalender_event_erstellen
+            data: {}
+            confirmation:
+              text: Möchtest du den Dienst hinzufügen?
+          styles: |-
+            :host {
+              --opacity: 1;
+              --mdc-icon-size: 24px;
+              --icon-color: var(--black1);
+              --label-color: var(--black1);
+              --color: var(--tabs2);  
+            }
+        styles: ""
+      transparent: false
+      styles: ""
+

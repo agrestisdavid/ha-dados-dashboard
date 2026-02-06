@@ -1,0 +1,131 @@
+{
+    "decimal_separator": ",",
+    "numbers": {
+        "zero": "cero",
+        "one": ["uno","una","un"],
+        "two": "dos",
+        "three": "tres",
+        "four": "cuatro",
+        "five": "cinco",
+        "six": "seis",
+        "seven": "siete",
+        "eight": "ocho",
+        "nine": "nueve",
+        "ten": "diez",
+        "eleven": "once",
+        "twelve": "doce",
+        "thirteen": "trece",
+        "fourteen": "catorce",
+        "fifteen": "quince",
+        "sixteen": "dieciséis",
+        "seventeen": "diecisiete",
+        "eighteen": "dieciocho",
+        "nineteen": "diecinueve",
+        "twenty": "veinte",
+        "twenty one": "veintiuno",
+        "twenty two": "veintidós",
+        "twenty three": "veintitrés",
+        "twenty four": "veinticuatro",
+        "twenty five": "veinticinco",
+        "twenty six": "veintiséis",
+        "twenty seven": "veintisiete",
+        "twenty eight": "veintiocho",
+        "twenty nine": "veintinueve",
+        "thirty": "treinta",
+        "forty": "cuarenta",
+        "fifty": "cincuenta",
+        "sixty": "sesenta",
+        "seventy": "setenta",
+        "eighty": "ochenta",
+        "ninety": "noventa"
+    },
+    "days": {
+        "monday": "lunes",
+        "tuesday": "martes",
+        "wednesday": "miércoles",
+        "thursday": "jueves",
+        "friday": "viernes",
+        "saturday": "sábado",
+        "sunday": "domingo",
+        "today": "hoy",
+        "tomorrow": "mañana"
+    },
+    "durations": {
+        "days": ["días", "día"],
+        "hours": ["horas", "hora", "h"],
+        "minutes": ["minutos", "minuto", "min"],
+        "seconds": ["segundos", "segundo", "sec","seg"],
+        "quarter of an hour": ["cuarto de hora", "cuartos de hora"],
+        "half an hour": ["media hora", "medias horas"],
+        "three quarters of an hour": ["tres cuartos de hora", "tres cuartos de horas"]
+    },
+    "operators": {
+        "before": ["antes de", "para"],
+        "after": ["después", "pasado", "pasada", "pasadas"],
+        "and": ["y"],
+        "minus": ["menos"]
+    },
+    "time_of_day": {
+        "morning": ["de la mañana", "por la mañana"],
+        "noon": ["mediodía"],
+        "afternoon": ["tarde", "por la tarde"],
+        "evening": ["tarde", "por la tarde", "noche", "por la noche"],
+        "night": ["noche", "por la noche"],
+        "midnight": ["medianoche", "la medianoche"],
+        "tonight": ["esta noche"]
+    },
+    "fractions": {
+        "oclock": ["en punto"],
+        "half": ["media"],
+        "quarter": ["cuarto"],
+        "threequarters": ["tres cuartos"]
+    },
+    "other_words": {
+        "the": ["el", "la", "los", "las"],
+        "of": ["de", "del"],
+        "in": ["en"],
+        "in the": ["en la", "de la"],
+        "at": ["en", "a", "a las"],
+        "this": ["este", "esta", "estos", "estas"],
+        "on": ["el", "la", "los", "las"],
+        "next": ["próximo", "próxima", "próximos", "próximas"]
+    },
+    "compound_words": {
+        "{a:numbers} y {b:numbers}": "{a} {b}"
+    },
+    "structures": {
+        "basic_time": [
+            "{hours} oclock",
+            "{minutes} {operator} {hours}",
+            "{minutes} minutes {operator} {hours}",
+            "{hours} and {fractions}",
+            "{hours} and a {fractions}",
+            "{fractions} {operator} {hours}"
+        ],
+        "advanced_time": [
+            "{special_hour} {day}",
+            "{basic_time} {time_of_day}",
+            "{basic_time} {time_of_day} {day}",
+            "{day} {basic_time}",
+            "{day} at {basic_time}",
+            "{day} at {basic_time} {time_of_day}",
+            "{day} {time_of_day} at {basic_time}",
+            "{day} at {special_hour}"
+        ],
+        "basic_interval": [
+            "{hours} hours and {fractions}"
+        ],
+        "advanced_interval": []
+    },
+    "responses": {
+        "timer_set": "Temporizador ajustado para {time}",
+        "timer_named_set": "Temporizador {name} ajustado para {time}",
+        "timer_already_exists": "Ya existe un temporizador llamado {name}",
+        "timer_none": "No hay temporizadores ajustados",
+        "timer_list": "Tienes los siguientes temporizadores ajustados: {timers}",
+        "timer_deleted": "Temporizador {name} eliminado",
+        "timer_not_found": "No se pudo encontrar un temporizador llamado {name}",
+        "timer_remaining": "Queda {remaining} en el temporizador {name}",
+        "timer_error": "No se pudo decodificar la información de tiempo o intervalo"
+    }
+}

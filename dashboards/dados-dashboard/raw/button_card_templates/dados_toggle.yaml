@@ -1,0 +1,52 @@
+dados_toggle: #_chip
+  variables:
+    entity: null
+    img_cell_background: var(--yellow)
+
+  icon: m3o:toggle-off
+  show_name: false
+  show_state: false
+
+  entity: '[[[ return variables.entity ]]]'
+
+  tap_action:
+    action: call-service
+    service: |
+      [[[
+        const id = variables?.entity || '';
+        if (id.startsWith('light.')) return 'light.toggle';
+        if (id.startsWith('switch.')) return 'switch.toggle';
+        return 'homeassistant.toggle';
+      ]]]
+    target:
+      entity_id: '[[[ return variables.entity ]]]'
+
+  state:
+    - value: "on"
+      icon: m3o:toggle-on
+      styles:
+        icon:
+          - color: |
+              [[[
+                const c = entity?.attributes?.rgb_color;
+                if (c) return `rgba(${c[0]}, ${c[1]}, ${c[2]}, 0.7)`;
+                return variables?.img_cell_background || 'var(--yellow)';
+              ]]]
+
+  styles:
+    card:
+      - height: 50px
+      - width: 50px
+      - border-radius: 5px
+      - background: transparent
+    img_cell:
+      - height: 47px
+      - width: 47px
+      - border-radius: 15px
+      - background: var(--contrast3)
+    icon:
+      - height: 30px
+      - width: 30px
+
+  extra_styles: |
+    ha-ripple { display: none !important; }

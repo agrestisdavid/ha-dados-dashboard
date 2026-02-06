@@ -1,0 +1,149 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "title": "Add new Unraid server",
+                "data": {
+                    "host": "Unraid WebUI URL",
+                    "api_key": "API key",
+                    "verify_ssl": "Verify SSL certificate"
+                }
+            },
+            "options": {
+                "data": {
+                    "shares": "Monitor shares",
+                    "drives": "Monitor disks"
+                }
+            },
+            "reauth_key": {
+                "title": "Add new Unraid Server",
+                "data": {
+                    "api_key": "API key"
+                }
+            }
+        },
+        "error": {
+            "ssl_error": "SSL error when connecting to Unraid",
+            "cannot_connect": "Failed to connect to Unraid",
+            "invalid_url": "Invalid URL",
+            "error_response": "Unraid: {error_msg}",
+            "api_incompatible": "Incompatible API version (Current: {version}, minimum: {min_version})",
+            "auth_failed": "Authentication failed"
+        },
+        "abort": {
+            "reauth_successful": "Re-authentication was successful",
+            "reconfigure_successful": "Re-configuration was successful"
+        }
+    },
+    "entity": {
+        "sensor": {
+            "array_state": {
+                "name": "Array state",
+                "state": {
+                    "started": "Started",
+                    "stopped": "Stopped",
+                    "new_array": "New disks",
+                    "recon_disk": "disk being reconstructed",
+                    "disable_disk": "Disk is disabled",
+                    "swap_dsbl": "Disabled",
+                    "invalid_expansion": "Invalid expansion",
+                    "parity_not_biggest": "Parity not biggest",
+                    "too_many_missing_disks": "Too many missing disks",
+                    "new_disk_too_small": "New disk to small",
+                    "no_data_disks": "No data disks"
+                }
+            },
+            "array_usage": {
+                "name": "Array usage"
+            },
+            "array_free": {
+                "name": "Array free space"
+            },
+            "array_used": {
+                "name": "Array used space"
+            },
+            "ram_usage": {
+                "name": "RAM usage"
+            },
+            "ram_used": {
+                "name": "RAM used"
+            },
+            "ram_free": {
+                "name": "RAM free"
+            },
+            "cpu_utilization": {
+                "name": "CPU utilization"
+            },
+            "cpu_temp": {
+                "name": "CPU temperature"
+            },
+            "cpu_power": {
+                "name": "CPU power"
+            },
+            "disk_status": {
+                "name": "{disk_name} Status",
+                "state": {
+                    "disk_np": "No disk",
+                    "disk_ok": "OK",
+                    "disk_np_missing": "Missing",
+                    "disk_invalid": "Invalid",
+                    "disk_wrong": "Wrong disk",
+                    "disk_dsbl": "Disabled",
+                    "disk_np_dsbl": "Disabled, no disk",
+                    "disk_dsbl_new": "Disabled, new disk",
+                    "disk_new": "New disk"
+                }
+            },
+            "disk_temp": {
+                "name": "{disk_name} temperature"
+            },
+            "disk_free": {
+                "name": "{disk_name} free space"
+            },
+            "disk_used": {
+                "name": "{disk_name} used space"
+            },
+            "disk_usage": {
+                "name": "{disk_name} usage"
+            },
+            "share_free": {
+                "name": "{share_name} free space"
+            }
+        },
+        "binary_sensor": {
+            "disk_spinning": {
+                "name": "{disk_name} spinning"
+            }
+        }
+    },
+    "exceptions": {
+        "ssl_error": {
+            "message": "SSL Error when connecting to Unraid: {error}"
+        },
+        "cannot_connect": {
+            "message": "Failed to connect to Unraid: {error}"
+        },
+        "error_response": {
+            "message": "Recived an Error response from Unraid: {error_msg}"
+        },
+        "data_invalid": {
+            "message": "Recived invalid data from Unraid"
+        },
+        "api_incompatible": {
+            "message": "Incompatible API version (Current: {version}, minimum: {min_version})"
+        },
+        "auth_failed": {
+            "message": "Authentication failed {error_msg}"
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "data": {
+                    "shares": "Monitor shares",
+                    "drives": "Monitor disks"
+                }
+            }
+        }
+    }
+}

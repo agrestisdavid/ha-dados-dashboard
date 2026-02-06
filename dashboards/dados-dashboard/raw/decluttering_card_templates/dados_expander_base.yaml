@@ -1,0 +1,33 @@
+dados_expander_base:
+  card:
+    type: custom:expander-card
+    title: Expander Card
+    grid_options:
+      columns: full
+      rows: auto
+    title-card-clickable: true
+    title-card-button-overlay: true
+    clear-children: true
+    child-padding: 0px 5px
+    child-margin-top: 0px
+    clear: false
+    padding: 0px
+    icon: m3o:info
+    animation: true
+    arrow-color: var(--contrast16)
+    gap: 0px
+    expanded: false
+    overlay-margin: 17px 70px 0px 0px
+    style: |2-
+      .header-overlay {
+        height: unset !important;
+      }
+    button-background: var(--contrast2)
+    icon-rotate-degree: 0deg
+    expanded-gap: 0px
+    expander-card-id: '[[entity]]'
+    show-button-users:
+      - vaca-kuche
+    cards: '[[cards]]'
+    title-card: '[[title_card]]'
+    card_mod: '[[card_mod]]'

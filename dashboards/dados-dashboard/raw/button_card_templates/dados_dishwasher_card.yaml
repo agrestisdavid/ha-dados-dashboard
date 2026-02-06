@@ -1,0 +1,30 @@
+dados_dishwasher_card:
+  template:
+    - dados_device_card
+  variables:
+    name: Geschirrtrud
+    card_color: var(--contrast2)
+    card_height: 80px
+    show_glow: true
+    entity: sensor.geschirrspuler_betriebszustand
+    state_display_entity: sensor.geschirrspuler_betriebszustand
+    icon_on: mdi:dishwasher
+    icon_off: mdi:dishwasher-off
+    icon_alert: mdi:dishwasher-alert
+    img_cell_background: var(--purple)
+    bar_entity: sensor.geschirrspuler_programmfortschritt
+    percent: sensor.geschirrspuler_programmfortschritt
+    state_startin: sensor.geschirrspuler_start_in
+    state_remaining: sensor.geschirrspuler_verbleibende_programmlaufzeit
+    state_active_program: sensor.geschirrspuler_aktives_programm
+    value_run: run
+    value_off: inactive
+    value_on: ready
+    value_alert: error
+    value_action: actionrequired
+    value_error_message: sensor.geschirrspuler_betriebszustand
+    value_finished: finished
+    value_paused: pause
+    value_aborting: aborting
+    value_start: delayedstart
+    value_returning: returning

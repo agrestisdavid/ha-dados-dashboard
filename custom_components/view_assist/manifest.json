@@ -1,0 +1,13 @@
+{
+  "domain": "view_assist",
+  "name": "View Assist",
+  "codeowners": ["@dinki"],
+  "config_flow": true,
+  "dependencies": ["http","lovelace","blueprint", "google_assistant", "esphome"],
+  "documentation": "https://github.com/dinki/view_assist_integration",
+  "integration_type": "device",
+  "iot_class": "calculated",
+  "issue_tracker": "https://github.com/dinki/view_assist_integration/issues",
+  "requirements": ["wordtodigits==1.0.2", "beautifulsoup4>=4.11.0"],
+  "version": "2026.2.0"
+}

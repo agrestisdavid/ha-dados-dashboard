@@ -1,0 +1,39 @@
+dados_slider:
+  variables:
+    entity: null
+    icon: m3of:percent
+  show_name: false
+  show_state: false
+  entity: "[[[ return variables.entity ]]]"
+  icon: "[[[ return variables.icon ]]]"
+  icon_tap_action:
+    action: none
+  tap_action:
+    action: none
+  styles:
+    grid:
+      - grid-template-columns: 1fr 65px
+      - grid-template-rows: min-content
+      - grid-template-areas: "'slider i'"
+    card:
+      - border-radius: 26px
+      - background: transparent
+      - padding: 0px
+      - height: 60px
+      - overflow: hidden
+    img_cell:
+      - width: 45px
+      - height: 45px
+      - justify-self: end
+      - align-self: center
+      - margin-top: 0px
+      - background: var(--contrast4)
+      - border-radius: 18px
+      - overflow: visible
+    icon:
+      - width: 25px
+      - color: var(--contrast20)
+    custom_fields:
+      slider:
+        - margin-top: 1px
+

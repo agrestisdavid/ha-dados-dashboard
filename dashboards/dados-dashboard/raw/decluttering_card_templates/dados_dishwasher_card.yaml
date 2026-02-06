@@ -1,0 +1,22 @@
+dados_dishwasher_card:
+  default:
+    - entity: sensor.geschirrspuler_betriebszustand
+    - cards:
+        - type: custom:decluttering-card
+          template: dados_dishwasher_control
+    - title_card:
+        type: custom:button-card
+        template:
+          - dados_dishwasher_card
+        styles:
+          card:
+            - overflow: visible
+
+  card:
+    type: custom:decluttering-card
+    template: dados_expander_base
+    variables:
+      - entity: '[[entity]]'
+      - cards: '[[cards]]'
+      - title_card: '[[title_card]]'
+      - card_mod: '[[card_mod]]'

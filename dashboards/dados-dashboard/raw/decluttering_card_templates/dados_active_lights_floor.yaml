@@ -1,0 +1,68 @@
+dados_active_lights_floor:
+  card:
+    type: vertical-stack
+    cards:
+      - type: custom:auto-entities
+        card:
+          type: entities
+          card_mod:
+            style: |
+              ha-card {
+                background: transparent !important;
+                box-shadow: none !important;
+                border: 0 !important;
+              }
+              .card-content {
+                padding: 0 !important;
+              }
+        filter:
+          include:
+            - floor: "[[floor]]"
+              domain: light
+              label: nodimm
+              options:
+                type: custom:button-card
+                template: dados_light
+                variables:
+                  entity: this.entity_id
+                  img_cell_background: null
+                  icon_on: m3o:lightbulb
+                  icon_off: m3o:light-off
+                  card_color: var(--contrast2)
+                  overflow: hidden
+          exclude:
+            - state: "off"
+            - state: unavailable
+            - state: unknown
+            - state: /^0%$/
+      - type: custom:auto-entities
+        card:
+          type: entities
+          card_mod:
+            style: |
+              ha-card {
+                background: transparent !important;
+                box-shadow: none !important;
+                border: 0 !important;
+              }
+              .card-content {
+                padding: 0 !important;
+              }
+        filter:
+          include:
+            - floor: "[[floor]]"
+              domain: light
+              label: dimm
+              options:
+                type: custom:decluttering-card
+                template: dados_light_expander
+                variables:
+                  - entity: this.entity_id
+                  - img_cell_background: var(--yellow)
+                  - card_color: transparent
+                  - overflow: visible
+          exclude:
+            - state: "off"
+            - state: unavailable
+            - state: unknown
+            - state: /^0%$/

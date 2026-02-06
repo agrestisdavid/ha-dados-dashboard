@@ -1,0 +1,45 @@
+default_config:
+
+http:
+  use_x_forwarded_for: true
+  trusted_proxies:
+    - 100.64.0.0/10
+
+# Load frontend themes from the themes folder
+frontend:
+  themes: !include_dir_merge_named themes
+  # extra_module_url:
+  #   - /hacsfiles/material-you-utilities/material-you-utilities.min.js
+
+automation: !include automations.yaml
+script: !include scripts.yaml
+scene: !include scenes.yaml
+knx: !include knx.yaml
+sensor: !include sensor.yaml
+input_boolean: !include input_boolean.yaml
+template: !include template.yaml
+binary_sensor: !include binary_sensor.yaml
+
+intent_script: !include intent_script.yaml
+
+lovelace:
+  mode: storage
+  # Add yaml dashboards
+  dashboards:
+    dados-dashboard:
+      mode: yaml
+      title: Dado
+      icon: mdi:palette-advanced
+      show_in_sidebar: true
+      filename: dashboards/dados-dashboard/dados-dashboard.yaml
+calendar:
+  - platform: caldav
+    url: https://caldav.icloud.com
+    username: !secret calendar_username
+    password: !secret calendar_password
+    calendars:
+      - Dienstplan
+### ESPresense
+## David
+# iPhone
+

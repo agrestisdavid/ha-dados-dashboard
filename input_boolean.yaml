@@ -1,0 +1,38 @@
+egtab_zimmer:
+  name: Zimmer
+  icon: mdi:home-floor-1
+egtab_licht:
+  name: Licht
+  icon: m3o:lightbulb
+egtab_rollo:
+  name: Rollo
+  icon: mdi:blinds
+egtab_sensoren:
+  name: Sensoren
+  icon: m3o:sensors-krx
+
+ogtab_zimmer:
+  name: Zimmer
+  icon: mdi:home-floor-2
+ogtab_licht:
+  name: Licht
+  icon: m3o:lightbulb
+ogtab_rollo:
+  name: Rollo
+  icon: mdi:blinds
+ogtab_sensoren:
+  name: Sensoren
+  icon: m3o:sensors-krx
+
+##### expander-toggles
+notify_expander_toggle:
+  name: notify_expander_toggle
+  icon: m3o:sensors-krx
+
+#### automation-toggles:
+feri_work_toggle_feri:
+  name: feri_work_toggle_feri
+  icon: m3o:sensors-krx
+feri_work_toggle_dado:
+  name: feri_work_toggle_dado
+  icon: m3o:sensors-krx

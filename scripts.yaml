@@ -1,0 +1,369 @@
+wetter_assistent_starten:
+  sequence:
+  - set_conversation_response: "{% set t = states('sensor.zuhause_outdoor_temperature')
+      %}\n{% set cond = state_translated('weather.forecast_home') %}\n\n{% if t in
+      ['unknown', 'unavailable'] %}\n  Die aktuelle Temperatur ist nicht verfügbar.\n{%
+      else %}\n  Aktuell sind es {{ t|round(0) }} Grad und {{ cond }}.\n{% endif %}\n"
+  alias: Wetter-Assistent starten
+  description: Startet den Wetter-Assistenten nach einer bestimmten Uhrzeit.
+sauge_und_wische_dynamisch:
+  alias: Sauge und Wische Dynamisch
+  description: ''
+  mode: parallel
+  max: 10
+  fields:
+    vacuum_entity:
+      name: vacuum_entity
+      description: Vacuum-Entität, z.B. vacuum.roborock_s8_pro_ultra
+      required: true
+      selector:
+        entity:
+          filter:
+            domain: vacuum
+      default: vacuum.roborock_qrevo_curv_series
+    mop_mode_entity:
+      name: mop_mode_entity
+      description: Select-Entität für Mop-Modus (z.B. select.*_mop_modus)
+      required: true
+      selector:
+        entity:
+          filter:
+            domain: select
+      default: select.roborock_qrevo_curv_series_mopp_modus
+    mop_intensity_entity:
+      name: mop_intensity_entity
+      description: Select-Entität für Wischintensität (z.B. select.*_wisch_intensitat)
+      required: true
+      selector:
+        entity:
+          filter:
+            domain: select
+      default: select.roborock_qrevo_curv_series_wisch_intensitat
+    segments:
+      name: segments
+      description: Segment-IDs aus der Map Card (z.B. [16,17])
+      required: true
+      selector:
+        object: {}
+    fan_speed_saugen:
+      selector:
+        text: {}
+      default: max_plus
+    fan_speed_wischen:
+      selector:
+        text: {}
+      default: 'off'
+    mop_mode:
+      name: mop_mode
+      description: Mop-Modus (z.B. standard)
+      required: false
+      default: standard
+      selector:
+        text: {}
+    mop_intensity_saugen:
+      selector:
+        text: {}
+      default: 'off'
+    mop_intensity_wischen:
+      selector:
+        text: {}
+      default: mild
+    saugen:
+      name: saugen
+      description: Soll gesaugt werden?
+      required: false
+      default: true
+      selector:
+        boolean: {}
+    wischen:
+      name: wischen
+      description: Soll gewischt werden?
+      required: false
+      default: true
+      selector:
+        boolean: {}
+  sequence:
+  - variables:
+      segs: "{% set s = segments %} {% if s is string %}\n  {% set s = s | from_json
+        %}\n{% endif %} {{ s | map('int') | unique | list }}"
+  - if:
+    - condition: template
+      value_template: '{{ saugen }}'
+      alias: Wenn Saugen eingeschaltet ist
+    then:
+    - alias: Wisch Intensität (Saug-Durchgang)
+      action: select.select_option
+      target:
+        entity_id: '{{ mop_intensity_entity }}'
+      data:
+        option: '{{ mop_intensity_saugen }}'
+    - delay:
+        milliseconds: 500
+    - alias: Mopp-Modus (Saug-Durchgang)
+      action: select.select_option
+      target:
+        entity_id: '{{ mop_mode_entity }}'
+      data:
+        option: '{{ mop_mode }}'
+    - delay:
+        milliseconds: 500
+    - alias: Lüfterstufe (Saug-Durchgang)
+      action: vacuum.set_fan_speed
+      target:
+        entity_id: '{{ vacuum_entity }}'
+      data:
+        fan_speed: '{{ fan_speed_saugen }}'
+    - delay:
+        milliseconds: 500
+    - alias: Starte Saug-Durchgang (Segmente)
+      action: vacuum.send_command
+      target:
+        entity_id: '{{ vacuum_entity }}'
+      data:
+        command: app_segment_clean
+        params: '{{ segs }}'
+    - action: persistent_notification.create
+      data:
+        message: 'Sauge: {{ segs }}'
+  - alias: Wischen
+    if:
+    - condition: template
+      value_template: '{{ wischen }}'
+    then:
+    - alias: Wenn Saugen und Wischen aktiv sind
+      if:
+      - condition: template
+        value_template: '{{ saugen }}'
+      then:
+      - alias: Warte bis Roboter nicht mehr 'docked' ist
+        wait_template: '{{ not is_state(vacuum_entity, ''docked'') }}'
+        timeout: 00:05:00
+        continue_on_timeout: true
+      - alias: Warte bis Roboter 1 Minute am Stück 'docked' ist
+        wait_template: "{{ is_state(vacuum_entity, 'docked')\n   and (as_timestamp(now())\n
+          \       - as_timestamp(states[vacuum_entity].last_changed)) > 60 }}"
+        timeout: 02:00:00
+        continue_on_timeout: true
+      - alias: Prüfe Dock-Status nach Timeout
+        if:
+        - condition: template
+          value_template: '{{ not is_state(vacuum_entity, ''docked'') }}'
+        then:
+        - action: persistent_notification.create
+          data:
+            title: Saugskript Hinweis
+            message: '{{ vacuum_entity }} war nach 2 Stunden noch nicht stabil ''docked''.
+              Wisch-Durchgang wird trotzdem gestartet.'
+    - alias: Lüfterstufe (Wisch-Durchgang)
+      action: vacuum.set_fan_speed
+      target:
+        entity_id: '{{ vacuum_entity }}'
+      data:
+        fan_speed: '{{ fan_speed_wischen }}'
+    - delay:
+        milliseconds: 500
+    - alias: Mopp-Modus (Wisch-Durchgang)
+      action: select.select_option
+      target:
+        entity_id: '{{ mop_mode_entity }}'
+      data:
+        option: '{{ mop_mode }}'
+    - delay:
+        milliseconds: 500
+    - alias: Wisch Intensität (Wisch-Durchgang)
+      action: select.select_option
+      target:
+        entity_id: '{{ mop_intensity_entity }}'
+      data:
+        option: '{{ mop_intensity_wischen }}'
+    - delay:
+        milliseconds: 500
+    - alias: Starte Wisch-Durchgang (Segmente)
+      action: vacuum.send_command
+      target:
+        entity_id: '{{ vacuum_entity }}'
+      data:
+        command: app_segment_clean
+        params: '{{ segs }}'
+    - action: persistent_notification.create
+      data:
+        message: 'Wische: {{ segs }}'
+raume_auslesen:
+  sequence:
+  - data:
+      entity_id: input_text.robobert_maps_json
+      value: '{{ {"vacuum.roborock_qrevo_curv_series":{"maps":[{"flag":0,"name":"Erdgeschoss","rooms":{"1":"Unknown","2":"Unknown","3":"Unknown","4":"Unknown","5":"Unknown","6":"Unknown","7":"Unknown","8":"Unknown"}}]}}
+        }}
+
+        '
+    action: input_text.set_value
+  alias: Räume auslesen
+  description: ''
+saugen_max_plus_wischen_aus:
+  sequence:
+  - variables:
+      segs: "{% set s = segments %} {% if s is string %}\n  {% set s = s | from_json
+        %}\n{% endif %} {{ s | map('int') | unique | list }}"
+  - device_id: 3625253eb65f2fcfcdb18566d311aae2
+    domain: select
+    entity_id: 78b19a1661c493c19ebe57742690b277
+    type: select_option
+    option: 'off'
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 0
+      milliseconds: 500
+  - action: vacuum.set_fan_speed
+    metadata: {}
+    target:
+      device_id: 3625253eb65f2fcfcdb18566d311aae2
+    data:
+      fan_speed: max_plus
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 0
+      milliseconds: 500
+  - action: vacuum.send_command
+    metadata: {}
+    target:
+      entity_id: vacuum.roborock_qrevo_curv_series
+    data:
+      command: app_segment_clean
+      params: '{{ segs }}'
+  alias: Saugen Max_plus - Wischen aus
+  description: ''
+saugen_fliesen_wischen:
+  sequence:
+  - action: button.press
+    metadata: {}
+    target:
+      entity_id: button.roborock_qrevo_curv_series_as_fw
+    data: {}
+  alias: Saugen + Fliesen Wischen
+  description: ''
+saugen_test:
+  sequence:
+  - device_id: 3625253eb65f2fcfcdb18566d311aae2
+    domain: select
+    entity_id: 78b19a1661c493c19ebe57742690b277
+    type: select_option
+    option: 'off'
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 0
+      milliseconds: 500
+  - action: vacuum.set_fan_speed
+    metadata: {}
+    target:
+      device_id: 3625253eb65f2fcfcdb18566d311aae2
+    data:
+      fan_speed: max_plus
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 0
+      milliseconds: 500
+  - alias: Starte Saug-Durchgang (Segmente)
+    action: vacuum.send_command
+    data:
+      command: app_segment_clean
+      params: '{% set v = states(''input_text.segment_eingabe'') %} {{ (v if v not
+        in [''unknown'',''unavailable'','''', None] else ''[]'') | from_json }}'
+    target:
+      entity_id: vacuum.roborock_qrevo_curv_series
+  alias: saugen_test
+  description: ''
+saugen:
+  sequence:
+  - alias: Starte Saug-Durchgang (Segmente)
+    action: vacuum.send_command
+    data:
+      command: app_segment_clean
+      params: '{% set v = states(''input_text.segment_eingabe'') %} {{ (v if v not
+        in [''unknown'',''unavailable'','''', None] else ''[]'') | from_json }}'
+    target:
+      entity_id: vacuum.roborock_qrevo_curv_series
+  alias: saugen
+  description: ''
+saugen_kuche_2:
+  sequence:
+  - device_id: 3625253eb65f2fcfcdb18566d311aae2
+    domain: select
+    entity_id: 78b19a1661c493c19ebe57742690b277
+    type: select_option
+    option: intense
+  - action: vacuum.set_fan_speed
+    metadata: {}
+    target:
+      device_id: 3625253eb65f2fcfcdb18566d311aae2
+    data:
+      fan_speed: max
+  - alias: Starte Saug-Durchgang (Segmente)
+    action: vacuum.send_command
+    data:
+      command: app_segment_clean
+      params: 1
+    target:
+      entity_id: vacuum.roborock_qrevo_curv_series
+  alias: saugen küche
+  description: Starte den Saugmodus mit hoher Intensität und führt eine spezifische
+    Segmentreinigung durch, um gezielt bestimmte Bereiche (z. B. Ecken oder spezielle
+    Segmente) zu reinigen. Ideal für präzise Reinigungsaufgaben.
+get_camera_events:
+  sequence:
+  - variables:
+      result:
+        events: '{% set titles = state_attr("calendar.llm_vision_timeline","events")%}
+          {% set times = state_attr("calendar.llm_vision_timeline","starts") %} {%
+          set summaries = state_attr("calendar.llm_vision_timeline","summaries") %}
+          ```csv time, title, summary {%for i in range(titles|count)%} {%if times[i]
+          > now() - timedelta(days=1)%} {{times[i]}}, ''{{titles[i]}}'', ''{{summaries[i]}}''
+          {%endif%} {%endfor%} ```'
+  - stop: stop
+    response_variable: result
+  alias: Get Camera Events
+  description: Returns all events captured by cameras today.
+  icon: mdi:timeline
+  fields: {}
+dienstplan_kalender_event_erstellen:
+  alias: Dienstplan – Kalender Event erstellen
+  mode: single
+  sequence:
+  - condition: template
+    value_template: '{{ states(''input_select.event_title'') not in ['''',''unknown'',''unavailable'',''-'',''—'',''None'',''none'']
+      }}
+
+      '
+  - action: calendar.create_event
+    target:
+      entity_id: calendar.dienstplan_2
+    data:
+      summary: '{{ states(''input_select.event_title'') }}'
+      description: '{{ states(''input_select.event_description'') }}'
+      start_date_time: '{% set _start = states(''input_datetime.event_start'') | as_datetime
+        %} {{ (_start | as_local).isoformat() }}
+
+        '
+      end_date_time: "{% set _start = states('input_datetime.event_start') | as_datetime
+        %} {% set _end   = states('input_datetime.event_end')   | as_datetime %} {%
+        if _end > _start %}\n  {{ (_end | as_local).isoformat() }}\n{% else %}\n  {{
+        ((_start + timedelta(minutes=30)) | as_local).isoformat() }}\n{% endif %}\n"
+  - action: input_select.select_first
+    target:
+      entity_id:
+      - input_select.event_title
+      - input_select.event_description
+  - action: input_datetime.set_datetime
+    target:
+      entity_id: input_datetime.event_start
+    data:
+      datetime: '{{ now() }}'
+  - action: input_datetime.set_datetime
+    target:
+      entity_id: input_datetime.event_end
+    data:
+      datetime: '{{ now() + timedelta(minutes=30) }}'
+  description: ''

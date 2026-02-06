@@ -1,0 +1,48 @@
+dados_shutters_open:
+  card:
+    type: custom:auto-entities
+    card:
+      type: entities
+      card_mod:
+        style: |
+          ha-card {
+            background: transparent !important;
+            box-shadow: none !important;
+            border: 0 !important;
+          }
+          .card-content {
+            padding: 0 !important;
+          }
+    filter:
+      include:
+        - domain: cover
+          state: open
+          options:
+            type: custom:decluttering-card
+            template: dados_shutter_expander
+            variables:
+              - entity: this.entity_id
+              - name: this.attributes.friendly_name
+              - img_cell_background: var(--lavender)
+        - domain: cover
+          state: opening
+          options:
+            type: custom:decluttering-card
+            template: dados_shutter_expander
+            variables:
+              - entity: this.entity_id
+              - name: this.attributes.friendly_name
+              - img_cell_background: var(--lavender)
+        - domain: cover
+          state: closing
+          options:
+            type: custom:decluttering-card
+            template: dados_shutter_expander
+            variables:
+              - entity: this.entity_id
+              - name: this.attributes.friendly_name
+              - img_cell_background: var(--lavender)
+      exclude:
+        - state: closed
+        - state: unavailable
+        - state: unknown

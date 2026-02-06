@@ -1,0 +1,20 @@
+{
+  "domain": "waste_collection_schedule",
+  "name": "Waste Collection Schedule",
+  "codeowners": ["@mampfes"],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/mampfes/hacs_waste_collection_schedule#readme",
+  "integration_type": "hub",
+  "iot_class": "cloud_polling",
+  "requirements": [
+    "icalendar",
+    "icalevents>=0.1.26,!=0.1.28",
+    "beautifulsoup4",
+    "lxml",
+    "pycryptodome",
+    "pypdf",
+    "cloudscraper"
+  ],
+  "version": "2.11.0"
+}

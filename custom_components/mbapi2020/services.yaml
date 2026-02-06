@@ -1,0 +1,716 @@
+auxheat_configure:
+  description: "Command for configuring the auxiliary heating. It is possible to define three daytimes and select one active time."
+  fields:
+    vin:
+      description: "vin of the car"
+      example: "Wxxxxxxxxxxxxxx"
+      required: True
+      selector:
+        text:
+    time_selection:
+      description: "The activated auxiliary heating preset time (0=no_selection, 1=time_1, 2=time_2, 3=time_3"
+      example: "0"
+      default: 0
+      selector:
+        select:
+          options:
+            - "0"
+            - "1"
+            - "2"
+            - "3"
+    time_1:
+      description: "Daytime in minutes after midnight. E.g. valid value for 8 am would be 480. Value range is 0 to 1439."
+      example: "480"
+      default: 0
+      selector:
+        number:
+          min: 0
+          max: 1439
+          step: 1
+          mode: slider
+    time_2:
+      description: "Daytime in minutes after midnight. E.g. valid value for 8 am would be 480. Value range is 0 to 1439."
+      example: "480"
+      default: 0
+      selector:
+        number:
+          min: 0
+          max: 1439
+          step: 1
+          mode: slider
+    time_3:
+      description: "Daytime in minutes after midnight. E.g. valid value for 8 am would be 480. Value range is 0 to 1439."
+      example: "480"
+      default: 0
+      selector:
+        number:
+          min: 0
+          max: 1439
+          step: 1
+          mode: slider
+
+auxheat_start:
+  description: "Start the auxiliary heating of a car defined by a vin."
+  fields:
+    vin:
+      description: "vin of the car"
+      example: "Wxxxxxxxxxxxxxx"
+      required: True
+      selector:
+        text:
+
+auxheat_stop:
+  description: "Stop the auxiliary heating of a car defined by a vin."
+  fields:
+    vin:
+      description: "vin of the car"
+      example: "Wxxxxxxxxxxxxxx"
+      required: True
+      selector:
+        text:
+
+battery_max_soc_configure:
+  description: "Configure the maximum value for the state of charge of the HV battery of a car defined by a vin."
+  fields:
+    vin:
+      description: "vin of the car"
+      example: "Wxxxxxxxxxxxxxx"
+      required: True
+      selector:
+        text:
+    max_soc:
+      description: "The maximum value for the state of charge of the HV battery (Value needs to be between 50 and 100 and divisible by ten)"
+      example: "100"
+      default: 100
+      selector:
+        select:
+          options:
+            - label: "30% (CLA >= 2025)"
+              value: "30"
+            - label: "40% (CLA >= 2025)"
+              value: "40"
+            - label: "50%"
+              value: "50"
+            - label: "60%"
+              value: "60"
+            - label: "70%"
+              value: "70"
+            - label: "80%"
+              value: "80"
+            - label: "90%"
+              value: "90"
+            - label: "100%"
+              value: "100"
+    charge_program:
+      description: "(optional) Charge Program - (0=Default, 2=Home, 3=Work)"
+      example: "0"
+      default: 0
+      selector:
+        select:
+          options:
+            - "0"
+            - "2"
+            - "3"
+          translation_key: "charge_program" 
+
+charge_program_configure:
+  description: "Command to select the charge program."
+  fields:
+    vin:
+      description: "vin of the car"
+      example: "Wxxxxxxxxxxxxxx"
+      required: True
+      selector:
+        text:
+    charge_program:
+      description: "The activated charge program (0=Default, 2=Home, 3=Work)"
+      required: True
+      example: "0"
+      default: 0
+      selector:
+        select:
+          options:
+            - "0"
+            - "2"
+            - "3"
+    max_soc:
+      description: "The maximum value for the state of charge of the HV battery (Value needs to be between 50 and 100 and divisible by ten)"
+      example: "100"
+      default: None
+      required: False
+      selector:
+        select:
+          options:
+            - "50"
+            - "60"
+            - "70"
+            - "80"
+            - "90"
+            - "100"
+
+doors_unlock:
+  description: "Unlock a car defined by a vin. PIN setup required. See options dialog of the integration."
+  fields:
+    vin:
+      description: "vin of the car"
+      example: "Wxxxxxxxxxxxxxx"
+      required: True
+      selector:
+        text:
+    pin:
+      description: "security pin"
+      example: "1234"
+      required: False
+      selector:
+        text:
+
+doors_lock:
+  description: "Lock a car defined by a vin."
+  fields:
+    vin:
+      description: "vin of the car"
+      example: "Wxxxxxxxxxxxxxx"
+      required: True
+      selector:
+        text:
+
+engine_start:
+  description: "Start the engine of a car defined by a vin. PIN setup required. See options dialog of the integration."
+  fields:
+    vin:
+      description: "vin of the car"
+      example: "Wxxxxxxxxxxxxxx"
+      required: True
+      selector:
+        text:
+
+engine_stop:
+  description: "Stop the engine of a car defined by a vin."
+  fields:
+    vin:
+      description: "vin of the car"
+      example: "Wxxxxxxxxxxxxxx"
+      required: True
+      selector:
+        text:
+
+preheat_start:
+  description: "Start the pre-heating of a car defined by a vin."
+  fields:
+    vin:
+      description: "vin of the car"
+      example: "Wxxxxxxxxxxxxxx"
+      required: True
+      selector:
+        text:
+    type:
+      description: "Method that is used to initiate the start process. 0=Now (Default), 1=Immediate - Use Immediate in case your does not support now."
+      default: "0"
+      example: "0"
+      selector:
+        select:
+          options:
+            - "0"
+            - "1"
+
+preheat_start_departure_time:
+  description: "Start the pre-heating of a car defined by a vin and a given departure time."
+  fields:
+    vin:
+      description: "vin of the car"
+      example: "Wxxxxxxxxxxxxxx"
+      required: True
+      selector:
+        text:
+    time:
+      description: "Departure time in minutes after midnight. E.g. valid value for 8 am would be 480. Value range is 0 to 1439"
+      example: "480"
+      default: 0
+      selector:
+        number:
+          min: 0
+          max: 1439
+          step: 1
+          mode: slider
+
+preheat_stop:
+  description: "Stop the pre-heating of a car defined by a vin."
+  fields:
+    vin:
+      description: "vin of the car"
+      example: "Wxxxxxxxxxxxxxx"
+      required: True
+      selector:
+        text:
+
+preheat_stop_departure_time:
+  description: "Stop the pre-heating (departure mode) of a car defined by a vin."
+  fields:
+    vin:
+      description: "vin of the car"
+      example: "Wxxxxxxxxxxxxxx"
+      required: True
+      selector:
+        text:
+
+sigpos_start:
+  description: "Start light signaling of a car defined by a vin."
+  fields:
+    vin:
+      description: "vin of the car"
+      example: "Wxxxxxxxxxxxxxx"
+      required: True
+      selector:
+        text:
+
+sunroof_open:
+  description: "Open the sunroof of a car defined by a vin. PIN setup required. See options dialog of the integration."
+  fields:
+    vin:
+      description: "vin of the car"
+      example: "Wxxxxxxxxxxxxxx"
+      required: True
+      selector:
+        text:
+
+sunroof_tilt:
+  description: "Tilt the sunroof of a car defined by a vin. PIN setup required. See options dialog of the integration."
+  fields:
+    vin:
+      description: "vin of the car"
+      example: "Wxxxxxxxxxxxxxx"
+      required: True
+      selector:
+        text:
+
+sunroof_close:
+  description: "Close the sunroof of a car defined by a vin."
+  fields:
+    vin:
+      description: "vin of the car"
+      example: "Wxxxxxxxxxxxxxx"
+      required: True
+      selector:
+        text:
+
+windows_open:
+  description: "Open the windows of a car defined by a vin. PIN setup required. See options dialog of the integration."
+  fields:
+    vin:
+      description: "vin of the car"
+      example: "Wxxxxxxxxxxxxxx"
+      required: True
+      selector:
+        text:
+    pin:
+      description: "security pin"
+      example: "1234"
+      required: False
+      selector:
+        text:
+
+windows_close:
+  description: "Close the windows of a car defined by a vin."
+  fields:
+    vin:
+      description: "vin of the car"
+      example: "Wxxxxxxxxxxxxxx"
+      required: True
+      selector:
+        text:
+
+windows_move:
+  description: "Move the windows to the defined positions of a car defined by a vin. PIN setup required. See options dialog of the integration."
+  fields:
+    vin:
+      description: "vin of the car"
+      example: "Wxxxxxxxxxxxxxx"
+      required: True
+      selector:
+        text:
+    front_left:
+      description: "The new position of the front left window (Value needs to be between 0 and 100 and divisible by ten)."
+      example: "80"
+      required: False
+      selector:
+        select:
+          options:
+            - "0"
+            - "10"
+            - "20"
+            - "30"
+            - "40"
+            - "50"
+            - "60"
+            - "70"
+            - "80"
+            - "90"
+            - "100"
+    front_right:
+      description: "The new position of the front right window (Value needs to be between 0 and 100 and divisible by ten)."
+      example: "80"
+      required: False
+      selector:
+        select:
+          options:
+            - "0"
+            - "10"
+            - "20"
+            - "30"
+            - "40"
+            - "50"
+            - "60"
+            - "70"
+            - "80"
+            - "90"
+            - "100"
+    rear_left:
+      description: "The new position of the rear left window (Value needs to be between 0 and 100 and divisible by ten)."
+      example: "80"
+      required: False
+      selector:
+        select:
+          options:
+            - "0"
+            - "10"
+            - "20"
+            - "30"
+            - "40"
+            - "50"
+            - "60"
+            - "70"
+            - "80"
+            - "90"
+            - "100"
+    rear_right:
+      description: "The new position of the front left window (Value needs to be between 0 and 100 and divisible by ten)."
+      example: "80"
+      required: False
+      selector:
+        select:
+          options:
+            - "0"
+            - "10"
+            - "20"
+            - "30"
+            - "40"
+            - "50"
+            - "60"
+            - "70"
+            - "80"
+            - "90"
+            - "100"
+
+send_route:
+  description: "Sends a route to the car. (Single location only)"
+  fields:
+    vin:
+      description: "vin of the car"
+      example: "Wxxxxxxxxxxxxxx"
+      required: True
+      selector:
+        text:
+    title:
+      description: "title of the route"
+      example: "Brandenburger Tor"
+      required: True
+      selector:
+        text:
+    latitude:
+      description: "Latitude of the location"
+      example: "52.5162746"
+      required: True
+      selector:
+        text:
+    longitude:
+      description: "Longitude of the location"
+      example: "13.3755154"
+      required: True
+      selector:
+        text:
+    city:
+      description: "City name of the location"
+      example: "Berlin"
+      required: True
+      selector:
+        text:
+    postcode:
+      description: "Postcode of the location"
+      example: "10117"
+      required: True
+      selector:
+        text:
+    street:
+      description: "Streetname of the location"
+      example: "Pariser Platz"
+      required: True
+      selector:
+        text:
+
+download_images:
+  description: "Download the images and save it to the component folder."
+  fields:
+    vin:
+      description: "vin of the car"
+      example: "Wxxxxxxxxxxxxxx"
+      required: True
+      selector:
+        text:
+
+charging_break_clocktimer_configure:
+  description: "Configure charging breaks (AC only)"
+  fields:
+    vin:
+      description: "vin of the car"
+      example: "Wxxxxxxxxxxxxxx"
+      required: True
+      selector:
+        text:
+    status_timer_1:
+      description: "Status Timer 1"
+      default: "notset"
+      selector:
+        select:
+          translation_key: "charging_break_clocktimer_configure_action"
+          options:
+            - "notset"
+            - "active"
+            - "inactive"
+    starttime_timer_1:
+      description: "Start time (Timer 1)"
+      selector:
+        time:
+    stoptime_timer_1:
+      description: "Stop time (Timer 1)"
+      selector:
+        time:
+    status_timer_2:
+      description: "Status Timer 2"
+      default: "notset"
+      selector:
+        select:
+          translation_key: "charging_break_clocktimer_configure_action"
+          options:
+            - "notset"
+            - "active"
+            - "inactive"
+    starttime_timer_2:
+      description: "Start time (Timer 2)"
+      selector:
+        time:
+    stoptime_timer_2:
+      description: "Stop time (Timer 2)"
+      selector:
+        time:
+    status_timer_3:
+      description: "Status Timer 3"
+      default: "notset"
+      selector:
+        select:
+          translation_key: "charging_break_clocktimer_configure_action"
+          options:
+            - "notset"
+            - "active"
+            - "inactive"
+    starttime_timer_3:
+      description: "Start time (Timer 3)"
+      selector:
+        time:
+    stoptime_timer_3:
+      description: "Stop time (Timer 3)"
+      selector:
+        time:
+    status_timer_4:
+      description: "Status Timer 4"
+      default: "notset"
+      selector:
+        select:
+          translation_key: "charging_break_clocktimer_configure_action"
+          options:
+            - "notset"
+            - "active"
+            - "inactive"
+    starttime_timer_4:
+      description: "Start time (Timer 4)"
+      selector:
+        time:
+    stoptime_timer_4:
+      description: "Stop time (Timer 4)"
+      selector:
+        time:
+
+preconditioning_configure_seats:
+  description: "Configure which seats should be preconditioned of a car defined by a vin."
+  fields:
+    vin:
+      description: "vin of the car"
+      example: "Wxxxxxxxxxxxxxx"
+      required: True
+      selector:
+        text:
+    front_left:
+      description: "Activate if the front left seat should be preconditioned."
+      required: True
+      selector:
+        boolean:
+    front_right:
+      description: "Activate if the front right seat should be preconditioned."
+      required: True
+      selector:
+        boolean:
+    rear_left:
+      description: "Activate if the rear left seat should be preconditioned."
+      required: True
+      selector:
+        boolean:
+    rear_right:
+      description: "Activate if the rear right seat should be preconditioned."
+      required: True
+      selector:
+        boolean:
+
+temperature_configure:
+  description: "Configure the temperature for the allowed zones in a car. "
+  fields:
+    vin:
+      description: "vin of the car"
+      example: "Wxxxxxxxxxxxxxx"
+      required: True
+      selector:
+        text:
+    front_left:
+      description: "Target temperature for the zone front_left in CELSIUS"
+      required: False
+      selector:
+        select:
+          translation_key: "temperature_configure"
+          options:
+            - "0"
+            - "16"
+            - "16.5"
+            - "17"
+            - "17.5"
+            - "18"
+            - "18.5"
+            - "19"
+            - "19.5"
+            - "20"
+            - "20.5"
+            - "21"
+            - "21.5"
+            - "22"
+            - "22.5"
+            - "23"
+            - "23.5"
+            - "24"
+            - "24.5"
+            - "25"
+            - "25.5"
+            - "26"
+            - "26.5"
+            - "27"
+            - "27.5"
+            - "28"
+            - "30"
+    front_right:
+      description: "Target temperature for the zone front_right in CELSIUS"
+      required: False
+      selector:
+        select:
+          translation_key: "temperature_configure"
+          options:
+            - "0"
+            - "16"
+            - "16.5"
+            - "17"
+            - "17.5"
+            - "18"
+            - "18.5"
+            - "19"
+            - "19.5"
+            - "20"
+            - "20.5"
+            - "21"
+            - "21.5"
+            - "22"
+            - "22.5"
+            - "23"
+            - "23.5"
+            - "24"
+            - "24.5"
+            - "25"
+            - "25.5"
+            - "26"
+            - "26.5"
+            - "27"
+            - "27.5"
+            - "28"
+            - "30"
+    rear_left:
+      description: "Target temperature for the zone rear_left in CELSIUS. (if available)"
+      required: False
+      selector:
+        select:
+          translation_key: "temperature_configure"
+          options:
+            - "0"
+            - "16"
+            - "16.5"
+            - "17"
+            - "17.5"
+            - "18"
+            - "18.5"
+            - "19"
+            - "19.5"
+            - "20"
+            - "20.5"
+            - "21"
+            - "21.5"
+            - "22"
+            - "22.5"
+            - "23"
+            - "23.5"
+            - "24"
+            - "24.5"
+            - "25"
+            - "25.5"
+            - "26"
+            - "26.5"
+            - "27"
+            - "27.5"
+            - "28"
+            - "30"
+    rear_right:
+      description: "Target temperature for the zone rear_right in CELSIUS. (if available)"
+      required: False
+      selector:
+        select:
+          translation_key: "temperature_configure"
+          options:
+            - "0"
+            - "16"
+            - "16.5"
+            - "17"
+            - "17.5"
+            - "18"
+            - "18.5"
+            - "19"
+            - "19.5"
+            - "20"
+            - "20.5"
+            - "21"
+            - "21.5"
+            - "22"
+            - "22.5"
+            - "23"
+            - "23.5"
+            - "24"
+            - "24.5"
+            - "25"
+            - "25.5"
+            - "26"
+            - "26.5"
+            - "27"
+            - "27.5"
+            - "28"
+            - "30"

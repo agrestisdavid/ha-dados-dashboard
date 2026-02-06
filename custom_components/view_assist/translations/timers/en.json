@@ -1,0 +1,71 @@
+{
+    "decimal_separator": ".",
+    "numbers": {
+        "zero": "zero",
+        "one": "one",
+        "two": "two",
+        "three": "three",
+        "four": "four",
+        "five": "five",
+        "six": "six",
+        "seven": "seven",
+        "eight": "eight",
+        "nine": "nine",
+        "ten": "ten",
+        "eleven": "eleven",
+        "twelve": "twelve",
+        "thirteen": "thirteen",
+        "fourteen": "fourteen",
+        "fifteen": "fifteen",
+        "sixteen": "sixteen",
+        "seventeen": "seventeen",
+        "eighteen": "eighteen",
+        "nineteen": "nineteen",
+        "twenty": "twenty",
+        "thirty": "thirty",
+        "forty": "forty",
+        "fifty": "fifty",
+        "sixty": "sixty",
+        "seventy": "seventy",
+        "eighty": "eighty",
+        "ninety": "ninety"
+    },
+    "direct_translations": {
+        "1 seconds": ["a second"],
+        "1 minutes": ["a minute"],
+        "1 hours": ["an hour"],
+        "1 days": ["a day"]
+    },
+    "structures": {
+        "basic_time": [
+            "{minutes} {operator} {hours}",
+            "{minutes} {operator} {hours} {time_of_day}",
+            "{minutes} minutes {operator} {hours}",
+            "{minutes} minutes {operator} {hours} {time_of_day}",
+            "{fractions} {operator} {hours}",
+            "{fractions} {operator} {hours} {time_of_day}"
+        ],
+        "advanced_time": [
+            "{day} at {basic_time}",
+            "{day} {basic_time}",
+            "{day} {time_of_day} at {basic_time}"
+        ],
+        "basic_interval": [],
+        "advanced_interval": [
+            "{minutes} {fractions} minutes",
+            "{hours} {fractions} hours",
+            "{hours} and a {fractions} hours"
+        ]
+    },
+    "responses": {
+        "timer_set": "Timer set for {time}",
+        "timer_named_set": "{name} timer set for {time}",
+        "timer_none": "No timers are set",
+        "timer_list": "You have the following timers set: {timers}",
+        "timer_cancelled": "Cancelled timer {name}",
+        "timer_not_found": "No timer called {name} could be found",
+        "time_remaining": "{remaining} remaining on timer {name}",
+        "timer_already_exists": "A timer called {name} already exists",
+        "timer_error": "Unable to decode time or interval information"
+    }
+}

@@ -1,0 +1,38 @@
+{
+
+    "durations": {
+        "days": ["day"],
+        "hours": ["hour", "hrs", "hr"],
+        "minutes": ["minute", "mins", "min"],
+        "seconds": ["second", "secs", "sec"]
+    },
+    "operators": {
+        "before": ["to", "till"],
+        "after": ["past"],
+        "minus": ["less"],
+        "and": []
+    },
+    "meridiem": {
+        "am": ["a.m.", "morning", "in morning","in the morning"],
+        "pm": ["p.m.", "afternoon", "evening", "night", "tonight"]
+    },
+    "fractions": {
+        "oclock": ["o'clock"],
+        "quarter": ["1/4"],
+        "half": ["1/2"],
+        "threequarter": ["three quarters", "three quarter", "3/4"]
+    },
+    "special_hours": {
+        "noon": ["midday", "12 noon"],
+        "midnight": ["12 midnight"]
+    },
+    "direct_translations": {
+        "1 seconds": ["a seconds"],
+        "1 minutes": ["a minutes"],
+        "1 hours": ["an hours", "a hours"],
+        "1 days": ["a days"],
+        "30 minutes": ["half an hour", "1 half hours", "one half hours"],
+        "hours and 30 minutes": ["a half hours", " and a half hours"]
+    },
+    "remove_words": ["the", "in", "on", "for", "of", "this"]
+}

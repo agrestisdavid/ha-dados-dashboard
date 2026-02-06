@@ -1,0 +1,54 @@
+dados_shutter_expander:
+  card:
+    type: custom:expander-card
+    cards:
+      - type: custom:decluttering-card
+        template: dados_shutter_slider
+        variables:
+          - entity: "[[entity]]"
+          - img_cell_background: "[[img_cell_background]]"
+    title-card:
+      type: custom:button-card
+      template: dados_shutter_base
+      variables:
+        entity: "[[entity]]"
+        img_cell_background: "[[img_cell_background]]"
+    grid_options:
+      columns: 12
+      rows: auto
+    title-card-clickable: true
+    title-card-button-overlay: true
+    clear-children: true
+    child-padding: 15px
+    child-margin-top: 0px
+    clear: false
+    padding: 0px
+    icon: m3o:touch-app
+    animation: true
+    arrow-color: var(--contrast16)
+    show-button-users:
+      - vaca-kuche
+
+    gap: 0px
+    expanded: false
+    overlay-margin: 16px 22px 0px 0px
+    style: |2
+
+        .header-overlay {
+          height: unset !important;
+        }
+        button.header {
+          border-radius: 16px !important;
+          overflow: hidden !important;
+        }
+    expander-card-id: "[[entity]]"
+    button-background: var(--contrast3)
+    icon-rotate-degree: 0deg
+    card_mod:
+      style:
+        .: |
+          ha-card {
+            border-radius: 36px !important;
+            overflow: hidden !important;
+            margin-top: 0px !important;
+          }

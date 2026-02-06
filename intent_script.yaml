@@ -1,0 +1,3 @@
+WetterStatusIntent:
+  speech:
+    text: "{{ states('sensor.wetterstatus_fertig') }}"

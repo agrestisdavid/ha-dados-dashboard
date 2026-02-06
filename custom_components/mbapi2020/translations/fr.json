@@ -1,0 +1,15 @@
+{
+    "config": {},
+    "issues": {
+        "restart_required": {
+            "fix_flow": {
+                "step": {
+                    "confirm_restart": {
+                        "title": "Redémarrage nécessaire"
+                    }
+                }
+            },
+            "title": "Redémarrage nécessaire"
+        }
+    }
+}

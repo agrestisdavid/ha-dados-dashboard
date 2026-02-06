@@ -1,0 +1,121 @@
+{
+    "decimal_separator": ",",
+    "numbers": {
+        "zero": "zéro",
+        "one": ["un","une"],
+        "two": "deux",
+        "three": "trois",
+        "four": "quatre",
+        "five": "cinq",
+        "six": "six",
+        "seven": "sept",
+        "eight": "huit",
+        "nine": "neuf",
+        "ten": "dix",
+        "eleven": "onze",
+        "twelve": "douze",
+        "thirteen": "treize",
+        "fourteen": "quatorze",
+        "fifteen": "quinze",
+        "sixteen": "seize",
+        "seventeen": "dix-sept",
+        "eighteen": "dix-huit",
+        "nineteen": "dix-neuf",
+        "twenty": "vingt",
+        "twenty one": "vingt et une",
+        "thirty": "trente",
+        "forty": "quarante",
+        "fifty": "cinquante",
+        "sixty": "soixante",
+        "seventy": "soixante-dix",
+        "eighty": "quatre-vingts",
+        "ninety": "quatre-vingt-dix"
+    },
+    "days": {
+        "monday": "lundi",
+        "tuesday": "mardi",
+        "wednesday": "mercredi",
+        "thursday": "jeudi",
+        "friday": "vendredi",
+        "saturday": "samedi",
+        "sunday": "dimanche",
+        "today": "aujourd'hui",
+        "tomorrow": "demain"
+    },
+    "durations": {
+        "days": ["jours", "jour"],
+        "hours": ["heures", "heure","h"],
+        "minutes": ["minutes", "minute", "min"],
+        "seconds": ["secondes", "seconde", "sec"],
+        "quarter of an hour": ["quart d'heure", "quart d'heures"],
+        "half an hour": ["demi-heure", "demi-heures", "demie-heure", "demie-heures"],
+        "three quarters of an hour": ["trois quarts d'heure", "trois quarts d'heures"]
+    },
+    "operators": {
+        "before": ["avant"],
+        "after": ["après"],
+        "plus": ["plus"],
+        "minus": ["moins"]
+    },
+    "time_of_day": {
+        "morning": ["du matin"],
+        "noon": ["midi"],
+        "afternoon": ["après-midi"],
+        "evening": ["du soir"],
+        "night": ["nuit"],
+        "midnight": ["minuit"],
+        "tonight": ["ce soir"]
+    },
+    "fractions": {
+        "oclock": [],
+        "half": ["demi","demie"],
+        "quarter": ["quart"],
+        "threequarters": ["trois quarts"]
+    },
+    "other_words": {
+        "and": ["et"],
+        "the": ["le", "la", "les"],
+        "of": ["de", "du", "des", "d'"],
+        "in": ["en"],
+        "at": ["à", "a", "au"],
+        "this": ["ce", "cette", "cet"],
+        "on": ["sur"]
+    },
+    "direct_translations": {},
+    "structures": {
+        "basic_time": [
+            "{hours} hours",
+            "{hours} hours {time_of_day}",
+            "{hours} hours {minutes}",
+            "{hours} hours {minutes} {time_of_day}",
+            "{hours} hours {operator} [the] {fractions}",
+            "{hours} hours {operator} [the] {fractions} {time_of_day}",
+            "{hours} hours {operator} {minutes}",
+            "{hours} hours {operator} {minutes} {time_of_day}"
+        ],
+        "advanced_time": [
+            "{day} {basic_time}",
+            "{day} at {basic_time}",
+            "{day}, {basic_time}"
+        ],
+        "basic_interval": [
+            "{days} days and {fractions}",
+            "{hours} hours and {fractions}",
+            "{minutes} minutes and {fractions}",
+            "{hours}h00 and {minutes} minutes"
+        ],
+        "advanced_interval": [
+        ]
+    },
+    "responses": {
+        "timer_set": "Minuterie réglée sur {time}",
+        "timer_named_set": "Minuterie {name} réglée sur {time}",
+        "timer_already_exists": "Une minuterie nommée {name} existe déjà",
+        "timer_none": "Aucune minuterie n'est réglée",
+        "timer_list": "Vous avez les minuteries suivantes réglées : {timers}",
+        "timer_deleted": "Minuterie {name} supprimée",
+        "timer_not_found": "Aucune minuterie nommée {name} n'a pu être trouvée",
+        "timer_remaining": "Il reste {remaining} sur la minuterie {name}",
+        "timer_error": "Impossible de décoder les informations de temps ou d'intervalle"
+    }
+}

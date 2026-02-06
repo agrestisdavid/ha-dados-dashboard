@@ -1,0 +1,21 @@
+{
+  "domain": "home_connect_alt",
+  "name": "Home Connect Alt",
+  "codeowners": [
+    "@ekutner"
+  ],
+  "config_flow": true,
+  "dependencies": [
+    "http",
+    "application_credentials"
+  ],
+  "documentation": "https://github.com/ekutner/home-connect-hass",
+  "homekit": {},
+  "iot_class": "cloud_push",
+  "issue_tracker": "https://github.com/ekutner/home-connect-hass/issues",
+  "requirements": ["home-connect-async==0.8.3"],
+  "loggers": ["home_connect_alt", "home_connect_async"],
+  "ssdp": [],
+  "version": "1.3.4",
+  "zeroconf": []
+}

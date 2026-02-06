@@ -1,0 +1,218 @@
+dados_device_card:
+  template:
+    - dados_base
+  variables:
+    name: null
+    card_color: var(--contrast2)
+    card_height: 80px
+    show_glow: true
+    entity: null
+    state_display_entity: null
+    icon_on: null
+    icon_off: null
+    icon_alert: null
+    img_cell_background: var(--green)
+    bar_entity: null
+    percent: null
+    state_startin: null
+    state_remaining: null
+    state_active_program: null
+    value_error_message: null
+    value_run: run
+    value_off: inactive
+    value_on: ready
+    value_alert: error
+    value_action: actionrequired
+    value_finished: finished
+    value_paused: pause
+    value_aborting: aborting
+    value_start: delayedstart
+    value_returning: returning
+  entity: '[[[ return variables.entity ]]]'
+  name: |
+    [[[
+      const id = variables.entity;
+      if (!id) return 'Error';
+      const n = (variables.name ?? '').toString().trim();
+      if (n) return n;
+      const ent = states[id];
+      return ent?.attributes?.friendly_name ?? id;
+    ]]]
+  icon: '[[[ return variables.icon_on ]]]'
+  triggers_update:
+    - '[[[ return variables.entity ]]]'
+    - '[[[ return variables.bar_entity ]]]'
+    - '[[[ return variables.percent ]]]'
+    - '[[[ return variables.state_remaining ]]]'
+    - '[[[ return variables.state_startin ]]]'
+    - '[[[ return variables.state_active_program ]]]'
+    - '[[[ return variables.value_error_message ]]]'
+  show_label: true
+  label: |-
+    [[[
+      const ok = s => s && s !== 'unknown' && s !== 'unavailable';
+      const toHHMM = v => {
+        if (!ok(v)) return '—';
+        if (typeof v === 'string' && v.includes(':')) return v;
+        const n = Number(v);
+        if (!isFinite(n)) return String(v);
+        const m = Math.max(0, Math.round(n * 60));
+        return `${String(Math.floor(m/60)).padStart(2,'0')}:${String(m%60).padStart(2,'0')}`;
+      };
+      const p = states[variables.percent]?.state;
+      const t = states[variables.state_remaining]?.state;
+      return `${ok(p) ? p + '%' : '—'} - ${toHHMM(t)}`;
+    ]]]
+  tap_action:
+    action: fire-dom-event
+    expander-card:
+      data:
+        expander-card-id: '[[[ return variables.entity ]]]'
+        action: toggle
+  state:
+    - value: '[[[ return variables.value_off ]]]'
+      icon: '[[[ return variables.icon_off ]]]'
+      state_display: Aus
+    - value: '[[[ return variables.value_on ]]]'
+      icon: '[[[ return variables.icon_off ]]]'
+    - value: '[[[ return variables.value_start ]]]'
+      icon: '[[[ return variables.icon_on ]]]'
+      label: |
+        [[[
+          const id = variables.state_startin;
+          if (!id) return '';
+          const raw = states[id]?.state;
+          const n = Number(raw);
+          if (!Number.isFinite(n) || n <= 0) return 'Bereit';
+
+          // Minuten -> Sekunden
+          const totalSeconds = Math.round(n * 60);
+
+          const h = Math.floor(totalSeconds / 3600);
+          const mm = Math.floor((totalSeconds % 3600) / 60);
+          const ss = totalSeconds % 60;
+
+          if (h > 0) return `${String(h).padStart(2,'0')}:${String(mm).padStart(2,'0')}`;
+
+          const totalMinutes = Math.floor(totalSeconds / 60);
+          return `${String(totalMinutes).padStart(2,'0')}:${String(ss).padStart(2,'0')}`;
+        ]]]
+      styles:
+        grid:
+          - grid-template-areas: '''i n'' ''i l'''
+        state:
+          - display: none
+        label:
+          - display: block
+    - value: '[[[ return variables.value_run ]]]'
+      icon: '[[[ return variables.icon_on ]]]'
+      state_display: |
+        [[[
+          const entityId = variables.state_active_program ?? variables.state_display_entity ?? variables.entity;
+          const stateObj = states[entityId];
+          if (!stateObj) return '—';
+          if (hass.formatEntityState) return hass.formatEntityState(stateObj);
+          return stateObj.state ?? '—';
+        ]]]
+      styles:
+        grid:
+          - grid-template-rows: min-content 1fr 1fr
+          - grid-template-areas: '''i s'' ''i l'' ''bar bar'''
+        card:
+          - height: 120px
+        name:
+          - display: none
+        state:
+          - justify-self: start
+          - align-self: start
+          - margin-top: 9px
+          - font-size: 16px
+          - font-weight: 500
+          - color: var(--contrast16)
+          - letter-spacing: 0.4px
+          - padding-left: 3px
+        label:
+          - justify-self: start
+          - align-self: start
+          - font-size: 14px
+          - font-weight: 400
+          - color: var(--contrast12)
+          - letter-spacing: 0.6px
+          - margin-top: 0px
+          - padding-left: 3px
+          - display: block
+        custom_fields:
+          bar:
+            - display: block
+    - value: '[[[ return variables.value_paused ]]]'
+      icon: '[[[ return variables.icon_off ]]]'
+    - value: '[[[ return variables.value_returning ]]]'
+      icon: '[[[ return variables.icon_off ]]]'
+    - value: '[[[ return variables.value_finished ]]]'
+      icon: '[[[ return variables.icon_off ]]]'
+    - operator: template
+      value: |
+        [[[
+          return entity?.state === variables.value_alert
+              || entity?.state === variables.value_action;
+        ]]]
+      icon: '[[[ return variables.icon_alert ]]]'
+      label: |
+        [[[
+          const entityId = variables.value_error_message ?? variables.entity;
+          const stateObj = states[entityId];
+          if (!stateObj) return '—';
+          if (hass.formatEntityState) return hass.formatEntityState(stateObj);
+          return stateObj.state ?? '—';
+        ]]]
+      styles:
+        grid:
+          - grid-template-areas: '''i l'' ''i s'''
+        name:
+          - display: none
+        state:
+          - display: block
+        label:
+          - display: block
+          - justify-self: start
+          - align-self: start
+          - margin-top: 9px
+          - font-size: 16px
+          - font-weight: 500
+          - color: var(--contrast16)
+          - letter-spacing: 0.4px
+          - padding-left: 3px
+    - value: '[[[ return variables.value_aborting ]]]'
+      icon: '[[[ return variables.icon_alert ]]]'
+  styles:
+    custom_fields:
+      bar:
+        - justify-self: start
+        - align-self: center
+        - margin-left: 10px
+        - width: 90%
+        - border-radius: 26px
+        - background: var(--contrast5)
+        - height: 18px
+        - display: none
+        - overflow: hidden
+  custom_fields:
+    bar: |
+      [[[
+        const id = variables.bar_entity || variables.percent;
+        if (!id) return '';
+
+        const ent = states[id];
+        if (!ent) return '';
+
+        const bg = variables.img_cell_background;
+        if (!bg) return '';
+
+        const num = parseFloat(String(ent.state).replace('%','').replace(',', '.'));
+        if (!Number.isFinite(num)) return '';
+
+        const pct = (num <= 1) ? num * 100 : num;
+        const clamped = Math.max(0, Math.min(100, pct));
+
+        return `<div style="background:${bg}; height:100%; width:${clamped}%; border-radius:26px;"></div>`;
+      ]]]

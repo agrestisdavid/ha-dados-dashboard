@@ -1,0 +1,60 @@
+dados_automation_header:
+  template: dados_button
+  variables:
+    img_cell_background: var(--red)
+    icon_on: 
+    icon_off: 
+    expander_id:
+    name: 
+    entity: null
+    state_display_entity: null
+
+  entity: "[[[ return variables.entity ]]]"    
+  icon_tap_action:
+    action: toggle
+  tap_action:
+    action: fire-dom-event
+    expander-card:
+      data:
+        expander-card-id: "[[[ return variables.expander_id ]]]"
+        action: toggle
+
+
+  styles:
+    grid:
+      - grid-template-columns: 55px 1fr 65px
+    card:
+      - border-radius: 36px
+      - background: var(--contrast2)
+      - backdrop-filter: blur(20px) ###backdrop
+      - padding: 12px
+      - height: 80px
+      - overflow: visible
+      - --button-card-ripple-color: transparent !important
+      - --button-card-ripple-hover-opacity: 0 !important
+      - --ha-card-ripple-color: transparent !important
+      - --ha-ripple-hover-opacity: 0 !important
+
+    custom_fields:
+      toggle:
+        - margin-top: 0px
+
+
+  state:
+    - value: "off"
+      icon: "[[[ return variables.icon_off ]]]"
+      styles:
+        icon:
+          - color: var(--contrast16)
+        img_cell:
+          - background: var(--contrast3)
+          - box-shadow: none
+  custom_fields:
+    toggle:
+      card:
+        type: custom:button-card
+
+        template: dados_toggle_chip
+        variables:
+          entity: '[[[ return variables.entity ]]]'
+          img_cell_background: var(--lavender)

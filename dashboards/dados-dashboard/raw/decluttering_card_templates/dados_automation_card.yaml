@@ -1,0 +1,63 @@
+dados_automation_card:
+  card:
+    type: custom:expander-card
+    title-card: '[[title_card]]'
+    cards: '[[cards]]'
+    title-card-clickable: true
+    title-card-button-overlay: true
+    clear-children: true
+    child-padding: 0px 5px
+    child-margin-top: "-10px"
+    clear: false
+    padding: 0px
+    icon: m3o:info
+    animation: true
+    arrow-color: var(--contrast16)
+    gap: 0px
+    expanded: false
+    overlay-margin: 17px 70px 0px 0px
+    style: |2-
+      
+        .header-overlay {
+          height: unset !important;
+        }
+    button-background: var(--contrast2)
+    icon-rotate-degree: 0deg
+    expanded-gap: 0px
+    expander-card-id: '[[expander_id]]'
+    show-button-users:
+    - vaca-kuche
+    templates:
+      - template: expanded
+        value_template: |-
+          [[[
+            const ent = '[[toggle_entity]]';
+            const fallback = 'input_boolean.automation_expander_toggle';
+            const entity = ent.includes('[[') ? fallback : ent;
+
+            return states[entity]?.state === 'on';
+          ]]]
+
+
+    # templates:
+    #   - template: expanded
+    #     value_template: |-
+    #       [[[
+    #         return states['input_boolean.automation_expander_toggle']?.state === 'on';
+    #       ]]]
+    card_mod:
+      style:
+        .: |
+          ha-card {
+            border-radius: 36px !important;
+            overflow: hidden !important;
+            margin-top: 0px !important;
+          }
+    grid_options:
+      columns: full
+      rows: auto
+
+
+
+
+

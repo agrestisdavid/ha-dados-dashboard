@@ -1,0 +1,17 @@
+{
+  "domain": "music_assistant_jukebox",
+  "name": "Music Assistant Jukebox",
+  "version": "0.1.0",
+  "documentation": "https://github.com/DJS91/HAMusicAssistantJukebox",
+  "dependencies": [
+    "music_assistant"
+  ],
+  "codeowners": ["@DJS91", "@TheOddPirate"],
+  "requirements": [
+    "aiofiles>=24.1.0",
+    "qrcode>=7.3.1"
+  ],
+  "iot_class": "local_push",
+  "config_flow": true,
+  "icon": "icons/icon.png"
+}
