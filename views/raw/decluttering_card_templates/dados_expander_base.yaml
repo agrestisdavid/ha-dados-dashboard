@@ -1,0 +1,63 @@
+# Purpose
+# - A shared “base wrapper” for expander-card layouts.
+# - Other templates (e.g., dados_dishwasher_card) feed it:
+#   - [[title_card]] : the header card
+#   - [[cards]]      : the expandable child content
+#   - [[card_mod]]   : optional styling overrides
+# - Provides consistent spacing, styling, and behavior for all expanders in your dashboard.
+
+dados_expander_base:
+  card:
+    # Core component
+    type: custom:expander-card
+
+    # Default title (typically overridden by title-card)
+    title: Expander Card
+
+    # Grid placement helpers
+    grid_options:
+      columns: full
+      rows: auto
+
+    # Header behavior
+    title-card-clickable: true          # clicking header toggles expand/collapse
+    title-card-button-overlay: true     # enables overlay button area on the header
+
+    # Child layout + spacing
+    clear-children: true                # normalizes child visuals (clean stacking)
+    child-padding: 0px 5px              # padding around child cards
+    child-margin-top: 0px               # no vertical pull-up between header and children
+    clear: false
+    padding: 0px
+    gap: 0px
+    expanded-gap: 0px
+
+    # Visual styling
+    icon: m3o:info
+    animation: true
+    arrow-color: var(--contrast16)
+    button-background: var(--contrast2)
+    icon-rotate-degree: 0deg
+    overlay-margin: 17px 70px 0px 0px  # position of the overlay button area
+    expanded: false                    # default collapsed unless something else toggles it
+
+    # Header overlay CSS tweak
+    # - prevents forced height on the overlay container
+    style: |-
+      .header-overlay {
+        height: unset !important;
+      }
+
+    # Identity
+    # - ties the expander ID to the bound entity (useful to keep instances unique)
+    expander-card-id: '[[entity]]'
+
+    # Access / visibility control (expander-card feature)
+    # - restricts who sees/gets the overlay button
+    show-button-users:
+      - vaca-kuche
+
+    # Variable injection points (forwarded from wrapper templates)
+    cards: '[[cards]]'                  # child cards rendered when expanded
+    title-card: '[[title_card]]'        # header card rendered in the expander header area
+    card_mod: '[[card_mod]]'            # optional card_mod style overrides passed through

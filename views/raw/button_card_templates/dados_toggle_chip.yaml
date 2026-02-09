@@ -1,0 +1,92 @@
+dados_toggle_chip:
+  variables:
+    entity: ""                           # Target entity to toggle (usually a switch/light/input_boolean)
+    img_cell_background: var(--lavender) # Accent color for the "ON" state knob + tinted track
+
+  type: custom:button-card
+  entity: '[[[ return variables.entity ]]]'
+
+  # This is a tiny “chip” toggle: no label, no state text, just a moving knob
+  show_name: false
+  show_state: false
+  show_icon: true
+
+  # Tap anywhere toggles the entity
+  tap_action:
+    action: toggle
+
+  # We render the knob via the "icon" slot, but we don't want an actual icon glyph
+  icon: none
+
+  styles:
+    # Track (pill background)
+    card:
+      - width: 50px
+      - height: 30px
+      - padding: 1px                         # gives the knob a tiny inset
+      - border-radius: 999px                 # fully rounded pill
+      - background: var(--contrast4)          # OFF track color
+      - box-shadow: none
+      - overflow: visible
+      - --button-card-ripple-color: transparent !important
+      - --button-card-ripple-hover-opacity: 0 !important
+      - --ha-card-ripple-color: transparent !important
+      - --ha-ripple-hover-opacity: 0 !important
+
+    # Simple 1-cell grid: knob sits inside
+    grid:
+      - grid-template-areas: '"i"'
+      - grid-template-columns: 1fr
+      - grid-template-rows: 1fr
+
+    # Keep the icon container available (we position the knob absolutely)
+    img_cell:
+      - width: 100%
+      - height: 100%
+      - padding: 0
+      - overflow: visible
+
+    # Knob:
+    # - positioned absolutely and slides left/right
+    # - uses background + left offset to show off/on
+    icon:
+      - position: absolute
+      - top: 50%
+      - transform: translateY(-50%)
+      - left: 0px                            # OFF position
+      - width: 30px
+      - height: 60px                         # intentionally taller for that “pill knob” look
+      - border-radius: 999px
+      - background: var(--contrast6)          # OFF knob color
+      - color: rgba(var(--contrast1-rgb), 1)  # not really used (no glyph), harmless
+      - box-shadow: none
+      - transition: left 220ms ease, background 220ms ease
+      - overflow: visible
+
+  state:
+    # ON state:
+    # - track becomes a tinted version of img_cell_background (if your theme has -tint vars)
+    # - knob slides right and uses the solid accent color
+    - value: "on"
+      icon: none
+      styles:
+        card:
+          - background: |
+              [[[
+                const v = (variables?.img_cell_background || 'var(--red)')
+                  .toString()
+                  .trim();
+
+                // If you already pass a tint var, keep it
+                if (v.includes('-tint')) return v;
+
+                // If you pass var(--color), convert to var(--color-tint) for a softer track
+                if (v.startsWith('var(')) return v.replace(/\)$/, '-tint)');
+
+                // Otherwise just use whatever you passed
+                return v;
+              ]]]
+
+        icon:
+          - left: 20px                        # ON position (slides knob to the right)
+          - background: "[[[ return variables.img_cell_background ]]]"  # solid knob color

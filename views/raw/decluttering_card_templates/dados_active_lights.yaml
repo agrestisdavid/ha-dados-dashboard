@@ -1,0 +1,74 @@
+# Purpose
+# - Creates a “currently active lights” list across the whole Home Assistant instance
+#   (no floor filter).
+# - Dynamically builds the list using auto-entities and shows only lights that are ON/valid.
+# - Splits lights into two display styles by label:
+#   - label: nodimm  -> simple button-card (dados_light)
+#   - label: dimm    -> expander/slider style (dados_light_expander)
+
+dados_active_lights:
+  card:
+    # Layout container
+    # - Single dynamic list wrapped in a vertical stack
+    type: vertical-stack
+    cards:
+      - type: custom:auto-entities
+
+        # Wrapper card
+        # - Uses an entities card purely as a container, but visually “invisible”
+        card:
+          type: entities
+          card_mod:
+            style: |
+              ha-card {
+                background: transparent !important;
+                box-shadow: none !important;
+                border: 0 !important;
+              }
+              .card-content {
+                padding: 0 !important;
+              }
+
+        # Entity selection + rendering rules
+        filter:
+          include:
+            # ------------------------------------------------------------
+            # 1) NON-DIMMABLE LIGHTS (label: nodimm)
+            # ------------------------------------------------------------
+            - domain: light
+              label: nodimm
+              # Render each matched entity as a dados_light button-card
+              options:
+                type: custom:button-card
+                template: dados_light
+                variables:
+                  entity: this.entity_id          # bind to current light entity
+                  img_cell_background: var(--yellow)
+                  icon_on: m3o:lightbulb
+                  icon_off: m3o:light-off
+                  card_color: var(--contrast2)
+                  overflow: hidden
+
+            # ------------------------------------------------------------
+            # 2) DIMMABLE LIGHTS (label: dimm)
+            # ------------------------------------------------------------
+            - domain: light
+              label: dimm
+              # Render each matched entity as a dados_light_expander (decluttering template)
+              # (typically provides brightness slider / extra controls)
+              options:
+                type: custom:decluttering-card
+                template: dados_light_expander
+                variables:
+                  - entity: this.entity_id        # bind to current light entity
+                  - img_cell_background: var(--yellow)
+                  - card_color: transparent       # expander handles its own visuals
+                  - overflow: visible             # allow overlays/sliders to extend if needed
+
+          # Exclusions
+          # - Keeps the list clean by removing inactive or invalid entities
+          exclude:
+            - state: "off"
+            - state: unavailable
+            - state: unknown
+            - state: /^0%$/                      # defensive: some lights might report "0%"

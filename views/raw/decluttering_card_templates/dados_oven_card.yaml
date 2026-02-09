@@ -1,0 +1,91 @@
+# Purpose
+# - A reusable “Oven” expander card wrapper (Backberta).
+# - Provides defaults for:
+#   - The oven status entity (sensor.ofen_betriebszustand)
+#   - Expanded content (dados_oven_control)
+#   - A rich header/title card (dados_device_card) with progress + timing + state mapping
+# - Forwards everything into dados_expander_base, which handles the expander behavior.
+#
+# Key idea
+# - This template mainly sets defaults + passes variables through.
+# - The UI/behavior comes from:
+#   - dados_expander_base (expander wrapper)
+#   - dados_device_card (header/title visualization)
+#   - dados_oven_control (expanded control content)
+
+dados_oven_card:
+  # Defaults (used when the caller does not override)
+  default:
+    # Main “status” entity for the oven
+    - entity: sensor.ofen_betriebszustand
+
+    # Default expanded content
+    # - Uses a separate decluttering template for oven controls
+    - cards:
+        - type: custom:decluttering-card
+          template: dados_oven_control
+
+    # Default title/header card
+    # - Uses your generic device header template (dados_device_card)
+    # - Configured specifically for “Backberta” with icons, colors, progress, and state mapping
+    - title_card:
+        type: custom:button-card
+        template:
+          - dados_device_card
+        variables:
+          # Header identity and base style
+          name: Backberta
+          card_color: var(--contrast2)
+          card_height: 80px
+          show_glow: true
+
+          # Status entity and text display source
+          entity: sensor.ofen_betriebszustand
+          state_display_entity: sensor.ofen_betriebszustand
+
+          # Icons for different states
+          icon_on: m3rf:oven
+          icon_off: m3r:oven
+          icon_alert: m3o:settings-alert
+
+          # Icon background color
+          img_cell_background: var(--brown)
+
+          # Progress bar + percent sources
+          bar_entity: sensor.ofen_programmfortschritt
+          percent: sensor.ofen_programmfortschritt
+
+          # Timing and program info
+          state_startin: sensor.ofen_start_in
+          state_remaining: sensor.ofen_verbleibende_programmlaufzeit
+          state_active_program: sensor.ofen_aktives_programm
+
+          # State mapping values (these match your sensor states)
+          value_run: run
+          value_off: inactive
+          value_on: ready
+          value_alert: error
+          value_action: actionrequired
+          value_error_message: sensor.ofen_betriebszustand
+          value_finished: finished
+          value_paused: pause
+          value_aborting: aborting
+          value_start: delayedstart
+          value_returning: returning
+
+        # Allow header elements/overlays to extend outside the card bounds if needed
+        styles:
+          card:
+            - overflow: visible
+
+  # Rendered card
+  card:
+    # This template wraps dados_expander_base (shared expander behavior/styling)
+    type: custom:decluttering-card
+    template: dados_expander_base
+    variables:
+      # Pass-through / forwarding
+      - entity: '[[entity]]'          # used by expander-card-id and other bindings
+      - cards: '[[cards]]'            # expanded child cards (oven controls)
+      - title_card: '[[title_card]]'  # header/title card (device card)
+      - card_mod: '[[card_mod]]'      # optional styling overrides injected by caller

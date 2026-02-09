@@ -1,0 +1,49 @@
+# Purpose
+# - A reusable “Vacuum Robot” expander card wrapper (your Roborock).
+# - Provides defaults for:
+#   - The vacuum entity (vacuum.roborock_qrevo_curv_series)
+#   - Expanded content (dados_vacuum_roboter_control)
+#   - A dedicated header/title card (dados_vacuum_roboter)
+# - Forwards everything into dados_expander_base, which handles the expander behavior and layout.
+#
+# Key idea
+# - This template is a convenience wrapper:
+#   - Sets default entity + default content
+#   - Passes [[title_card]] and [[cards]] through to dados_expander_base
+# - The actual visuals are defined by:
+#   - dados_expander_base (expander wrapper styling/behavior)
+#   - dados_vacuum_roboter (title/header UI)
+#   - dados_vacuum_roboter_control (expanded control UI)
+
+dados_vacuum_roboter_card:
+  # Defaults (used when the caller does not override)
+  default:
+    # Main vacuum entity
+    - entity: vacuum.roborock_qrevo_curv_series
+
+    # Default expanded content (controls)
+    - cards:
+        - type: custom:decluttering-card
+          template: dados_vacuum_roboter_control
+
+    # Default title/header card
+    # - Uses your vacuum header template and allows overflow for overlays/badges
+    - title_card:
+        type: custom:button-card
+        template:
+          - dados_vacuum_roboter
+        styles:
+          card:
+            - overflow: visible
+
+  # Rendered card
+  card:
+    # Wraps your shared base expander
+    type: custom:decluttering-card
+    template: dados_expander_base
+    variables:
+      # Pass-through / forwarding to dados_expander_base
+      - entity: '[[entity]]'          # used for expander-card-id and bindings
+      - cards: '[[cards]]'            # expanded control cards
+      - title_card: '[[title_card]]'  # header/title card
+      - card_mod: '[[card_mod]]'      # optional styling overrides injected by caller

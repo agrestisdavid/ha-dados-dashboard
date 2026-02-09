@@ -1,0 +1,73 @@
+dados_automation_header:
+  template: dados_button
+
+  variables:
+    img_cell_background: var(--red)     # Default icon tile background (can be overridden per use)
+    icon_on:                            # Icon when entity is ON (define where you use the template)
+    icon_off:                           # Icon when entity is OFF
+    expander_id:                        # Expander-card id that should be toggled (required)
+    name:                               # Optional: override displayed name
+    entity: null                        # The automation/switch/etc entity for this header row
+    state_display_entity: null          # Optional: show state from another entity (if dados_button supports it)
+
+  entity: "[[[ return variables.entity ]]]"
+
+  # Tap on the left icon toggles the entity directly
+  icon_tap_action:
+    action: toggle
+
+  # Tap anywhere on the card toggles the expander section
+  tap_action:
+    action: fire-dom-event
+    expander-card:
+      data:
+        expander-card-id: "[[[ return variables.expander_id ]]]"
+        action: toggle
+
+  styles:
+    # 3-column header:
+    # [icon tile] [title/state] [right-side toggle chip]
+    grid:
+      - grid-template-columns: 55px 1fr 65px
+
+    # Main card styling
+    card:
+      - border-radius: 36px
+      - background: var(--contrast2)
+      - padding: 12px
+      - height: 80px
+      - overflow: visible                # allow the right toggle chip / glow to overflow if needed
+      # Disable ripples for clean UI
+      - --button-card-ripple-color: transparent !important
+      - --button-card-ripple-hover-opacity: 0 !important
+      - --ha-card-ripple-color: transparent !important
+      - --ha-ripple-hover-opacity: 0 !important
+
+    # Adjust the embedded toggle chip positioning
+    custom_fields:
+      toggle:
+        - margin-top: 0px
+
+  state:
+    # When the entity is off:
+    # - icon changes to icon_off
+    # - icon tile background becomes neutral
+    # - no glow shadow
+    - value: "off"
+      icon: "[[[ return variables.icon_off ]]]"
+      styles:
+        icon:
+          - color: var(--contrast16)
+        img_cell:
+          - background: var(--contrast3)
+          - box-shadow: none
+
+  custom_fields:
+    # Right-side toggle chip (separate button-card embedded into the header)
+    toggle:
+      card:
+        type: custom:button-card
+        template: dados_toggle_chip
+        variables:
+          entity: '[[[ return variables.entity ]]]'          # chip toggles the same entity
+          img_cell_background: var(--lavender)               # chip background color

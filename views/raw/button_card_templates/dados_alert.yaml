@@ -1,0 +1,30 @@
+dados_alert:
+  template: dados_base
+
+  variables:
+    entity: sensor.dummy                 # Main entity used by the card (override per usage)
+    state_display_entity: null           # Optional: show state from a different entity than "entity"
+    card_color: var(--contrast2)         # Card background color
+    card_height: 80px                   # Card height (matches base default)
+    card_border_radius: 36px            # Corner radius of the card
+    card_overflow: hidden               # Intended overflow behavior (note: base currently sets overflow: hidden)
+    img_cell_background: var(--red)     # Default icon tile background for alert cards
+    show_glow: true                     # Enable/disable glow behind icon tile
+
+    # Removes unwanted words from friendly_name before displaying it as the card title.
+    # Useful for “noisy” entity names like:
+    # "Qrevo Curv Series Betriebszustand Aufgetreten ..."
+    remove_words_regex: (betriebszustand\s*|Qrevo\s*|Curv\s*|Series\s*|Aufgetreten\s*)
+
+  # Use the entity defined above
+  entity: "[[[ return variables.entity ]]]"
+
+  # Name is derived from the entity’s friendly_name, then cleaned via regex.
+  # - "ig" flags: i = case-insensitive, g = replace all occurrences
+  # - .trim() removes leading/trailing spaces after replacements
+  name: |
+    [[[
+      const fn = entity?.attributes?.friendly_name || '';
+      const re = new RegExp(variables.remove_words_regex, 'ig');
+      return fn.replace(re, '').trim();
+    ]]]

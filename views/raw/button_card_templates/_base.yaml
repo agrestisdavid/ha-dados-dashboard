@@ -1,0 +1,138 @@
+##### px-size
+dados_base:
+  variables:
+    entity: sensor.dummy              # Default entity (override per card)
+    state_display_entity: null        # Optional: show state from a different entity than "entity"
+    card_color: var(--contrast2)      # Card background color (theme variable recommended)
+    card_height: 80px                # Fixed height (or set null/auto in child)
+    card_border_radius: 36px         # Corner radius for the whole card
+    img_cell_background: var(--blue) # Background behind the icon tile (can be overridden per state)
+    show_glow: true                  # Enables/disables the big glow box-shadow behind icon tile
+    name:                             # Optional: force a custom name (otherwise friendly_name is used)
+
+  # Name fallback order:
+  # 1) variables.name
+  # 2) entity friendly_name
+  # 3) "Set Entity"
+  name: |
+    [[[
+      if (variables.name) return variables.name;
+      if (variables.entity) return states[variables.entity]?.attributes?.friendly_name || "Set Entity";
+      return "Set Entity";
+    ]]]
+
+  entity: "[[[ return variables.entity ]]]"
+
+  # State display can be sourced from a different entity (state_display_entity).
+  # If hass.formatEntityState exists, it will render a friendly formatted state.
+  state_display: >
+    [[[
+      const entityId = variables.state_display_entity ?? variables.entity;
+      const stateObj = states[entityId];
+
+      if (!stateObj) return '—';
+
+      if (hass.formatEntityState) return hass.formatEntityState(stateObj);
+
+      return stateObj.state ?? '—';
+    ]]]
+
+  # Ensure the card updates when either entity changes (main or display override)
+  triggers_update:
+    - '[[[ return variables.entity ]]]'
+    - '[[[ return variables.state_display_entity ]]]'
+
+  show_name: true
+  show_icon: true
+  show_state: true
+
+  # Default interactions are disabled here (child templates can override)
+  icon_tap_action:
+    action: none
+  tap_action:
+    action: none
+  hold_action:
+    action: none
+  double_tap_action:
+    action: none
+
+  styles:
+    # Layout: icon left, name + state right
+    grid:
+      - grid-template-columns: 55px 1fr
+      - grid-template-rows: min-content 1fr
+      - grid-template-areas: "'i n' 'i s'"
+
+    # Main card styling
+    card:
+      - border-radius: '[[[ return variables.card_border_radius || "36px" ]]]'
+      - background: "[[[ return variables.card_color ]]]"
+      - backdrop-filter: blur(20px)        # Optional glass effect (remove if you don't want blur)
+      - padding: 12px
+      - height: '[[[ return variables.card_height || "auto" ]]]'
+      - overflow: hidden
+      # Disable ripple effects (clean UI)
+      - --button-card-ripple-color: transparent !important
+      - --button-card-ripple-hover-opacity: 0 !important
+      - --ha-card-ripple-color: transparent !important
+      - --ha-ripple-hover-opacity: 0 !important
+
+    # Icon container (left tile)
+    img_cell:
+      - width: 45px
+      - height: 45px
+      - align-self: start
+      - margin-top: 5px
+      - border-radius: 18px
+      - background: "[[[ return variables.img_cell_background ]]]"
+      - overflow: visible
+      - box-shadow: |
+          [[[
+            // Glow uses entity rgb_color if available (lights), otherwise falls back to img_cell_background.
+            // Set show_glow: false to remove.
+            if (!variables.show_glow) return 'none';
+            const c = entity?.attributes?.rgb_color;
+            const fb = variables?.img_cell_background || 'var(--red)';
+            const colA = c ? `rgba(${c[0]}, ${c[1]}, ${c[2]}, 0.7)` : fb;
+            const colB = c ? `rgba(${c[0]}, ${c[1]}, ${c[2]}, 0.8)` : fb;
+            return `-55px -50px 70px 20px ${colA}, -35px -35px 70px 10px ${colB}`;
+          ]]]
+
+    # Icon itself (inside img_cell)
+    icon:
+      - width: 32px
+      - color: var(--contrast2)
+
+    # Primary text (name)
+    name:
+      - justify-self: start
+      - align-self: start
+      - margin-top: 9px
+      - font-size: 16px
+      - font-weight: 500
+      - color: var(--contrast16)
+      - letter-spacing: 0.4px
+      - padding-left: 3px
+
+    # Secondary text (state)
+    state:
+      - justify-self: start
+      - align-self: start
+      - font-size: 14px
+      - font-weight: 400
+      - color: var(--contrast12)
+      - letter-spacing: 0.6px
+      - margin-top: 0px
+      - padding-left: 3px
+
+    # Label is defined but hidden by default (enable per child card if needed)
+    label:
+      - justify-self: start
+      - align-self: start
+      - font-size: 14px
+      - font-weight: 400
+      - color: var(--contrast12)
+      - letter-spacing: 0.6px
+      - margin-top: 0px
+      - padding-left: 3px
+      - display: none

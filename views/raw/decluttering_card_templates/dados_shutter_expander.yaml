@@ -1,0 +1,88 @@
+# Purpose
+# - Reusable expander control for a single shutter/cover entity ([[entity]]).
+# - Header uses dados_shutter_base (button-card) to show the shutter summary state.
+# - Expanded content injects a slider control (dados_shutter_slider) for positioning.
+#
+# Inputs (decluttering variables expected)
+# - [[entity]]             : the shutter/cover entity (cover.*)
+# - [[img_cell_background]]: color for the icon cell / accent background (theme variable)
+
+dados_shutter_expander:
+  card:
+    # Core component
+    type: custom:expander-card
+
+    # ------------------------------------------------------------
+    # Expanded content (cards)
+    # - Uses a decluttering template slider control for the shutter
+    # ------------------------------------------------------------
+    cards:
+      - type: custom:decluttering-card
+        template: dados_shutter_slider
+        variables:
+          - entity: "[[entity]]"
+          - img_cell_background: "[[img_cell_background]]"
+
+    # ------------------------------------------------------------
+    # Title / header card (title-card)
+    # - Uses dados_shutter_base for the compact shutter header UI
+    # ------------------------------------------------------------
+    title-card:
+      type: custom:button-card
+      template: dados_shutter_base
+      variables:
+        entity: "[[entity]]"
+        img_cell_background: "[[img_cell_background]]"
+
+    # Grid placement (12 columns)
+    grid_options:
+      columns: 12
+      rows: auto
+
+    # Header behavior
+    title-card-clickable: true        # clicking header toggles expand/collapse
+    title-card-button-overlay: true   # enables overlay button area on the header
+
+    # Child layout + spacing
+    clear-children: true
+    child-padding: 15px              # padding around the slider content
+    child-margin-top: 0px
+    clear: false
+    padding: 0px
+    gap: 0px
+
+    # Visual styling / UX
+    icon: m3o:touch-app              # expander overlay icon
+    animation: true
+    arrow-color: var(--contrast16)
+    button-background: var(--contrast3)
+    icon-rotate-degree: 0deg
+    overlay-margin: 16px 22px 0px 0px
+    expanded: false                  # default collapsed
+
+    # Access / visibility control (expander-card feature)
+    show-button-users:
+      - vaca-kuche
+
+    # Identity / uniqueness
+    expander-card-id: "[[entity]]"
+
+    # Extra CSS tweaks for header overlay and rounding
+    style: |
+      .header-overlay {
+        height: unset !important;
+      }
+      button.header {
+        border-radius: 16px !important;
+        overflow: hidden !important;
+      }
+
+    # Card-level styling
+    card_mod:
+      style:
+        .: |
+          ha-card {
+            border-radius: 36px !important;
+            overflow: hidden !important;
+            margin-top: 0px !important;
+          }

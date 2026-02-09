@@ -1,0 +1,42 @@
+dados_vacuum_roboter:
+  template: dados_device_card
+
+  variables:
+    # --- Display / Look ---
+    name: Vacuum                        # Card title (overrides friendly_name)
+    card_color: transparent              # Transparent card (nice inside stacks/sections)
+    show_glow: true                      # Enables glow effects (if your base/device card uses it)
+    img_cell_background: var(--peach)    # Accent color + progress bar fill color
+
+    # --- Main entity (vacuum) ---
+    entity: vacuum.roborock_qrevo_curv_series
+    state_display_entity: null           # Not needed here (vacuum state + your label handle it)
+
+    # --- Icons per state group ---
+    icon_on: mdi:robot-vacuum            # Used while running/active states
+    icon_off: mdi:robot-vacuum-off       # Used while idle/off/finished/paused (depending on mapping)
+    icon_alert: mdi:robot-vacuum-alert   # Used for error/action required
+
+    # --- Progress / Info entities ---
+    bar_entity: sensor.roborock_qrevo_curv_series_reinigungsfortschritt # Progress bar source
+    percent: sensor.roborock_qrevo_curv_series_reinigungsfortschritt   # Used in default label: "XX% - HH:MM"
+    state_startin: ""                    # Not used for vacuum (no delayed start countdown)
+    state_remaining: sensor.roborock_qrevo_curv_series_aktueller_raum   # Here used as “remaining” label text (room)
+
+    # --- Mapping: vacuum states -> generic device template states ---
+    # Vacuum uses different state strings than your dishwasher/oven, so we map them here.
+    value_run: cleaning                  # RUN/ACTIVE -> vacuum is cleaning
+    value_off: "off"                     # OFF -> docked/off
+    value_on: "on"                       # ON/READY -> powered on/ready (if your integration uses it)
+    value_paused: paused                 # PAUSED -> pause state
+    value_returning: returning           # RETURNING -> going back to dock
+    value_finished: finished             # FINISHED -> (if your setup provides it)
+    value_aborting: aborting             # ABORTING -> (if your setup provides it)
+
+    # --- Error handling ---
+    value_alert: error                   # ERROR state of the vacuum (integration)
+    value_action: actionrequired         # Action required (if used by your integration)
+    value_error_message: sensor.roborock_qrevo_curv_series_staubsauger_fehler # Human-readable error message sensor
+
+    # --- Kept for compatibility with the generic template (vacuum usually won’t use delayedstart) ---
+    value_start: delayedstart

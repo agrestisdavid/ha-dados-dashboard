@@ -1,0 +1,42 @@
+dados_dishwasher_card:
+  template:
+    - dados_device_card
+
+  variables:
+    # --- Display / Look ---
+    name: Dishwasher                 # Card title (overrides friendly_name)
+    card_color: var(--contrast2)     # Card background color
+    show_glow: true                 # Enables the glow effect from dados_base / dados_device_card
+    img_cell_background: var(--purple) # Used for the icon tile + progress bar fill color
+
+    # --- Main status entity (your “state machine”) ---
+    entity: sensor.geschirrspuler_betriebszustand
+    state_display_entity: sensor.geschirrspuler_betriebszustand # What to show as state text when needed
+
+    # --- Icons for device states ---
+    icon_on: mdi:dishwasher          # Running / active icon
+    icon_off: mdi:dishwasher-off     # Off / idle / finished icon
+    icon_alert: mdi:dishwasher-alert # Error / action required icon
+
+    # --- Progress / Timing ---
+    bar_entity: sensor.geschirrspuler_programmfortschritt   # Numeric source for the progress bar (e.g. "42" or "42%")
+    percent: sensor.geschirrspuler_programmfortschritt      # Also used for label: "XX% - HH:MM"
+    state_startin: sensor.geschirrspuler_start_in           # Minutes until delayed start (number)
+    state_remaining: sensor.geschirrspuler_verbleibende_programmlaufzeit # Remaining time (HH:MM or numeric hours)
+    state_active_program: sensor.geschirrspuler_aktives_programm         # Program name shown while running
+
+    # --- Mapping of your dishwasher states to the generic device template ---
+    value_run: run                 # Running -> shows program + label + bar
+    value_off: inactive            # Off/idle -> shows "Off" + icon_off
+    value_on: ready                # Ready -> idle but available
+    value_start: delayedstart      # Delayed start -> shows countdown as label
+    value_paused: pause            # Paused
+    value_returning: returning     # (if used) e.g. robot return state; safe to keep
+    value_finished: finished       # Finished -> uses icon_off view by default
+    value_aborting: aborting       # Aborting -> uses alert icon by default
+    value_alert: error             # Error -> switches to alert view
+    value_action: actionrequired   # Action required -> switches to alert view
+
+    # --- Error text source ---
+    value_error_message: sensor.geschirrspuler_betriebszustand
+    # If you later create a dedicated error message sensor, point this to that entity instead.

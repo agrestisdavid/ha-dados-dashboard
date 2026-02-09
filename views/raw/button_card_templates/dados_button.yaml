@@ -1,0 +1,62 @@
+dados_button:
+  template: dados_base
+
+  variables:
+    entity: null                      # Main entity this card controls / displays (required in usage)
+    state_display_entity: null        # Optional: display state from a different entity than "entity"
+    icon_on: mdi:cog                  # Icon when entity is ON (default)
+    icon_off: mdi:cog-outline         # Icon when entity is OFF
+    name: ""                          # Optional: override title (else friendly_name fallback)
+    img_cell_background:              # Optional: override base icon tile background
+
+  # Bind the card to the given entity
+  entity: "[[[ return variables.entity ]]]"
+
+  # Name fallback order:
+  # 1) variables.name (manual override)
+  # 2) entity friendly_name
+  # 3) "Set Entity"
+  name: |
+    [[[
+      if (variables.name) return variables.name;
+      if (variables.entity) return states[variables.entity]?.attributes?.friendly_name || "Set Entity";
+      return "Set Entity";
+    ]]]
+
+  # Default icon (will be overridden in "state:" when off)
+  icon: "[[[ return variables.icon_on ]]]"
+
+  styles:
+    # Layout extends dados_base to add a right-side "toggle" area:
+    # [icon] [name/state] [toggle-slot]
+    grid:
+      - grid-template-columns: 55px 1fr 65px        # px-size: icon column + content + toggle column
+      - grid-template-rows: min-content 1fr
+      - grid-template-areas: "'i n toggle' 'i s toggle'"
+
+  state:
+    # When entity is OFF:
+    # - switch icon to icon_off
+    # - set icon color to readable neutral
+    # - make icon tile background neutral and remove glow shadow
+    - value: "off"
+      icon: "[[[ return variables.icon_off ]]]"
+      styles:
+        icon:
+          - color: var(--contrast16)
+        img_cell:
+          - background: var(--contrast3)
+          - box-shadow: none
+
+  # Tap on the icon toggles the entity directly
+  icon_tap_action:
+    action: toggle
+
+  # Tap on the card toggles an expander section with id = entity
+  # (Useful when this card is the header of an expander-card)
+  tap_action:
+    action: fire-dom-event
+    expander-card:
+      data:
+        expander-card-id: "[[[ return variables.entity ]]]"
+        action: toggle

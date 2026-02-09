@@ -1,0 +1,101 @@
+dados_light:
+  template: dados_base
+
+  variables:
+    entity: null                      # Light entity (must be set)
+    state_display_entity: null        # Optional: display state from another entity (not used below)
+    card_color: var(--contrast2)      # Card background
+    img_cell_background: var(--yellow) # Fallback color if light has no rgb_color
+    show_glow: true                   # Enable/disable glow from dados_base
+    icon_on: m3o:lightbulb            # Icon when light is ON
+    icon_off: m3o:light-off           # Icon when light is OFF
+    # expander-id: null               # (optional idea) if you want a separate expander id
+
+  entity: "[[[ return variables.entity ]]]"
+
+  # Default icon (overridden by the "off" state rule below)
+  icon: "[[[ return variables.icon_on ]]]"
+
+  show_state: true
+
+  # State text:
+  # - Off -> "Off"
+  # - On with brightness -> "NN%"
+  # - On without brightness -> "On"
+  state_display: |
+    [[[
+      if (entity.state === "off") return "Off";
+      if (entity.attributes.brightness)
+        return Math.round(entity.attributes.brightness / 2.55) + "%";
+      return "On";
+    ]]]
+
+  # Friendly name cleanup:
+  # Removes words like "Deckenlicht" / "Ceiling" and collapses extra spaces
+  name: |
+    [[[
+      const fn = entity?.attributes?.friendly_name || '';
+      return fn
+        .replace(/deckenlicht\s*/i, '')
+        .replace(/Ceiling\s*/i, '')
+        .replace(/\s+/g, ' ')
+        .trim();
+    ]]]
+
+  # Tap on icon toggles the light
+  icon_tap_action:
+    action: toggle
+
+  # Tap on the card toggles an expander section with id = entity
+  tap_action:
+    action: fire-dom-event
+    expander-card:
+      data:
+        expander-card-id: "[[[ return variables.entity ]]]"
+        action: toggle
+
+  state:
+    # When OFF:
+    # - use icon_off
+    # - neutral colors and no glow
+    - value: "off"
+      icon: "[[[ return variables.icon_off ]]]"
+      styles:
+        icon:
+          - color: var(--contrast16)
+        img_cell:
+          - background: var(--contrast3)
+          - box-shadow: none
+
+  styles:
+    # Layout adds a right-side "toggle" slot (for the embedded toggle button)
+    grid:
+      - grid-template-columns: 55px 1fr 55px
+      - grid-template-rows: min-content 1fr
+      - grid-template-areas: "'i n toggle' 'i s toggle'"
+
+    # Dynamic icon tile background:
+    # - If the light provides rgb_color, tint it
+    # - Else fall back to variables.img_cell_background
+    img_cell:
+      - background: |
+          [[[
+            const c = entity?.attributes?.rgb_color;
+            if (c) {
+              return `rgba(${c[0]}, ${c[1]}, ${c[2]}, 0.7)`;
+            }
+            return variables?.img_cell_background || 'var(--yellow)';
+          ]]]
+
+    custom_fields:
+      toggle:
+        - margin-top: 0px
+
+  custom_fields:
+    # Right-side embedded toggle button (uses your dados_toggle template)
+    toggle:
+      card:
+        type: custom:button-card
+        template: dados_toggle   
+        variables:
+          entity: "[[[ return variables.entity ]]]"

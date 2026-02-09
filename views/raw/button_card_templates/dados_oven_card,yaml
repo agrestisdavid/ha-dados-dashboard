@@ -1,0 +1,42 @@
+dados_oven_card:
+  template:
+    - dados_device_card
+
+  variables:
+    # --- Display / Look ---
+    name: Backberta                 # Card title shown in UI (overrides friendly_name)
+    card_color: var(--contrast2)     # Card background color
+    show_glow: true                 # Enables glow in the icon tile + (depending on base) shadow effects
+    img_cell_background: var(--brown) # Also used as progress bar fill color in dados_device_card
+
+    # --- Main status entity (the oven state machine) ---
+    entity: sensor.ofen_betriebszustand
+    state_display_entity: sensor.ofen_betriebszustand # What to show when a “normal” state is displayed
+
+    # --- Icons per state group ---
+    icon_on: m3rf:oven              # Running / active icon
+    icon_off: m3r:oven              # Idle/ready/finished icon
+    icon_alert: m3o:settings-alert  # Error / action required icon
+
+    # --- Progress / Timing entities ---
+    bar_entity: sensor.ofen_programmfortschritt       # Progress source for the bar ("42" / "42%" / 0.42)
+    percent: sensor.ofen_programmfortschritt          # Used in the default label: "XX% - HH:MM"
+    state_startin: sensor.ofen_start_in               # Minutes until delayed start (number)
+    state_remaining: sensor.ofen_verbleibende_programmlaufzeit # Remaining time (HH:MM or numeric hours)
+    state_active_program: sensor.ofen_aktives_programm         # Program name displayed while running
+
+    # --- Mapping: oven states -> generic device template states ---
+    value_run: run                 # RUN -> shows program + label + bar (taller layout)
+    value_off: inactive            # OFF/IDLE -> off view
+    value_on: ready                # READY -> idle but available
+    value_start: delayedstart      # DELAYED START -> countdown label
+    value_paused: pause            # PAUSED -> icon_off view
+    value_returning: returning     # (kept for compatibility; harmless if never used)
+    value_finished: finished       # FINISHED -> icon_off view
+    value_aborting: aborting       # ABORTING -> uses alert icon by default
+    value_alert: error             # ERROR -> switches to alert view
+    value_action: actionrequired   # ACTION REQUIRED -> switches to alert view
+
+    # --- Error text source ---
+    value_error_message: sensor.ofen_betriebszustand
+    # Tip: if you create a dedicated error-message sensor later, point value_error_message there.

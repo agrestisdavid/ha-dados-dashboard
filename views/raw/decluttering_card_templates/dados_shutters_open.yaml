@@ -1,0 +1,87 @@
+# Purpose
+# - Dynamically lists all shutters/covers that are currently NOT closed.
+# - Includes covers that are:
+#   - open
+#   - opening
+#   - closing
+# - Each listed cover is rendered as a reusable expander control (dados_shutter_expander),
+#   which typically provides a compact header + an expandable slider for position control.
+#
+# How it works
+# - Uses custom:auto-entities to build the list automatically.
+# - Wraps results in an entities card that’s styled to be visually invisible
+#   (transparent background, no shadow, no border, no padding).
+#
+# Output rendering
+# - For each matched cover entity:
+#   - Renders a decluttering-card using template: dados_shutter_expander
+#   - Passes variables:
+#     - entity: the entity_id of the cover
+#     - name: friendly_name attribute (passed, but only useful if the downstream template uses it)
+#     - img_cell_background: var(--lavender) accent color for the shutter UI
+
+dados_shutters_open:
+  card:
+    type: custom:auto-entities
+
+    # Wrapper container (entities card, visually hidden)
+    card:
+      type: entities
+      card_mod:
+        style: |
+          ha-card {
+            background: transparent !important;
+            box-shadow: none !important;
+            border: 0 !important;
+          }
+          .card-content {
+            padding: 0 !important;
+          }
+
+    # Entity selection + rendering rules
+    filter:
+      include:
+        # ------------------------------------------------------------
+        # Covers that are OPEN
+        # ------------------------------------------------------------
+        - domain: cover
+          state: open
+          options:
+            type: custom:decluttering-card
+            template: dados_shutter_expander
+            variables:
+              - entity: this.entity_id
+              - name: this.attributes.friendly_name
+              - img_cell_background: var(--lavender)
+
+        # ------------------------------------------------------------
+        # Covers that are OPENING
+        # ------------------------------------------------------------
+        - domain: cover
+          state: opening
+          options:
+            type: custom:decluttering-card
+            template: dados_shutter_expander
+            variables:
+              - entity: this.entity_id
+              - name: this.attributes.friendly_name
+              - img_cell_background: var(--lavender)
+
+        # ------------------------------------------------------------
+        # Covers that are CLOSING
+        # ------------------------------------------------------------
+        - domain: cover
+          state: closing
+          options:
+            type: custom:decluttering-card
+            template: dados_shutter_expander
+            variables:
+              - entity: this.entity_id
+              - name: this.attributes.friendly_name
+              - img_cell_background: var(--lavender)
+
+      # Exclusions (keep list clean)
+      exclude:
+        - state: closed
+        - state: unavailable
+        - state: unknown

@@ -1,0 +1,1514 @@
+type: sections
+max_columns: 2
+title: floors
+path: floors
+subview: true
+header:           #title
+  card:
+    type: markdown
+    text_only: true
+    content: "# Home"
+sections:
+  - type: grid      #simple-tabs
+    cards:
+      - type: custom:gap-card ##gab-card
+        grid_options:
+          columns: full
+          rows: 0.5
+      - type: custom:simple-tabs  #simple-tabs
+        background-color: var(--contrast2)
+        active-text-color: var(--black5)
+        active-background: var(--tabs)
+        hover-color: var(--contrast4)
+        border-color: var(--contrast2)
+        button_padding: 15px
+        default_tab: 2
+        tabs:
+          - title: Garden         ##garden-tab
+            icon: mdi:flower
+            id: garden
+            card:
+              type: vertical-stack
+              cards:
+                - type: custom:button-card
+                  entity: sensor.dummy
+                  show_icon: false
+                  show_name: false
+                  show_state: false
+                  styles:
+                    card:
+                      - height: 7px
+                      - width: 20px
+                      - background: transparent
+                - type: custom:decluttering-card
+                  template: dados_lights_area
+                  variables:
+                    - area: Garten
+          - title: Ground Floor    ##ground-floor-tab
+            icon: mdi:home-floor-1
+            id: eg
+            card:
+              type: custom:layout-card
+              layout_type: custom:grid-layout
+              layout:
+                grid-gap: 12px
+                grid-template-columns: 1fr 1fr
+                grid-template-rows: 80px 30px 80px 80px 80px 30px 80px
+                grid-template-areas: |
+                  "entry livingroom"
+                  "kitchen livingroom"
+                  "kitchen stairs"
+                  "hallway hallway"
+                  "diningroom bathroom"
+                  "office bathroom"
+                  "office guestroom"
+              cards:
+                - view_layout:      ###entry
+                    grid-area: entry
+                  type: custom:button-card
+                  template: dados_rooms
+                  variables:
+                    entity: light.deckenlicht_eg_gang
+                    icon_on: m3o:lightbulb
+                    icon_off: mdi:coat-rack
+                    name: Entry
+                    card_height: 80px
+                    navigation_path: "#entry"
+                    temp_sensor: sensor.temperatur_eg_gang
+                    img_cell_background: var(--olive)
+                - view_layout:      ###livingroom
+                    grid-area: livingroom
+                  type: custom:button-card
+                  template: dados_rooms
+                  variables:
+                    entity: light.deckenlicht_wohnzimmer
+                    icon_on: m3o:lightbulb
+                    icon_off: m3o:weekend
+                    name: Living Room
+                    navigation_path: "#livingroom"
+                    card_height: 122px
+                    temp_sensor: sensor.heizung_aktuelle_temperatur_wohnzimmer
+                    img_cell_background: var(--coral)
+                - view_layout:      ###kitchen
+                    grid-area: kitchen
+                  type: custom:button-card
+                  template: dados_rooms
+                  variables:
+                    entity: light.deckenlicht_kuche
+                    icon_on: m3o:lightbulb
+                    icon_off: m3o:chef-hat
+                    name: Kitchen
+                    card_height: 122px
+                    navigation_path: "#kitchen"
+                    temp_sensor: sensor.temperatur_kuche
+                    img_cell_background: var(--teal)
+                - view_layout:      ###stairs
+                    grid-area: stairs
+                  type: custom:button-card
+                  template: dados_rooms
+                  variables:
+                    entity: light.wandleuchte_treppenhaus
+                    icon_off: mdi:stairs
+                    name: Stairs
+                    card_height: 80px
+                    navigation_path: "#stairs"
+                    temp_sensor: sensor.temperatur_og_gang
+                    img_cell_background: var(--purple)
+                - view_layout:      ###hallway
+                    grid-area: hallway
+                  type: custom:button-card
+                  template: dados_rooms
+                  variables:
+                    entity: light.deckenlicht_flur
+                    icon_on: m3o:lightbulb
+                    icon_off: m3o:hallway
+                    name: Hallway
+                    card_height: 80px
+                    navigation_path: "#hallway"
+                    temp_sensor: sensor.temperatur_eg_gang
+                    img_cell_background: var(--vanilla)
+                - view_layout:      ###essen
+                    grid-area: diningroom                
+                  type: custom:button-card      
+                  template: dados_rooms
+                  variables:
+                    entity: light.essen_deckenlicht
+                    icon_on: m3o:lightbulb
+                    icon_off: m3o:dine-lamp
+                    name: Dining Room
+                    card_height: 80px
+                    navigation_path: "#diningroom"
+                    temp_sensor: sensor.temperatur_esszimmer
+                    img_cell_background: var(--orange)
+                - view_layout:      ###bathroom
+                    grid-area: bathroom
+                  type: custom:button-card
+                  template: dados_rooms
+                  variables:
+                    entity: light.deckenlicht_flur
+                    icon_on: mdi:bathtub
+                    icon_off: mdi:bathtub-outline
+                    name: Bathroom
+                    card_height: 120px
+                    navigation_path: "#bathroom"
+                    temp_sensor: sensor.temperatur_gastebad
+                    img_cell_background: var(--sand)
+                - view_layout:      ###office
+                    grid-area: office
+                  type: custom:button-card
+                  template: dados_rooms
+                  variables:
+                    entity: light.deckenlicht_buro
+                    icon_off: m3o:desktop-windows
+                    name: Office
+                    card_height: 120px
+                    navigation_path: "#office"
+                    temp_sensor: sensor.temperatur_buro
+                    img_cell_background: var(--blue)
+                - view_layout:      ###guestroom
+                    grid-area: guestroom
+                  type: custom:button-card
+                  template: dados_rooms
+                  variables:
+                    entity: light.deckenlicht_gastezimmer
+                    icon_off: m3o:hotel
+                    name: Guest Room
+                    card_height: 80px
+                    navigation_path: "#guestroom"
+                    temp_sensor: sensor.temperatur_gastezimmer
+                    img_cell_background: var(--mint)
+              grid_options:
+                columns: 36
+                rows: auto
+          - title: Upper Floor   ##og-tab
+            icon: mdi:home-floor-2
+            card:
+              type: custom:layout-card
+              layout_type: custom:grid-layout
+              layout:
+                grid-gap: 12px
+                grid-template-columns: 1fr 1fr
+                grid-template-rows: 80px 80px 80px 80px 130px
+                grid-template-areas: |
+                  "schlafen stairs"
+                  "schlafen oggang"
+                  "kind1 ogbad"
+                  "kind2 wc"
+                  "waschkuche waschkuche"
+              cards:
+                - view_layout:      ###schlafen
+                    grid-area: schlafen
+                  type: custom:button-card
+                  template: dados_rooms
+                  variables:
+                    entity: light.deckenlicht_schlafzimmer
+                    icon_off: m3o:king-bed
+                    name: Bedroom
+                    card_height: 172px
+                    navigation_path: "#schlafen"
+                    temp_sensor: sensor.temperatur_schlafzimmer_2
+                    img_cell_background: var(--peach)
+  
+                - view_layout:      ###stairs
+                    grid-area: stairs
+                  type: custom:button-card
+                  template: dados_rooms
+                  variables:
+                    entity: light.wandleuchte_treppenhaus
+                    icon_off: mdi:stairs
+                    name: Stairs
+                    card_height: 80px
+                    navigation_path: "#stairs"
+                    temp_sensor: sensor.temperatur_og_gang
+                    img_cell_background: var(--purple)
+
+                - view_layout:      ###oggang
+                    grid-area: oggang
+                  type: custom:button-card
+                  template: dados_rooms
+                  variables:
+                    entity: light.deckenlicht_gang_og
+                    icon_off: m3o:hallway
+                    name: Hallway
+                    card_height: 80px
+                    navigation_path: "#oggang"
+                    temp_sensor: sensor.temperatur_og_gang
+                    img_cell_background: var(--teal)
+
+                - view_layout:      ###kind1
+                    grid-area: kind1
+                  type: custom:button-card
+                  template: dados_rooms
+                  variables:
+                    entity: light.deckenlicht_kinderzimmer_1
+                    icon_off: m3o:child-hat
+                    name: Child1
+                    card_height: 80px
+                    navigation_path: "#kind1"
+                    temp_sensor: sensor.temperatur_kinderzimmer_1
+                    img_cell_background: var(--blue)
+  
+                - view_layout:      ###ogbad
+                    grid-area: ogbad
+                  type: custom:button-card
+                  template: dados_rooms
+                  variables:
+                    entity: light.deckenlicht_badezimmer_og
+                    icon_off: m3o:shower
+                    name: Bathroom
+                    card_height: 80px
+                    navigation_path: "#ogbad"
+                    temp_sensor: sensor.temperatur_og_bad
+                    img_cell_background: var(--vanilla)
+
+                - view_layout:      ###kind2
+                    grid-area: kind2
+                  type: custom:button-card
+                  template: dados_rooms
+                  variables:
+                    entity: light.deckenlicht_kinderzimmer_2
+                    icon_off: m3o:face-3
+                    name: Child2
+                    card_height: 80px
+                    navigation_path: "#kind2"
+                    temp_sensor: sensor.temperatur_kinderzimmer_2
+                    img_cell_background: var(--pink)
+
+                - view_layout:      ###ogwc
+                    grid-area: wc
+                  type: custom:button-card
+                  template: dados_rooms
+                  variables:
+                    entity: light.deckenlicht_wc
+                    icon_off: mdi:paper-roll-outline
+                    name: Toilet
+                    card_height: 80px
+                    navigation_path: "#wc"
+                    temp_sensor: sensor.temperatur_wc
+                    img_cell_background: var(--sand)
+
+                - view_layout:      ###waschkuche
+                    grid-area: waschkuche
+                  type: custom:button-card
+                  template: dados_rooms
+                  variables:
+                    entity: light.deckenlicht_waschkuche
+                    icon_off: m3o:local-laundry-service
+                    name: Laundry Room
+                    card_height: 130px
+                    navigation_path: "#waschkuche"
+                    temp_sensor: sensor.temperatur_waschkuche
+                    img_cell_background: var(--olive)
+
+              grid_options:
+                columns: full
+                rows: auto
+            id: og
+        hide_inactive_tab_titles: true
+        show_fade: true
+        grid_options:
+          columns: full
+    column_span: 2
+
+  - type: grid      #navbar
+    cards:
+      - type: custom:navbar-card
+        template: main   
+  - !include raw/bubble_card_popups/navbar_popups.yaml ##include file so we can include it on every view
+
+  - type: grid      #eg-popups
+    cards:
+      - type: heading
+        heading: popup-container-eg
+        heading_style: title
+        visibility:
+          - condition: user
+            users: []
+      - type: vertical-stack        ##remote
+        cards:
+          - type: custom:bubble-card
+            card_type: pop-up
+            hash: "#remotelivingroom"
+            button_type: name
+            sub_button:
+              main: []
+              bottom: []
+            name: "livingroom AppleTV "
+            icon: m3o:remote-gen
+          - type: custom:firemote-card
+            entity: media_player.appletv_wohnzimmer
+            device_family: apple-tv
+            device_type: appletv-4k-gen2
+            compatibility_mode: default
+            apple_tv_remote_entity: remote.appletv_wohnzimmer
+            visible_name_text: ""
+            scale: "83"
+            app_launch_1: plex
+            app_launch_2: infuse
+            app_launch_3: youtube
+            app_launch_4: swiftfin
+            app_launch_5: crunchyroll
+            app_launch_6: disney-plus
+            app_launch_7: twitch
+            app_launch_8: apple-tv
+      - type: vertical-stack        ##livingroom
+        cards:
+          - type: custom:bubble-card
+            card_type: pop-up
+            hash: "#livingroom"
+            button_type: name
+            name: Living Room
+            icon: m3o:weekend
+            show_icon: true
+            show_name: true
+            scrolling_effect: true
+            card_layout: large
+            show_header: true
+            styles: |-
+
+              .bubble-name {
+                color: var(--contrast20) !important;
+                font-weight: 500 !important;
+                font-size: 18px !important;
+                font-family: Roboto;
+                letter-spacing: 1px !important;
+              }
+            sub_button:
+              main:
+                - icon: mdi:robot-vacuum
+                - icon: m3o:remote-gen
+                  tap_action:
+                    action: navigate
+                    navigation_path: "#remotelivingroom"
+              bottom: []
+          - type: custom:bubble-card
+            card_type: separator
+            name: Lights
+            card_layout: large
+            icon: ""
+            styles: |
+              ha-card {
+                --bubble-line-background-color: var(--contrast1);  /* oder deine Wunschfarbe */
+              }
+          - type: custom:decluttering-card
+            template: dados_lights_area
+            variables:
+              - area: Wohnzimmer
+            card_mod:
+              style: |
+                :host {
+                  margin-top: -20px !important;
+                  display: block;
+                }
+                ha-card {
+                  margin-top: 0 !important;
+                }
+          - type: custom:bubble-card
+            card_type: separator
+            name: Shutter
+            card_layout: large
+            icon: ""
+            styles: |
+              ha-card {
+                --bubble-line-background-color: var(--contrast1);  /* oder deine Wunschfarbe */
+              }
+            card_mod:
+              style: |
+                :host {
+                  margin-top: -10px !important;
+                  display: block;
+                }
+                ha-card {
+                  margin-top: 0 !important;
+                }
+          - type: custom:decluttering-card
+            template: dados_shutter_expander
+            variables:
+              - entity: cover.rollo_wohnen
+              - name: Fenster
+              - img_cell_background: var(--lavender)
+              - expander_id: rollo_wohnen
+          - type: custom:bubble-card
+            card_type: separator
+            name: Sensors
+            card_layout: large
+            icon: ""
+            styles: |
+              ha-card {
+                --bubble-line-background-color: var(--contrast1);  /* oder deine Wunschfarbe */
+              }
+          - type: custom:decluttering-card
+            template: dados_temperature
+            variables:
+              - entity: sensor.temperatur_wohnen
+              - name: Temperatur
+            card_mod:
+              style: |
+                :host {
+                  margin-top: -20px !important;
+                  display: block;
+                }
+                ha-card {
+                  margin-top: 0 !important;
+                }
+          - type: custom:decluttering-card
+            template: dados_humidity
+            variables:
+              - entity: sensor.heizung_luftfeuchtigkeit_wohnzimmer
+              - name: Luftfeuchtigkeit
+            card_mod:
+              style: |
+                :host {
+                  margin-top: -10px !important;
+                  display: block;
+                }
+                ha-card {
+                  margin-top: 0 !important;
+                }
+      - type: vertical-stack        ##stairs
+        cards:
+          - type: custom:bubble-card
+            card_type: pop-up
+            hash: "#stairs"
+            button_type: name
+            name: Stairs
+            icon: mdi:stairs
+            show_icon: true
+            show_name: true
+            scrolling_effect: true
+            card_layout: large
+            show_header: true
+          - type: custom:bubble-card
+            card_type: separator
+            name: Lights
+            card_layout: large
+            icon: ""
+            styles: |
+              ha-card {
+                --bubble-line-background-color: var(--contrast1);  /* oder deine Wunschfarbe */
+              }
+          - type: custom:decluttering-card
+            template: dados_lights_area
+            variables:
+              - area: Treppen
+            card_mod:
+              style: |
+                :host {
+                  margin-top: -20px !important;
+                  display: block;
+                }
+                ha-card {
+                  margin-top: 0 !important;
+                }
+      - type: vertical-stack        ##kitchen
+        cards:
+          - type: custom:bubble-card
+            card_type: pop-up
+            hash: "#kitchen"
+            button_type: state
+            name: Kitchen
+            icon: m3o:chef-hat
+            show_icon: true
+            show_name: true
+            scrolling_effect: true
+            card_layout: large
+            show_header: true
+            show_attribute: true
+            sub_button:
+              main:
+                - entity: script.saugen_kuche_2
+                  icon: mdi:robot-vacuum
+                  show_background: false
+                  show_icon: true
+                  show_name: false
+                  show_state: false
+                  tap_action:
+                    action: perform-action
+                    target: {}
+                    perform_action: script.saugen_kuche_2
+              bottom: []
+            button_action:
+              tap_action:
+                action: none
+            tap_action:
+              action: none
+            show_state: true
+          - type: custom:bubble-card
+            card_type: separator
+            name: Lights
+            card_layout: large
+            icon: ""
+            styles: |
+              ha-card {
+                --bubble-line-background-color: var(--contrast1);  /* oder deine Wunschfarbe */
+              }
+          - type: custom:decluttering-card
+            template: dados_lights_area
+            variables:
+              - area: Küche
+            card_mod:
+              style: |
+                :host {
+                  margin-top: -20px !important;
+                  display: block;
+                }
+                ha-card {
+                  margin-top: 0 !important;
+                }
+          - type: custom:bubble-card
+            card_type: separator
+            name: Geräte
+            card_layout: large
+            icon: ""
+            styles: |
+              ha-card {
+                --bubble-line-background-color: var(--contrast1);  /* oder deine Wunschfarbe */
+              }
+          - square: false
+            type: grid
+            cards:
+
+              - type: custom:decluttering-card
+                template: dados_dishwasher_card
+                variables:
+                  - card_mod:
+                      style: |
+                        ha-card {
+                          border-radius: 36px !important;
+                          overflow: hidden !important;
+                        }
+
+
+              - type: custom:decluttering-card
+                template: dados_oven_card       
+                variables:
+                  - card_mod:
+                      style: |
+                        ha-card {
+                          border-radius: 36px !important;
+                          overflow: hidden !important;
+                        }
+
+            columns: 2
+          - type: custom:bubble-card
+            card_type: separator
+            name: Rollo
+            card_layout: large
+            icon: ""
+            styles: |
+              ha-card {
+                --bubble-line-background-color: var(--contrast1);  /* oder deine Wunschfarbe */
+              }
+          - type: custom:decluttering-card
+            template: dados_shutter_expander
+            variables:
+              - entity: cover.rollo_kuche
+              - name: Rollo
+              - img_cell_background: var(--lavender)
+              - expander_id: rollo_kuche
+          - type: custom:bubble-card
+            card_type: separator
+            name: Sensors
+            card_layout: large
+            icon: ""
+            styles: |
+              ha-card {
+                --bubble-line-background-color: var(--contrast1);  /* oder deine Wunschfarbe */
+              }
+          - type: custom:decluttering-card
+            template: dados_temperature
+            variables:
+              - entity: sensor.temperatur_kuche
+              - name: Temperatur
+            card_mod:
+              style: |
+                :host {
+                  margin-top: -20px !important;
+                  display: block;
+                }
+                ha-card {
+                  margin-top: 0 !important;
+                }
+      - type: vertical-stack        ##essen
+        cards:
+          - type: custom:bubble-card
+            card_type: pop-up
+            hash: "#diningroom"
+            button_type: name
+            name: Dining Room
+            icon: m3o:dine-heart
+            show_icon: true
+            show_name: true
+            scrolling_effect: true
+            card_layout: large
+            show_header: true
+            sub_button:
+              main: []
+              bottom: []
+          - type: custom:bubble-card
+            card_type: separator
+            name: Lights
+            card_layout: large
+            icon: ""
+            styles: |
+              ha-card {
+                --bubble-line-background-color: var(--contrast1);  /* oder deine Wunschfarbe */
+              }
+          - type: custom:decluttering-card
+            template: dados_lights_area
+            variables:
+              - area: Esszimmer
+            card_mod:
+              style: |
+                :host {
+                  margin-top: -20px !important;
+                  display: block;
+                }
+                ha-card {
+                  margin-top: 0 !important;
+                }
+          - type: custom:bubble-card
+            card_type: separator
+            name: Shutter
+            card_layout: large
+            icon: ""
+            styles: |
+              ha-card {
+                --bubble-line-background-color: var(--contrast1);  /* oder deine Wunschfarbe */
+              }
+            card_mod:
+              style: |
+                :host {
+                  margin-top: -10px !important;
+                  display: block;
+                }
+                ha-card {
+                  margin-top: 0 !important;
+                }
+          - type: custom:decluttering-card
+            template: dados_shutter_expander
+            variables:
+              - entity: cover.rollo_essen
+              - name: Rollo
+              - img_cell_background: var(--lavender)
+              - expander_id: rollo_essen
+          - type: custom:bubble-card
+            card_type: separator
+            name: Sensors
+            card_layout: large
+            icon: ""
+            styles: |
+              ha-card {
+                --bubble-line-background-color: var(--contrast1);  /* oder deine Wunschfarbe */
+              }
+          - type: custom:decluttering-card
+            template: dados_temperature
+            variables:
+              - entity: sensor.temperatur_esszimmer
+              - name: Temperatur
+            card_mod:
+              style: |
+                :host {
+                  margin-top: -20px !important;
+                  display: block;
+                }
+                ha-card {
+                  margin-top: 0 !important;
+                }
+      - type: vertical-stack        ##office
+        cards:
+          - type: custom:bubble-card
+            card_type: pop-up
+            hash: "#office"
+            button_type: name
+            name: Office
+            icon: m3o:desktop-windows
+            show_icon: true
+            show_name: true
+            scrolling_effect: false
+            card_layout: large
+            show_header: true
+            sub_button:
+              main: []
+              bottom: []
+          - type: custom:bubble-card
+            card_type: separator
+            name: Lights
+            card_layout: large
+            icon: ""
+            styles: |
+              ha-card {
+                --bubble-line-background-color: var(--contrast1);  /* oder deine Wunschfarbe */
+              }
+          - type: custom:decluttering-card
+            template: dados_lights_area
+            variables:
+              - area: buro
+          - type: custom:bubble-card
+            card_type: separator
+            name: Shutter
+            card_layout: large
+            icon: ""
+            styles: |
+              ha-card {
+                --bubble-line-background-color: var(--contrast1);  
+              }
+            card_mod:
+              style: |
+                :host {
+                  margin-top: 0px !important;
+                  display: block;
+                }
+                ha-card {
+                  margin-top: 0 !important;
+                }
+          - type: custom:decluttering-card
+            template: dados_shutter_expander
+            variables:
+              - entity: "cover.rollo_buro"
+              - img_cell_background: "var(--lavender)"
+          - type: custom:bubble-card
+            card_type: separator
+            name: Sensors
+            card_layout: large
+            icon: ""
+            styles: |
+              ha-card {
+                --bubble-line-background-color: var(--contrast1);  
+              }
+          - type: custom:decluttering-card
+            template: dados_temperature
+            variables:
+              - entity: sensor.temperatur_buro
+              - name: Temperatur
+            card_mod:
+              style: |
+                :host {
+                  margin-top: -20px !important;
+                  display: block;
+                }
+                ha-card {
+                  margin-top: 0 !important;
+                }
+      - type: vertical-stack        ##hallway
+        cards:
+          - type: custom:bubble-card
+            card_type: pop-up
+            hash: "#hallway"
+            button_type: name
+            name: Hallway
+            icon: m3o:hallway
+            show_icon: true
+            show_name: true
+            scrolling_effect: true
+            card_layout: large
+            show_header: true
+          - type: custom:bubble-card
+            card_type: separator
+            name: Lights
+            card_layout: large
+            icon: ""
+            styles: |
+              ha-card {
+                --bubble-line-background-color: var(--contrast1);  /* oder deine Wunschfarbe */
+              }
+          - type: custom:decluttering-card
+            template: dados_lights_area
+            variables:
+              - area: Flur
+            card_mod:
+              style: |
+                :host {
+                  margin-top: -20px !important;
+                  display: block;
+                }
+                ha-card {
+                  margin-top: 0 !important;
+                }
+          - type: custom:bubble-card
+            card_type: separator
+            name: Sensors
+            card_layout: large
+            icon: ""
+            styles: |
+              ha-card {
+                --bubble-line-background-color: var(--contrast1);  /* oder deine Wunschfarbe */
+              }
+      - type: vertical-stack        ##gaste
+        cards:
+          - type: custom:bubble-card
+            card_type: pop-up
+            hash: "#guestroom"
+            button_type: name
+            name: Guest Room
+            icon: m3o:hotel
+            show_icon: true
+            show_name: true
+            scrolling_effect: true
+            card_layout: large
+            show_header: true
+            sub_button:
+              main: []
+              bottom: []
+          - type: custom:bubble-card
+            card_type: separator
+            name: Lights
+            card_layout: large
+            icon: ""
+            styles: |
+              ha-card {
+                --bubble-line-background-color: var(--contrast1);  /* oder deine Wunschfarbe */
+              }
+          - type: custom:decluttering-card
+            template: dados_lights_area
+            variables:
+              - area: Gästezimmer
+            card_mod:
+              style: |
+                :host {
+                  margin-top: -20px !important;
+                  display: block;
+                }
+                ha-card {
+                  margin-top: 0 !important;
+                }
+          - type: custom:bubble-card
+            card_type: separator
+            name: Shutter
+            card_layout: large
+            icon: ""
+            styles: |
+              ha-card {
+                --bubble-line-background-color: var(--contrast1);  /* oder deine Wunschfarbe */
+              }
+            card_mod:
+              style: |
+                :host {
+                  margin-top: -10px !important;
+                  display: block;
+                }
+                ha-card {
+                  margin-top: 0 !important;
+                }
+          - type: custom:decluttering-card
+            template: dados_shutter_expander
+            variables:
+              - entity: cover.rollo_gastezimmer
+              - name: Rollo
+              - img_cell_background: var(--lavender)
+              - expander_id: rollo_gastezimmer
+          - type: custom:bubble-card
+            card_type: separator
+            name: Sensors
+            card_layout: large
+            icon: ""
+            styles: |
+              ha-card {
+                --bubble-line-background-color: var(--contrast1);  /* oder deine Wunschfarbe */
+              }
+          - type: custom:decluttering-card
+            template: dados_temperature
+            variables:
+              - entity: sensor.temperatur_gastezimmer
+              - name: Temperatur
+            card_mod:
+              style: |
+                :host {
+                  margin-top: -20px !important;
+                  display: block;
+                }
+                ha-card {
+                  margin-top: 0 !important;
+                }
+          - type: custom:decluttering-card
+            template: dados_humidity
+            variables:
+              - entity: sensor.luftsensor_gastezimmer_humidity
+              - name: Luftfeuchtigkeit
+            card_mod:
+              style: |
+                :host {
+                  margin-top: -10px !important;
+                  display: block;
+                }
+                ha-card {
+                  margin-top: 0 !important;
+                }
+      - type: vertical-stack        ##gastebad
+        cards:
+          - type: custom:bubble-card
+            card_type: pop-up
+            hash: "#bathroom"
+            button_type: name
+            name: Bathroom
+            icon: m3o:bathtub
+            show_icon: true
+            show_name: true
+            scrolling_effect: true
+            card_layout: large
+            show_header: true
+          - type: custom:bubble-card
+            card_type: separator
+            name: Lights
+            card_layout: large
+            icon: ""
+            styles: |
+              ha-card {
+                --bubble-line-background-color: var(--contrast1);  /* oder deine Wunschfarbe */
+              }
+          - type: custom:decluttering-card
+            template: dados_lights_area
+            variables:
+              - area: Gästebad
+            card_mod:
+              style: |
+                :host {
+                  margin-top: -20px !important;
+                  display: block;
+                }
+                ha-card {
+                  margin-top: 0 !important;
+                }
+          - type: custom:bubble-card
+            card_type: separator
+            name: Sensors
+            card_layout: large
+            icon: ""
+            styles: |
+              ha-card {
+                --bubble-line-background-color: var(--contrast1);  /* oder deine Wunschfarbe */
+              }
+          - type: custom:decluttering-card
+            template: dados_temperature
+            variables:
+              - entity: sensor.temperatur_gastebad
+              - name: Temperatur
+            card_mod:
+              style: |
+                :host {
+                  margin-top: -20px !important;
+                  display: block;
+                }
+                ha-card {
+                  margin-top: 0 !important;
+                }
+      - type: vertical-stack        ##entry
+        cards:
+          - type: custom:bubble-card
+            card_type: pop-up
+            hash: "#entry"
+            button_type: name
+            name: Entry
+            icon: mdi:coat-rack
+            show_icon: true
+            show_name: true
+            scrolling_effect: true
+            card_layout: large
+            show_header: true
+          - type: custom:bubble-card
+            card_type: separator
+            name: Lights
+            card_layout: large
+            icon: ""
+            styles: |
+              ha-card {
+                --bubble-line-background-color: var(--contrast1);  /* oder deine Wunschfarbe */
+              }
+          - type: custom:decluttering-card
+            template: dados_lights_area
+            variables:
+              - area: EG Gang
+            card_mod:
+              style: |
+                :host {
+                  margin-top: -20px !important;
+                  display: block;
+                }
+                ha-card {
+                  margin-top: 0 !important;
+                }
+          - type: custom:bubble-card
+            card_type: separator
+            name: Sensors
+            card_layout: large
+            icon: ""
+            styles: |
+              ha-card {
+                --bubble-line-background-color: var(--contrast1);  /* oder deine Wunschfarbe */
+              }
+          - type: custom:decluttering-card
+            template: dados_temperature
+            variables:
+              - entity: sensor.temperatur_esszimmer
+              - name: Temperatur
+            card_mod:
+              style: |
+                :host {
+                  margin-top: -20px !important;
+                  display: block;
+                }
+                ha-card {
+                  margin-top: 0 !important;
+                }
+    visibility:
+      - condition: user
+        users:
+          - 6b9e364e8f1d413c99e8a3b82fa2f816
+          - 65764a40005e42adb2ff5a9c98670e4c
+  - type: grid      #og-popups
+    cards:
+      - type: heading
+        heading: popup-container-og
+        heading_style: title
+        visibility:
+          - condition: user
+            users: []
+      - type: vertical-stack    ##oggang
+        cards:
+          - type: custom:bubble-card
+            card_type: pop-up
+            hash: "#oggang"
+            button_type: name
+            name: Gang
+            icon: m3o:hallway
+            show_icon: true
+            show_name: true
+            scrolling_effect: false
+            card_layout: large
+            show_header: true
+          - type: custom:bubble-card
+            card_type: separator
+            name: Lights
+            card_layout: large
+            icon: ""
+            styles: |
+              ha-card {
+                --bubble-line-background-color: var(--contrast1);  /* oder deine Wunschfarbe */
+              }
+          - type: custom:decluttering-card
+            template: dados_lights_area
+            variables:
+              - area: OG Gang
+            card_mod:
+              style: |
+                :host {
+                  margin-top: -20px !important;
+                  display: block;
+                }
+                ha-card {
+                  margin-top: 0 !important;
+                }
+          - type: custom:bubble-card
+            card_type: separator
+            name: Sensors
+            card_layout: large
+            icon: ""
+            styles: |
+              ha-card {
+                --bubble-line-background-color: var(--contrast1);  /* oder deine Wunschfarbe */
+              }
+          - type: custom:decluttering-card
+            template: dados_temperature
+            variables:
+              - entity: sensor.temperatur_og_gang
+              - name: Temperatur
+            card_mod:
+              style: |
+                :host {
+                  margin-top: -20px !important;
+                  display: block;
+                }
+                ha-card {
+                  margin-top: 0 !important;
+                }
+      - type: vertical-stack    ##schlafen
+        cards:
+          - type: custom:bubble-card
+            card_type: pop-up
+            hash: "#schlafen"
+            button_type: name
+            name: Schlafzimmer
+            icon: m3o:king-bed
+            show_icon: true
+            show_name: true
+            scrolling_effect: false
+            card_layout: large
+            show_header: true
+            sub_button:
+              main: []
+              bottom: []
+          - type: custom:bubble-card
+            card_type: separator
+            name: Lights
+            card_layout: large
+            icon: ""
+            styles: |
+              ha-card {
+                --bubble-line-background-color: var(--contrast1);  /* oder deine Wunschfarbe */
+              }
+          - type: custom:decluttering-card
+            template: dados_lights_area
+            variables:
+              - area: Schlafzimmer
+            card_mod:
+              style: |
+                :host {
+                  margin-top: -20px !important;
+                  display: block;
+                }
+                ha-card {
+                  margin-top: 0 !important;
+                }
+          - type: custom:bubble-card
+            card_type: separator
+            name: Shutter
+            card_layout: large
+            icon: ""
+            styles: |
+              ha-card {
+                --bubble-line-background-color: var(--contrast1);  /* oder deine Wunschfarbe */
+              }
+            card_mod:
+              style: |
+                :host {
+                  margin-top: -10px !important;
+                  display: block;
+                }
+                ha-card {
+                  margin-top: 0 !important;
+                }
+          - type: custom:decluttering-card
+            template: dados_shutter_expander
+            variables:
+              - entity: cover.rollo_schlafzimmer
+              - name: Rollo
+              - img_cell_background: var(--lavender)
+              - expander_id: rollo_schlafzimmer
+          - type: custom:bubble-card
+            card_type: separator
+            name: Sensors
+            card_layout: large
+            icon: ""
+            styles: |
+              ha-card {
+                --bubble-line-background-color: var(--contrast1);  /* oder deine Wunschfarbe */
+              }
+          - type: custom:decluttering-card
+            template: dados_temperature
+            variables:
+              - entity: sensor.temperatur_schlafzimmer_2
+              - name: Temperatur
+            card_mod:
+              style: |
+                :host {
+                  margin-top: -20px !important;
+                  display: block;
+                }
+                ha-card {
+                  margin-top: 0 !important;
+                }
+          - type: custom:decluttering-card
+            template: dados_humidity
+            variables:
+              - entity: sensor.luftsensor_schlafzimmer_humidity
+              - name: Luftfeuchtigkeit
+            card_mod:
+              style: |
+                :host {
+                  margin-top: -10px !important;
+                  display: block;
+                }
+                ha-card {
+                  margin-top: 0 !important;
+                }
+      - type: vertical-stack    ##kind1
+        cards:
+          - type: custom:bubble-card
+            card_type: pop-up
+            hash: "#kind1"
+            button_type: name
+            name: Kinderzimmer 1
+            icon: mdi:teddy-bear
+            show_icon: true
+            show_name: true
+            scrolling_effect: false
+            card_layout: large
+            show_header: true
+          - type: custom:bubble-card
+            card_type: separator
+            name: Lights
+            card_layout: large
+            icon: ""
+            styles: |
+              ha-card {
+                --bubble-line-background-color: var(--contrast1);  /* oder deine Wunschfarbe */
+              }
+          - type: custom:decluttering-card
+            template: dados_lights_area
+            variables:
+              - area: Kinderzimmer 1
+            card_mod:
+              style: |
+                :host {
+                  margin-top: -20px !important;
+                  display: block;
+                }
+                ha-card {
+                  margin-top: 0 !important;
+                }
+          - type: custom:bubble-card
+            card_type: separator
+            name: Sensors
+            card_layout: large
+            icon: ""
+            styles: |
+              ha-card {
+                --bubble-line-background-color: var(--contrast1);  /* oder deine Wunschfarbe */
+              }
+          - type: custom:decluttering-card
+            template: dados_temperature
+            variables:
+              - entity: sensor.temperatur_kinderzimmer_1
+              - name: Temperatur
+            card_mod:
+              style: |
+                :host {
+                  margin-top: -20px !important;
+                  display: block;
+                }
+                ha-card {
+                  margin-top: 0 !important;
+                }
+      - type: vertical-stack    ##kind2
+        cards:
+          - type: custom:bubble-card
+            card_type: pop-up
+            hash: "#kind2"
+            button_type: name
+            name: Kinderzimmer 2
+            icon: mdi:teddy-bear
+            show_icon: true
+            show_name: true
+            scrolling_effect: false
+            card_layout: large
+            show_header: true
+          - type: custom:bubble-card
+            card_type: separator
+            name: Lights
+            card_layout: large
+            icon: ""
+            styles: |
+              ha-card {
+                --bubble-line-background-color: var(--contrast1);  /* oder deine Wunschfarbe */
+              }
+          - type: custom:decluttering-card
+            template: dados_lights_area
+            variables:
+              - area: Kinderzimmer 2
+            card_mod:
+              style: |
+                :host {
+                  margin-top: -20px !important;
+                  display: block;
+                }
+                ha-card {
+                  margin-top: 0 !important;
+                }
+          - type: custom:bubble-card
+            card_type: separator
+            name: Sensors
+            card_layout: large
+            icon: ""
+            styles: |
+              ha-card {
+                --bubble-line-background-color: var(--contrast1);  /* oder deine Wunschfarbe */
+              }
+          - type: custom:decluttering-card
+            template: dados_temperature
+            variables:
+              - entity: sensor.temperatur_kinderzimmer_2
+              - name: Temperatur
+            card_mod:
+              style: |
+                :host {
+                  margin-top: -20px !important;
+                  display: block;
+                }
+                ha-card {
+                  margin-top: 0 !important;
+                }
+      - type: vertical-stack    ##ogbad
+        cards:
+          - type: custom:bubble-card
+            card_type: pop-up
+            hash: "#ogbad"
+            button_type: name
+            name: Badezimmer
+            icon: m3o:shower
+            show_icon: true
+            show_name: true
+            scrolling_effect: false
+            card_layout: large
+            show_header: true
+          - type: custom:bubble-card
+            card_type: separator
+            name: Lights
+            card_layout: large
+            icon: ""
+            styles: |
+              ha-card {
+                --bubble-line-background-color: var(--contrast1);  /* oder deine Wunschfarbe */
+              }
+          - type: custom:decluttering-card
+            template: dados_lights_area
+            variables:
+              - area: Badezimmer
+            card_mod:
+              style: |
+                :host {
+                  margin-top: -20px !important;
+                  display: block;
+                }
+                ha-card {
+                  margin-top: 0 !important;
+                }
+          - type: custom:bubble-card
+            card_type: separator
+            name: Sensors
+            card_layout: large
+            icon: ""
+            styles: |
+              ha-card {
+                --bubble-line-background-color: var(--contrast1);  /* oder deine Wunschfarbe */
+              }
+          - type: custom:decluttering-card
+            template: dados_temperature
+            variables:
+              - entity: sensor.temperatur_og_bad
+              - name: Temperatur
+            card_mod:
+              style: |
+                :host {
+                  margin-top: -20px !important;
+                  display: block;
+                }
+                ha-card {
+                  margin-top: 0 !important;
+                }
+      - type: vertical-stack    ##ogwc
+        cards:
+          - type: custom:bubble-card
+            card_type: pop-up
+            hash: "#wc"
+            button_type: name
+            name: WC
+            icon: mdi:toilet
+            show_icon: true
+            show_name: true
+            scrolling_effect: false
+            card_layout: large
+            show_header: true
+          - type: custom:bubble-card
+            card_type: separator
+            name: Lights
+            card_layout: large
+            icon: ""
+            styles: |
+              ha-card {
+                --bubble-line-background-color: var(--contrast1);  /* oder deine Wunschfarbe */
+              }
+          - type: custom:decluttering-card
+            template: dados_lights_area
+            variables:
+              - area: WC
+            card_mod:
+              style: |
+                :host {
+                  margin-top: -20px !important;
+                  display: block;
+                }
+                ha-card {
+                  margin-top: 0 !important;
+                }
+          - type: custom:bubble-card
+            card_type: separator
+            name: Sensors
+            card_layout: large
+            icon: ""
+            styles: |
+              ha-card {
+                --bubble-line-background-color: var(--contrast1);  /* oder deine Wunschfarbe */
+              }
+          - type: custom:decluttering-card
+            template: dados_temperature
+            variables:
+              - entity: sensor.temperatur_wc
+              - name: Temperatur
+            card_mod:
+              style: |
+                :host {
+                  margin-top: -20px !important;
+                  display: block;
+                }
+                ha-card {
+                  margin-top: 0 !important;
+                }
+      - type: vertical-stack    ##waschkuche
+        cards:
+          - type: custom:bubble-card
+            card_type: pop-up
+            hash: "#waschkuche"
+            button_type: name
+            name: Waschküche
+            icon: mdi:home
+            show_icon: true
+            show_name: true
+            scrolling_effect: false
+            card_layout: large
+            show_header: true
+          - type: custom:bubble-card
+            card_type: separator
+            name: Lights
+            card_layout: large
+            icon: ""
+            styles: |
+              ha-card {
+                --bubble-line-background-color: var(--contrast1);  /* oder deine Wunschfarbe */
+              }
+          - type: custom:decluttering-card
+            template: dados_lights_area
+            variables:
+              - area: Waschküche
+            card_mod:
+              style: |
+                :host {
+                  margin-top: -20px !important;
+                  display: block;
+                }
+                ha-card {
+                  margin-top: 0 !important;
+                }
+          - type: custom:bubble-card
+            card_type: separator
+            name: Sensors
+            card_layout: large
+            icon: ""
+            styles: |
+              ha-card {
+                --bubble-line-background-color: var(--contrast1);  /* oder deine Wunschfarbe */
+              }
+          - type: custom:decluttering-card
+            template: dados_temperature
+            variables:
+              - entity: sensor.temperatur_waschkuche
+              - name: Temperatur
+            card_mod:
+              style: |
+                :host {
+                  margin-top: -20px !important;
+                  display: block;
+                }
+                ha-card {
+                  margin-top: 0 !important;
+                }
+

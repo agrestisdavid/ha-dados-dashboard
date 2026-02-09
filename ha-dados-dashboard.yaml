@@ -1,0 +1,16 @@
+kiosk_mode: !include views/raw/kiosk/kiosk_mode.yaml
+navbar-templates: !include views/raw/navbar/main.yaml
+
+button_card_templates: !include_dir_merge_named views/raw/button_card_templates
+decluttering_templates: !include_dir_merge_named views/raw/decluttering_card_templates
+title: ha-dados-dashboard
+
+views:
+  - !include views/home.yaml
+  - !include views/floors.yaml
+  - !include views/security.yaml
+  - !include views/todo.yaml
+  - !include views/settings.yaml
+
+  - !include views/heating.yaml
+  - !include views/homelab.yaml

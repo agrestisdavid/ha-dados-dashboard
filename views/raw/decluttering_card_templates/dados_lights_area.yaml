@@ -1,0 +1,62 @@
+# Purpose
+# - Builds a dynamic list of lights for a specific Home Assistant area ([[area]]).
+# - Splits lights into two display styles based on label:
+#   - label: nodimm -> simple light tile (dados_light button-card)
+#   - label: dimm   -> expandable light control (dados_light_expander via decluttering-card)
+# - Uses auto-entities to automatically generate the list.
+#
+# Inputs (decluttering variables expected)
+# - [[area]] : Home Assistant area name/id to filter lights by
+
+dados_lights_area:
+  card:
+    # Layout container
+    type: vertical-stack
+    cards:
+      - type: custom:auto-entities
+
+        # Wrapper entities card, visually “invisible”
+        card:
+          type: entities
+          card_mod:
+            style: |
+              ha-card {
+                background: transparent !important;
+                box-shadow: none !important;
+                border: 0 !important;
+              }
+              .card-content {
+                padding: 0 !important;
+              }
+
+        # Entity selection + rendering rules
+        filter:
+          include:
+            # ------------------------------------------------------------
+            # 1) NON-DIMMABLE LIGHTS (label: nodimm)
+            # ------------------------------------------------------------
+            - area: "[[area]]"
+              domain: light
+              label: nodimm
+              # Render each matched light as a dados_light button-card
+              options:
+                type: custom:button-card
+                template: dados_light
+                variables:
+                  entity: this.entity_id   # bind to the current light entity
+
+            # ------------------------------------------------------------
+            # 2) DIMMABLE LIGHTS (label: dimm)
+            # ------------------------------------------------------------
+            - area: "[[area]]"
+              domain: light
+              label: dimm
+              # Render each matched light as an expandable control card
+              options:
+                type: custom:decluttering-card
+                template: dados_light_expander
+                variables:
+                  - entity: this.entity_id # bind expander to the current light entity
+
+          # No explicit excludes here (everything shown is controlled by include filters)
+          exclude: []

@@ -1,0 +1,276 @@
+dados_device_card:
+  template:
+    - dados_base
+
+  variables:
+    # ---------- Basics / Defaults ----------
+    name: null                         # Optional: force a custom title (else friendly_name)
+    card_color: var(--contrast2)       # Background color of the main card
+    show_glow: true                    # Enables/disables the icon-tile glow in dados_base
+    entity: null                       # Main “device status” entity (must be set!)
+    state_display_entity: null         # Optional: alternative entity used for state_display
+    icon_on: null                      # Icon when running/active states
+    icon_off: null                     # Icon when off/idle/finished states
+    icon_alert: null                   # Icon when error/actionrequired
+
+    img_cell_background: var(--green)  # Also used as progress bar foreground color (HTML bar)
+    bar_entity: null                   # Entity providing progress (e.g. sensor.xx_percent). Optional.
+    percent: null                      # Entity id for % value (alternative to bar_entity). Optional.
+
+    # ---------- Time / Program ----------
+    state_startin: null                # Entity id: minutes until delayed start (number)
+    state_remaining: null              # Entity id: remaining time (string HH:MM or numeric hours)
+    state_active_program: null         # Entity id: active program name (used as state_display while running)
+
+    # ---------- Error ----------
+    value_error_message: null          # Entity id: error message to show when in error/actionrequired
+
+    # ---------- State values (your device state machine) ----------
+    # Map your integration’s state strings here, so you can reuse the template for multiple devices.
+    value_run: run
+    value_off: inactive
+    value_on: ready
+    value_alert: error
+    value_action: actionrequired
+    value_finished: finished
+    value_paused: pause
+    value_aborting: aborting
+    value_start: delayedstart
+    value_returning: returning
+
+  # IMPORTANT: bind card to the “status” entity (so button-card state rules evaluate correctly)
+  entity: '[[[ return variables.entity ]]]'
+
+  # Title fallback order:
+  # 1) variables.name
+  # 2) entity friendly_name
+  # 3) entity_id (as last resort)
+  name: |
+    [[[
+      const id = variables.entity;
+      if (!id) return 'Error';
+      const n = (variables.name ?? '').toString().trim();
+      if (n) return n;
+      const ent = states[id];
+      return ent?.attributes?.friendly_name ?? id;
+    ]]]
+
+  # Default icon (will be overridden per state in "state:" below)
+  icon: '[[[ return variables.icon_on ]]]'
+
+  # Make sure we re-render when any of these helper entities change
+  triggers_update:
+    - '[[[ return variables.entity ]]]'
+    - '[[[ return variables.bar_entity ]]]'
+    - '[[[ return variables.percent ]]]'
+    - '[[[ return variables.state_remaining ]]]'
+    - '[[[ return variables.state_startin ]]]'
+    - '[[[ return variables.state_active_program ]]]'
+    - '[[[ return variables.value_error_message ]]]'
+
+  show_label: true
+
+  # Default label (used when not overridden by a state rule):
+  # "XX% - HH:MM" based on percent + remaining time
+  label: |-
+    [[[
+      const ok = s => s && s !== 'unknown' && s !== 'unavailable';
+      const toHHMM = v => {
+        if (!ok(v)) return '—';
+        if (typeof v === 'string' && v.includes(':')) return v;
+        const n = Number(v);
+        if (!isFinite(n)) return String(v);
+        const m = Math.max(0, Math.round(n * 60));
+        return `${String(Math.floor(m/60)).padStart(2,'0')}:${String(m%60).padStart(2,'0')}`;
+      };
+      const p = states[variables.percent]?.state;
+      const t = states[variables.state_remaining]?.state;
+      return `${ok(p) ? p + '%' : '—'} - ${toHHMM(t)}`;
+    ]]]
+
+  # Tap opens/closes the expander section tied to the main entity id
+  tap_action:
+    action: fire-dom-event
+    expander-card:
+      data:
+        expander-card-id: '[[[ return variables.entity ]]]'
+        action: toggle
+
+  state:
+    # ---------- OFF / INACTIVE ----------
+    - value: '[[[ return variables.value_off ]]]'
+      icon: '[[[ return variables.icon_off ]]]'
+      state_display: Off
+
+    # ---------- READY / ON (not running yet) ----------
+    - value: '[[[ return variables.value_on ]]]'
+      icon: '[[[ return variables.icon_off ]]]'
+
+    # ---------- DELAYED START (shows countdown as label) ----------
+    - value: '[[[ return variables.value_start ]]]'
+      icon: '[[[ return variables.icon_on ]]]'
+      label: |
+        [[[
+          const id = variables.state_startin;
+          if (!id) return '';
+          const raw = states[id]?.state;
+          const n = Number(raw);
+          if (!Number.isFinite(n) || n <= 0) return 'Ready';
+
+          // minutes -> seconds
+          const totalSeconds = Math.round(n * 60);
+
+          const h = Math.floor(totalSeconds / 3600);
+          const mm = Math.floor((totalSeconds % 3600) / 60);
+          const ss = totalSeconds % 60;
+
+          // If >= 1 hour: show HH:MM, otherwise MM:SS
+          if (h > 0) return `${String(h).padStart(2,'0')}:${String(mm).padStart(2,'0')}`;
+
+          const totalMinutes = Math.floor(totalSeconds / 60);
+          return `${String(totalMinutes).padStart(2,'0')}:${String(ss).padStart(2,'0')}`;
+        ]]]
+      styles:
+        # Layout becomes: icon + name, then icon + label (state hidden)
+        grid:
+          - grid-template-areas: "'i n' 'i l'"
+        state:
+          - display: none
+        label:
+          - display: block
+
+    # ---------- RUNNING (shows program + label + progress bar) ----------
+    - value: '[[[ return variables.value_run ]]]'
+      icon: '[[[ return variables.icon_on ]]]'
+      state_display: |
+        [[[
+          // While running, show the active program (if provided), else normal state display
+          const entityId = variables.state_active_program ?? variables.state_display_entity ?? variables.entity;
+          const stateObj = states[entityId];
+          if (!stateObj) return '—';
+          if (hass.formatEntityState) return hass.formatEntityState(stateObj);
+          return stateObj.state ?? '—';
+        ]]]
+      styles:
+        grid:
+          - grid-template-rows: min-content 1fr 1fr
+          - grid-template-areas: "'i s' 'i l' 'bar bar'"
+        card:
+          - height: 120px                    # px-size (was 8.571429rem)
+        name:
+          - display: none                    # hide name (state becomes the “headline”)
+        state:
+          - justify-self: start
+          - align-self: start
+          - margin-top: 9px
+          - font-size: 16px
+          - font-weight: 500
+          - color: var(--contrast16)
+          - letter-spacing: 0.4px
+          - padding-left: 3px
+        label:
+          - justify-self: start
+          - align-self: start
+          - font-size: 14px
+          - font-weight: 400
+          - color: var(--contrast12)
+          - letter-spacing: 0.6px
+          - margin-top: 0px
+          - padding-left: 3px
+          - display: block
+        custom_fields:
+          bar:
+            - display: block
+
+    # ---------- PAUSED ----------
+    - value: '[[[ return variables.value_paused ]]]'
+      icon: '[[[ return variables.icon_off ]]]'
+
+    # ---------- RETURNING (robot-like devices etc.) ----------
+    - value: '[[[ return variables.value_returning ]]]'
+      icon: '[[[ return variables.icon_off ]]]'
+
+    # ---------- FINISHED ----------
+    - value: '[[[ return variables.value_finished ]]]'
+      icon: '[[[ return variables.icon_off ]]]'
+
+    # ---------- ERROR / ACTION REQUIRED ----------
+    - operator: template
+      value: |
+        [[[
+          // If device is in error OR actionrequired, switch to alert view
+          return entity?.state === variables.value_alert
+              || entity?.state === variables.value_action;
+        ]]]
+      icon: '[[[ return variables.icon_alert ]]]'
+      label: |
+        [[[
+          // Show the error message entity if provided, else show main entity state
+          const entityId = variables.value_error_message ?? variables.entity;
+          const stateObj = states[entityId];
+          if (!stateObj) return '—';
+          if (hass.formatEntityState) return hass.formatEntityState(stateObj);
+          return stateObj.state ?? '—';
+        ]]]
+      styles:
+        # Layout becomes: icon + label (headline), icon + state (secondary)
+        grid:
+          - grid-template-areas: "'i l' 'i s'"
+        name:
+          - display: none
+        state:
+          - display: block
+        label:
+          - display: block
+          - justify-self: start
+          - align-self: start
+          - margin-top: 9px
+          - font-size: 16px
+          - font-weight: 500
+          - color: var(--contrast16)
+          - letter-spacing: 0.4px
+          - padding-left: 3px
+
+    # ---------- ABORTING (uses alert icon) ----------
+    - value: '[[[ return variables.value_aborting ]]]'
+      icon: '[[[ return variables.icon_alert ]]]'
+
+  styles:
+    custom_fields:
+      # Progress bar container (hidden by default; enabled in RUN state)
+      bar:
+        - justify-self: start
+        - align-self: center
+        - margin-left: 10px
+        - width: 90%
+        - border-radius: 26px
+        - background: var(--contrast5)
+        - height: 18px
+        - display: none
+        - overflow: hidden
+
+  custom_fields:
+    # Bar fill is rendered as raw HTML so it can be dynamically sized.
+    # It uses:
+    # - bar_entity (preferred) OR percent (fallback) as numeric source
+    # - img_cell_background as the bar fill color
+    bar: |
+      [[[
+        const id = variables.bar_entity || variables.percent;
+        if (!id) return '';
+
+        const ent = states[id];
+        if (!ent) return '';
+
+        const bg = variables.img_cell_background;
+        if (!bg) return '';
+
+        // Accept "42", "42%", "0.42" (converted to 42%)
+        const num = parseFloat(String(ent.state).replace('%','').replace(',', '.'));
+        if (!Number.isFinite(num)) return '';
+
+        const pct = (num <= 1) ? num * 100 : num;
+        const clamped = Math.max(0, Math.min(100, pct));
+
+        return `<div style="background:${bg}; height:100%; width:${clamped}%; border-radius:26px;"></div>`;
+      ]]]

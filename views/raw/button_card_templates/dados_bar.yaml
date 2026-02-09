@@ -1,0 +1,51 @@
+dados_bar:
+  template: dados_base
+  variables:
+    entity:
+    img_cell_background: 
+    percent: 
+    state_display_entity: 
+    name: 
+    label: 
+  show_label: true
+  label: "[[[ return variables.label ]]]"
+  styles:
+    grid:
+      - grid-template-columns: 55px 1fr 1fr 45px
+      - grid-template-rows: 1fr 1fr
+      - grid-template-areas: "'i n bar s' 'i l bar s' "
+    label:
+      - display: block
+    state:
+      - justify-self: center
+      - align-self: center
+    custom_fields:
+      bar:
+        - justify-self: start
+        - align-self: center
+        - margin-left: 10px
+        - width: 90%
+        - border-radius: 26px
+        - background: var(--contrast5)
+        - height: 18px
+        - overflow: hidden
+  custom_fields:
+    bar: |
+      [[[
+        const id = variables.bar_entity || variables.percent;
+        if (!id) return '';
+
+        const ent = states[id];
+        if (!ent) return '';
+
+        const bg = variables.img_cell_background;
+        if (!bg) return '';
+
+        const num = parseFloat(String(ent.state).replace('%','').replace(',', '.'));
+        if (!Number.isFinite(num)) return '';
+
+        const pct = (num <= 1) ? num * 100 : num;
+        const clamped = Math.max(0, Math.min(100, pct));
+
+        return `<div style="background:${bg}; height:100%; width:${clamped}%; border-radius:26px;"></div>`;
+      ]]]

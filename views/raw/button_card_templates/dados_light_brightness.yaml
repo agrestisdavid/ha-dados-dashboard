@@ -1,0 +1,69 @@
+dados_light_brightness:
+  template: dados_slider
+  variables:
+    entity: null
+    icon: m3of:percent
+
+  custom_fields:
+    slider:
+      card:
+        type: custom:my-slider-v2
+        entity: "[[[ return variables.entity ]]]"  # The light/entity this slider controls
+
+        allowTapping: false                        # Disable tap-to-set (prevents accidental jumps)
+        allowSliding: true                         # Enable dragging
+        flipped: false                             # Normal direction (false = left->right)
+        vertical: false                            # Horizontal slider
+
+        styles:
+          # Outer wrapper of the slider component
+          container:
+            - border-radius: 24px                  # rounded corners for the whole control
+
+          # The “card” area behind the slider
+          card:
+            - margin-bottom: 0px                   # no extra spacing below
+            - border-radius: 24px
+            - height: 57px                         # slider height
+            - background: var(--contrast2)         # neutral background
+
+          # Filled part (progress)
+          progress:
+            - border-radius: 24px
+            - background: |
+                [[[
+                  // Use the entity's rgb_color if available (lights),
+                  // otherwise fall back to a theme color.
+                  const c = entity?.attributes?.rgb_color;
+                  return c ? `rgba(${c[0]}, ${c[1]}, ${c[2]}, 0.7)` : 'var(--yellow)';
+                ]]]
+
+          # Thumb marker (the small handle/indicator line)
+          thumb:
+            - width: 3px
+            - height: 30%                          # relative to slider height
+            - top: 36%                             # vertically centers the thumb visually
+            - margin-right: 11px                   # inset from the right edge
+            - border-radius: 5px
+            - background: var(--black1)            # thumb color
+
+          # Unfilled track background
+          track:
+            - background: |
+                [[[
+                  // When the entity is off -> keep track neutral
+                  if (entity?.state !== 'on') return 'var(--contrast3)';
+
+                  // When on -> tint track lightly with the entity color
+                  const c = entity?.attributes?.rgb_color;
+                  return c
+                    ? `rgba(${c[0]}, ${c[1]}, ${c[2]}, 0.1)`
+                    : 'var(--yellow-tint)';
+                ]]]
+
+        card_mod:
+          style: |
+            ha-card {
+              border-radius: 24px !important;      /* match slider rounding */
+              overflow: hidden;                    /* keep progress neatly clipped */
+            }

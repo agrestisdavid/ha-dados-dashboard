@@ -1,0 +1,264 @@
+dados_start_button:
+  variables:
+    # --- Entities (your “control wiring”) ---
+    state_entity: sensor.ofen_betriebszustand     # State-machine sensor that decides which buttons are shown
+    start_button: button.ofen_start               # Button entity to start the program
+    pause_button: button.ofen_programm_pausieren  # Button entity to pause while running
+    resume_button: button.ofen_programm_fortsetzen # Button entity to resume while paused
+    abort_button: button.ofen_programm_abbrechen  # Button entity to abort/stop the program
+
+    # --- Styling ---
+    img_cell_background: var(--brown)             # Background color for all action buttons
+
+  # Bind this “controller card” to the state entity (we only use its state)
+  entity: '[[[ return variables.state_entity ]]]'
+
+  # This card only renders custom buttons (no default name/icon/state)
+  show_state: false
+  show_icon: false
+  show_name: false
+
+  state:
+    # MODE 1: Ready/Inactive/On  -> show only START (full width)
+    - operator: template
+      value: >
+        [[[
+          return ['ready', 'inactive', 'on']
+            .includes(states[variables.state_entity]?.state?.toLowerCase())
+        ]]]
+      styles:
+        # Container shape for the whole row
+        card:
+          - border-radius: 16px
+
+        # Layout: one big start button across both columns
+        grid:
+          - grid-template-areas: |
+              "start start"
+          - grid-template-columns: 1fr 1fr
+          - grid-template-rows: 1fr
+          - column-gap: 10px
+          - row-gap: 10px
+
+        # Show/hide which custom buttons are visible
+        custom_fields:
+          start:
+            - display: block
+          pause:
+            - display: none
+          abort:
+            - display: none
+
+    # MODE 2: Delayed Start -> show START + ABORT
+    - operator: template
+      value: >
+        [[[
+          return states[variables.state_entity]?.state?.toLowerCase() === 'delayedstart'
+        ]]]
+      styles:
+        card:
+          - border-radius: 16px
+
+        # Layout: start left, abort right
+        grid:
+          - grid-template-areas: |
+              "start abort"
+          - grid-template-columns: 1fr 1fr
+          - grid-template-rows: 1fr
+          - column-gap: 10px
+          - row-gap: 10px
+
+        custom_fields:
+          start:
+            - display: block
+          pause:
+            - display: none
+          abort:
+            - display: block
+
+  styles:
+    # Wrapper container (transparent, just spacing)
+    card:
+      - background: transparent
+      - padding: 0px 12px 12px 12px   # top 0, sides 12, bottom 12
+      - border-radius: 16px
+      - "--button-card-ripple-color": transparent !important
+      - "--button-card-ripple-hover-opacity": 0 !important
+      - "--ha-card-ripple-color": transparent !important
+      - "--ha-ripple-hover-opacity": 0 !important
+
+    # Default layout (when no state rule matches):
+    # pause + abort (two buttons)
+    grid:
+      - grid-template-areas: |
+          "pause abort"
+      - grid-template-columns: 1fr 1fr
+      - grid-template-rows: 1fr
+      - column-gap: 10px
+
+    # (Not used because show_name=false; kept as reference)
+    name:
+      - justify-self: start
+      - align-self: start
+      - font-size: 16px
+      - font-weight: 600
+      - color: red
+
+    # Default visibility: pause + abort shown, start hidden
+    custom_fields:
+      start:
+        - display: none
+      pause:
+        - display: block
+      abort:
+        - display: block
+
+  custom_fields:
+    # START button (calls button.press on variables.start_button)
+    start:
+      card:
+        type: custom:button-card
+        show_icon: true
+        show_state: false
+        icon: mdi:play
+
+        # Using HTML in name to render icon + text
+        name: |
+          [[[
+            return `<ha-icon icon="mdi:play" style="--mdc-icon-size:20px;"></ha-icon> Start`;
+          ]]]
+
+        tap_action:
+          action: call-service
+          service: button.press
+          service_data:
+            entity_id: "[[[ return variables.start_button; ]]]"
+
+        styles:
+          card:
+            - border-radius: 14px
+            - background: '[[[ return variables.img_cell_background ]]]'
+            - height: 40px
+            - padding: 0
+          grid:
+            - grid-template-areas: "\"i n\""
+            - grid-template-columns: auto auto
+            - grid-template-rows: 1fr
+            - justify-content: center
+            - align-items: center
+            - column-gap: 4px
+          name:
+            - font-size: 14px
+            - font-weight: 600
+            - align-self: center
+            - color: var(--contrast1)
+          icon:
+            - width: 20px
+            - height: 20px
+            - align-self: center
+          img_cell:
+            - align-self: center
+            - display: flex
+            - align-items: center
+            - justify-content: center
+
+    # PAUSE / RESUME button:
+    # - if state is "run"  -> press pause_button
+    # - if state is "pause"-> press resume_button
+    pause:
+      card:
+        type: custom:button-card
+        show_icon: true
+        show_state: false
+        show_name: false
+        icon: mdi:pause
+
+        # Shows pause icon while running, play icon while paused
+        name: |
+          [[[
+            const s = (states[variables.state_entity]?.state || '').toLowerCase();
+            if (s === 'run') return `<ha-icon icon="mdi:pause" style="--mdc-icon-size:20px;"></ha-icon> `;
+            if (s === 'pause') return `<ha-icon icon="mdi:play" style="--mdc-icon-size:20px;"></ha-icon> `;
+            return '—';
+          ]]]
+
+        # Dynamically picks which button entity to press
+        tap_action:
+          action: call-service
+          service: button.press
+          service_data:
+            entity_id: |
+              [[[
+                const s = (states[variables.state_entity]?.state || '').toLowerCase();
+                if (s === 'run') return variables.pause_button;
+                if (s === 'pause') return variables.resume_button;
+                return null;
+              ]]]
+
+        styles:
+          card:
+            - border-radius: 14px
+            - height: 40px
+            - padding: 0
+            - background-color: '[[[ return variables.img_cell_background ]]]'
+          grid:
+            - grid-template-areas: "\"i\""
+            - grid-template-columns: 1fr
+            - grid-template-rows: 1fr
+            - justify-content: center
+            - align-items: center
+          name:
+            - font-size: 14px
+            - font-weight: 600
+            - justify-self: center
+            - align-self: center
+            - color: var(--contrast1)
+          icon:
+            - width: 20px
+            - height: 20px
+            - align-self: center
+            - color: var(--contrast1)
+
+    # ABORT button (calls button.press on variables.abort_button)
+    abort:
+      card:
+        type: custom:button-card
+        show_icon: true
+        show_name: false
+        show_state: false
+        icon: "mdi:stop"
+
+        name: |
+          [[[
+            return `<ha-icon icon="mdi:stop" style="--mdc-icon-size:20px;"></ha-icon> Abort`;
+          ]]]
+
+        tap_action:
+          action: call-service
+          service: button.press
+          service_data:
+            entity_id: "[[[ return variables.abort_button; ]]]"
+
+        styles:
+          card:
+            - border-radius: 14px
+            - height: 40px
+            - padding: 0
+            - background: '[[[ return variables.img_cell_background ]]]'
+          grid:
+            - grid-template-areas: "\"i\""
+            - grid-template-columns: 1fr
+            - grid-template-rows: 1fr
+            - justify-content: center
+            - align-items: center
+          name:
+            - font-size: 14px
+            - font-weight: 600
+            - justify-self: center
+            - align-self: center
+            - color: var(--contrast1)
+          icon:
+            - width: 20px
+            - height: 20px
+            - align-self: center
+            - color: var(--contrast1)

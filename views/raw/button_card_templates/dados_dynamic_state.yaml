@@ -1,0 +1,395 @@
+dados_dynamic_state:
+  template: dados_base
+
+  variables:
+    # --- Base entities / display ---
+    entity: input_boolean.mull_tiles_switch          # Toggle for showing/hiding the chips row (stat1)
+    state_display_entity: sensor.mullkalender_countdown # Countdown sensor displayed as state
+    icon_on: mdi:water-thermometer-outline           # (not used here because icon is hard-set below)
+    icon_off: mdi:water-thermometer-outline
+    img_cell_background: var(--red)                  # Default fallback (most coloring is dynamic via --trash-color)
+
+    # --- Labels (kept for future use / readability) ---
+    state1: Yellow Bag
+    state2: Residual Waste
+    state3: Paper
+    state4: Bio Waste
+
+    # --- Color mapping for trash types ---
+    state1_color: var(--yellow)
+    state2_color: var(--contrast16)
+    state3_color: var(--red)
+    state4_color: var(--sand)
+
+    show_glow: true                                  # Enables/disables glow shadow on icon tile
+
+  show_name: true
+  show_state: true
+
+  # Tap toggles the input_boolean (show/hide extra chips)
+  tap_action:
+    action: toggle
+
+  # Fixed icon for this tile (trash / auto-delete)
+  icon: m3o:auto-delete
+
+  # Name always shows next trash type (human readable string)
+  name: |
+    [[[
+      return states['sensor.nachste_tonne']?.state || '';
+    ]]]
+
+  # State text shows countdown (e.g. "2 days")
+  state_display: |
+    [[[
+      return states['sensor.mullkalender_countdown']?.state || '';
+    ]]]
+
+  state:
+    # If the switch is ON -> hide the chip row (stat1)
+    # (You can invert this by swapping display values)
+    - value: "on"
+      styles:
+        custom_fields:
+          stat1:
+            - display: none
+
+  styles:
+    card:
+      - height: '[[[ return variables.card_height ]]]'     # Uses base variable if provided
+
+      # Compute a dynamic CSS variable for the icon tile color:
+      # - Picks "today" (days === 0) first
+      # - Else picks the soonest upcoming bin (smallest days)
+      - "--trash-color": |
+          [[[
+            const entries = [
+              { key: 'gelb',   days: Number(states['sensor.gelber_sack']?.state) },
+              { key: 'papier', days: Number(states['sensor.papier']?.state) },
+              { key: 'rest',   days: Number(states['sensor.restmull']?.state) },
+              { key: 'bio',    days: Number(states['sensor.biomull']?.state) },
+            ];
+
+            const colorMap = {
+              gelb: 'var(--yellow)',
+              papier: 'var(--red)',
+              rest: 'var(--contrast16)',
+              bio: 'var(--sand)',
+            };
+
+            const valid = entries.filter(e => !isNaN(e.days));
+            if (!valid.length) return 'var(--contrast2)';
+
+            const today = valid.find(e => e.days === 0);
+            if (today) return colorMap[today.key];
+
+            valid.sort((a,b)=>a.days-b.days);
+            return colorMap[valid[0].key];
+          ]]]
+
+    # Layout adds a 3rd row for the chips (stat1)
+    grid:
+      - grid-template-areas: |
+          "i n"
+          "i s"
+          "stat1 stat1"
+      - grid-template-columns: 55px 1fr
+      - grid-template-rows: min-content 1fr 1fr
+
+    # Icon tile uses the dynamic --trash-color and optional glow
+    img_cell:
+      - align-self: start
+      - background: var(--trash-color)
+      - box-shadow: |
+          [[[
+            if (variables?.show_glow === false) return 'none';
+            const fb = 'var(--trash-color)';
+            return `-55px -50px 70px 20px ${fb}, -35px -35px 70px 10px ${fb}`;
+          ]]]
+      - overflow: visible
+
+    # Wrapper for the chips row
+    custom_fields:
+      stat1:
+        - justify-self: center
+        - align-self: center
+        - margin-left: 0px
+        - width: 100%
+        - padding-top: 0px
+        - overflow: visible
+
+  custom_fields:
+    # Chips row container card (holds c1 c2 c3)
+    stat1:
+      card:
+        type: custom:button-card
+        show_name: false
+        show_icon: false
+        show_state: false
+        styles:
+          card:
+            - background: transparent
+            - padding: 0px 0px 0px 5px            # slight left inset
+            - border-radius: 0
+          grid:
+            - grid-template-areas: "\"c1 c2 c3\""
+            - grid-template-columns: min-content min-content min-content
+            - column-gap: 4px
+
+        custom_fields:
+          # Chip 1 = soonest of the OTHER 3 trash types (excluding the next trash type)
+          c1:
+            card:
+              type: custom:button-card
+              show_name: false
+              show_state: true
+              show_icon: true
+              tap_action:
+                action: more-info
+              entity: |
+                [[[
+                  const next = (states['sensor.nachste_tonne']?.state || '').toLowerCase();
+                  const entries = [
+                    { key:'gelb',   name:'gelber sack', sensor:'sensor.gelber_sack',  icon:'mdi:recycle',         color:'var(--yellow)' },
+                    { key:'rest',   name:'restmüll',     sensor:'sensor.restmull',     icon:'mdi:trash-can',       color:'var(--white7)' },
+                    { key:'bio',    name:'biomüll',      sensor:'sensor.biomull',      icon:'mdi:leaf',            color:'var(--sand)' },
+                    { key:'papier', name:'papier',       sensor:'sensor.papier',       icon:'mdi:package-variant', color:'var(--red)' },
+                  ];
+                  const current = entries.find(e => next.includes(e.name))?.key;
+
+                  const valid = entries
+                    .filter(e => e.key !== current)
+                    .map(e => ({...e, days: Number(states[e.sensor]?.state)}))
+                    .filter(e => !isNaN(e.days) && e.days > 0)
+                    .sort((a,b)=>a.days-b.days);
+
+                  return valid[0]?.sensor || 'sensor.restmull';
+                ]]]
+              icon: |
+                [[[
+                  const next = (states['sensor.nachste_tonne']?.state || '').toLowerCase();
+                  const entries = [
+                    { key:'gelb',   name:'gelber sack', sensor:'sensor.gelber_sack',  icon:'mdi:recycle',         color:'var(--yellow)' },
+                    { key:'rest',   name:'restmüll',     sensor:'sensor.restmull',     icon:'mdi:trash-can',       color:'var(--white7)' },
+                    { key:'bio',    name:'biomüll',      sensor:'sensor.biomull',      icon:'mdi:leaf',            color:'var(--sand)' },
+                    { key:'papier', name:'papier',       sensor:'sensor.papier',       icon:'mdi:package-variant', color:'var(--red)' },
+                  ];
+                  const current = entries.find(e => next.includes(e.name))?.key;
+
+                  const valid = entries
+                    .filter(e => e.key !== current)
+                    .map(e => ({...e, days: Number(states[e.sensor]?.state)}))
+                    .filter(e => !isNaN(e.days) && e.days > 0)
+                    .sort((a,b)=>a.days-b.days);
+
+                  return valid[0]?.icon || 'mdi:trash-can';
+                ]]]
+              styles:
+                card:
+                  - background: |
+                      [[[
+                        const next = (states['sensor.nachste_tonne']?.state || '').toLowerCase();
+                        const entries = [
+                          { key:'gelb',   name:'gelber sack', sensor:'sensor.gelber_sack',  icon:'mdi:recycle',         color:'var(--yellow)' },
+                          { key:'rest',   name:'restmüll',     sensor:'sensor.restmull',     icon:'mdi:trash-can',       color:'var(--white7)' },
+                          { key:'bio',    name:'biomüll',      sensor:'sensor.biomull',      icon:'mdi:leaf',            color:'var(--sand)' },
+                          { key:'papier', name:'papier',       sensor:'sensor.papier',       icon:'mdi:package-variant', color:'var(--red)' },
+                        ];
+                        const current = entries.find(e => next.includes(e.name))?.key;
+
+                        const valid = entries
+                          .filter(e => e.key !== current)
+                          .map(e => ({...e, days: Number(states[e.sensor]?.state)}))
+                          .filter(e => !isNaN(e.days) && e.days > 0)
+                          .sort((a,b)=>a.days-b.days);
+
+                        return valid[0]?.color || 'var(--contrast3)';
+                      ]]]
+                  - border-radius: 14px
+                  - padding: 2px 8px
+                grid:
+                  - grid-template-areas: "\"i s\""
+                  - grid-template-columns: min-content min-content
+                  - column-gap: 2px
+                icon:
+                  - color: var(--contrast2)
+                  - width: 18px
+                  - justify-self: center
+                  - align-self: center
+                state:
+                  - color: var(--contrast2)
+                  - font-weight: 700
+                  - font-size: 13px
+                  - justify-self: center
+                  - align-self: center
+
+          # Chip 2 = second soonest of the OTHER 3
+          c2:
+            card:
+              type: custom:button-card
+              template: null
+              show_name: false
+              show_state: true
+              show_icon: true
+              tap_action:
+                action: more-info
+              entity: |
+                [[[
+                  const next = (states['sensor.nachste_tonne']?.state || '').toLowerCase();
+                  const entries = [
+                    { key:'gelb',   name:'gelber sack', sensor:'sensor.gelber_sack',  icon:'mdi:recycle',         color:'var(--yellow)' },
+                    { key:'rest',   name:'restmüll',     sensor:'sensor.restmull',     icon:'mdi:trash-can',       color:'var(--white7)' },
+                    { key:'bio',    name:'biomüll',      sensor:'sensor.biomull',      icon:'mdi:leaf',            color:'var(--sand)' },
+                    { key:'papier', name:'papier',       sensor:'sensor.papier',       icon:'mdi:package-variant', color:'var(--red)' },
+                  ];
+                  const current = entries.find(e => next.includes(e.name))?.key;
+
+                  const valid = entries
+                    .filter(e => e.key !== current)
+                    .map(e => ({...e, days: Number(states[e.sensor]?.state)}))
+                    .filter(e => !isNaN(e.days) && e.days > 0)
+                    .sort((a,b)=>a.days-b.days);
+
+                  return valid[1]?.sensor || 'sensor.biomull';
+                ]]]
+              icon: |
+                [[[
+                  const next = (states['sensor.nachste_tonne']?.state || '').toLowerCase();
+                  const entries = [
+                    { key:'gelb',   name:'gelber sack', sensor:'sensor.gelber_sack',  icon:'mdi:recycle',         color:'var(--yellow)' },
+                    { key:'rest',   name:'restmüll',     sensor:'sensor.restmull',     icon:'mdi:trash-can',       color:'var(--white7)' },
+                    { key:'bio',    name:'biomüll',      sensor:'sensor.biomull',      icon:'mdi:leaf',            color:'var(--sand)' },
+                    { key:'papier', name:'papier',       sensor:'sensor.papier',       icon:'mdi:package-variant', color:'var(--red)' },
+                  ];
+                  const current = entries.find(e => next.includes(e.name))?.key;
+
+                  const valid = entries
+                    .filter(e => e.key !== current)
+                    .map(e => ({...e, days: Number(states[e.sensor]?.state)}))
+                    .filter(e => !isNaN(e.days) && e.days > 0)
+                    .sort((a,b)=>a.days-b.days);
+
+                  return valid[1]?.icon || 'mdi:leaf';
+                ]]]
+              styles:
+                card:
+                  - background: |
+                      [[[
+                        const next = (states['sensor.nachste_tonne']?.state || '').toLowerCase();
+                        const entries = [
+                          { key:'gelb',   name:'gelber sack', sensor:'sensor.gelber_sack',  icon:'mdi:recycle',         color:'var(--yellow)' },
+                          { key:'rest',   name:'restmüll',     sensor:'sensor.restmull',     icon:'mdi:trash-can',       color:'var(--white7)' },
+                          { key:'bio',    name:'biomüll',      sensor:'sensor.biomull',      icon:'mdi:leaf',            color:'var(--sand)' },
+                          { key:'papier', name:'papier',       sensor:'sensor.papier',       icon:'mdi:package-variant', color:'var(--red)' },
+                        ];
+                        const current = entries.find(e => next.includes(e.name))?.key;
+
+                        const valid = entries
+                          .filter(e => e.key !== current)
+                          .map(e => ({...e, days: Number(states[e.sensor]?.state)}))
+                          .filter(e => !isNaN(e.days) && e.days > 0)
+                          .sort((a,b)=>a.days-b.days);
+
+                        return valid[1]?.color || 'var(--contrast3)';
+                      ]]]
+                  - border-radius: 14px
+                  - padding: 2px 8px
+                grid:
+                  - grid-template-areas: "\"i s\""
+                  - grid-template-columns: min-content min-content
+                  - column-gap: 2px
+                icon:
+                  - color: var(--contrast2)
+                  - width: 18px
+                  - justify-self: center
+                  - align-self: center
+                state:
+                  - color: var(--contrast2)
+                  - font-weight: 700
+                  - font-size: 13px
+                  - justify-self: center
+                  - align-self: center
+
+          # Chip 3 = third soonest of the OTHER 3
+          c3:
+            card:
+              type: custom:button-card
+              show_name: false
+              show_state: true
+              show_icon: true
+              tap_action:
+                action: more-info
+              entity: |
+                [[[
+                  const next = (states['sensor.nachste_tonne']?.state || '').toLowerCase();
+                  const entries = [
+                    { key:'gelb',   name:'gelber sack', sensor:'sensor.gelber_sack',  icon:'mdi:recycle',         color:'var(--yellow)' },
+                    { key:'rest',   name:'restmüll',     sensor:'sensor.restmull',     icon:'mdi:trash-can',       color:'var(--white7)' },
+                    { key:'bio',    name:'biomüll',      sensor:'sensor.biomull',      icon:'mdi:leaf',            color:'var(--sand)' },
+                    { key:'papier', name:'papier',       sensor:'sensor.papier',       icon:'mdi:package-variant', color:'var(--red)' },
+                  ];
+                  const current = entries.find(e => next.includes(e.name))?.key;
+
+                  const valid = entries
+                    .filter(e => e.key !== current)
+                    .map(e => ({...e, days: Number(states[e.sensor]?.state)}))
+                    .filter(e => !isNaN(e.days) && e.days > 0)
+                    .sort((a,b)=>a.days-b.days);
+
+                  return valid[2]?.sensor || 'sensor.papier';
+                ]]]
+              icon: |
+                [[[
+                  const next = (states['sensor.nachste_tonne']?.state || '').toLowerCase();
+                  const entries = [
+                    { key:'gelb',   name:'gelber sack', sensor:'sensor.gelber_sack',  icon:'mdi:recycle',         color:'var(--yellow)' },
+                    { key:'rest',   name:'restmüll',     sensor:'sensor.restmull',     icon:'mdi:trash-can',       color:'var(--white7)' },
+                    { key:'bio',    name:'biomüll',      sensor:'sensor.biomull',      icon:'mdi:leaf',            color:'var(--sand)' },
+                    { key:'papier', name:'papier',       sensor:'sensor.papier',       icon:'mdi:package-variant', color:'var(--red)' },
+                  ];
+                  const current = entries.find(e => next.includes(e.name))?.key;
+
+                  const valid = entries
+                    .filter(e => e.key !== current)
+                    .map(e => ({...e, days: Number(states[e.sensor]?.state)}))
+                    .filter(e => !isNaN(e.days) && e.days > 0)
+                    .sort((a,b)=>a.days-b.days);
+
+                  return valid[2]?.icon || 'mdi:package-variant';
+                ]]]
+              styles:
+                card:
+                  - background: |
+                      [[[
+                        const next = (states['sensor.nachste_tonne']?.state || '').toLowerCase();
+                        const entries = [
+                          { key:'gelb',   name:'gelber sack', sensor:'sensor.gelber_sack',  icon:'mdi:recycle',         color:'var(--yellow)' },
+                          { key:'rest',   name:'restmüll',     sensor:'sensor.restmull',     icon:'mdi:trash-can',       color:'var(--white7)' },
+                          { key:'bio',    name:'biomüll',      sensor:'sensor.biomull',      icon:'mdi:leaf',            color:'var(--sand)' },
+                          { key:'papier', name:'papier',       sensor:'sensor.papier',       icon:'mdi:package-variant', color:'var(--red)' },
+                        ];
+                        const current = entries.find(e => next.includes(e.name))?.key;
+
+                        const valid = entries
+                          .filter(e => e.key !== current)
+                          .map(e => ({...e, days: Number(states[e.sensor]?.state)}))
+                          .filter(e => !isNaN(e.days) && e.days > 0)
+                          .sort((a,b)=>a.days-b.days);
+
+                        return valid[2]?.color || 'var(--contrast3)';
+                      ]]]
+                  - border-radius: 14px
+                  - padding: 2px 8px
+                grid:
+                  - grid-template-areas: "\"i s\""
+                  - grid-template-columns: min-content min-content
+                  - column-gap: 2px
+                icon:
+                  - color: var(--contrast2)
+                  - width: 18px
+                state:
+                  - color: var(--contrast2)
+                  - font-weight: 700
+                  - font-size: 13px
+                  - justify-self: center
+                  - align-self: center

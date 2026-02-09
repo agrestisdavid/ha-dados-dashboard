@@ -1,0 +1,62 @@
+# dados_light_button:
+#   icon: m3o:lightbulb
+#   show_state: true
+#   tap_action:
+#     action: toggle
+#   hold_action:
+#     action: more-info
+#   state:
+#     - value: "off"
+#       icon: m3o:light-off
+#       styles:
+#         icon:
+#           - color: var(--contrast20)
+#         state:
+#           - opacity: 0.7
+#     - value: "on"
+#       icon: m3o:lightbulb
+#       styles:
+#         card:
+#           - background: var(--yellow)
+#         name:
+#           - color: var(--black5)
+#         state:
+#           - color: var(--black5)
+#         icon:
+#           - color: var(--black5)
+#   styles:
+#     grid:
+#       - grid-template-columns: 3.95rem 1fr
+#       - grid-template-rows: 50% 50%
+#       - grid-template-areas: "'i n' 'i s'"
+#     card:
+#       - background: var(--contrast2)
+#       - border-radius: 1.857143rem          # 26px
+#       - height: 6.928571rem                 # 97px
+
+#     img_cell:
+#       - width: 1.785714rem                  # 25px
+#       - height: 1.785714rem                 # 25px
+
+#     icon:
+#       - width: 1.785714rem                  # 25px
+#       - color: var(--contrast16)
+
+#     name:
+#       - justify-self: start
+#       - align-self: end
+#       - font-size: 1.142857rem              # 16px
+#       - font-weight: 500
+#       - color: var(--contrast16)
+#       - font-family: Roboto
+#       - letter-spacing: 0.028571rem         # 0.4px
+
+#     state:
+#       - justify-self: start
+#       - align-self: start
+#       - font-size: 1rem                     # 14px
+#       - font-weight: 400
+#       - font-family: Roboto
+#       - color: var(--contrast16)
+#       - letter-spacing: 0.042857rem         # 0.6px
+

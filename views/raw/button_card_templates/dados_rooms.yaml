@@ -1,0 +1,92 @@
+dados_rooms:
+  template: dados_base
+
+  variables:
+    entity: ""                         # Room “main” entity (usually a light/group)
+    icon_on: m3o:lightbulb             # Icon when entity is ON
+    icon_off: m3o:lightbulb            # Icon when entity is OFF
+    name: ""                           # Room label shown on the tile
+    card_color: var(--contrast2)       # Card background color
+    navigation_path: ""                # Where to navigate on tap (your room view path)
+    temp_sensor: ""                    # Temperature sensor to show when the light is OFF
+    img_cell_background: var(--blue)   # Fallback icon tile background if no rgb_color exists
+
+  # Bind the card to the room entity
+  entity: '[[[ return variables.entity ]]]'
+
+  # Default icon (overridden by state rules below)
+  icon: '[[[ return variables.icon_on ]]]'
+
+  show_state: true
+  name: '[[[ return variables.name ]]]'
+
+  # Tap anywhere navigates into the room view
+  tap_action:
+    action: navigate
+    navigation_path: '[[[ return variables.navigation_path ]]]'
+
+  # Tap on the icon toggles the room entity (e.g., light group)
+  icon_tap_action:
+    action: toggle
+
+  # Dynamic state text:
+  # - If light ON -> show brightness percent (if brightness exists)
+  # - If light OFF -> show temperature from temp_sensor
+  state_display: |
+    [[[
+      // If light is ON -> show brightness %
+      if (entity.state === 'on') {
+        const bri = entity.attributes.brightness;
+
+        if (bri !== undefined) {
+          const pct = Math.round((bri / 255) * 100);
+          return pct + '%';
+        }
+        return 'On';
+      }
+
+      // If light is OFF -> show temperature from temp_sensor (if provided)
+      const temp_entity_id = variables.temp_sensor;
+      if (!temp_entity_id) return '-';
+
+      const temp = states[temp_entity_id]?.state;
+      if (!temp || temp === 'unavailable' || temp === 'unknown') return '-';
+
+      const num = parseFloat(temp);
+      if (isNaN(num)) return temp;
+
+      return num.toFixed(1) + '°C';
+    ]]]
+
+  state:
+    # OFF: use icon_off (and ensure state text is fully visible)
+    - value: "off"
+      icon: '[[[ return variables.icon_off ]]]'
+      styles:
+        state:
+          - opacity: 1
+
+    # ON: use icon_on and force a “lit” background for the icon tile
+    - value: "on"
+      icon: '[[[ return variables.icon_on ]]]'
+      styles:
+        img_cell:
+          - background: var(--yellow)
+
+  styles:
+    # Icon tile background:
+    # - Use rgb_color when available (colored lights)
+    # - Else fall back to variables.img_cell_background
+    img_cell:
+      - background: |
+          [[[
+            const c = entity?.attributes?.rgb_color;
+            if (c) {
+              return `rgba(${c[0]}, ${c[1]}, ${c[2]}, 0.7)`;
+            }
+            return variables?.img_cell_background || 'var(--yellow)';
+          ]]]
+  section_mode: true
+  grid_options:
+    rows: 2
+    columns: 6

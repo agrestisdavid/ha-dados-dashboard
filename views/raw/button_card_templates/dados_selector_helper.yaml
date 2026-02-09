@@ -1,0 +1,256 @@
+dados_selector_helper:
+  variables:
+    # IMPORTANT:
+    # This template is meant for a Home Assistant *helper* of type **input_select**
+    # (NOT a "select." entity). That’s why we use the service:
+    #   input_select.select_option
+    # and why the entity should look like:
+    #   input_select.some_name
+    entity: input_select.robobert_saugleistung       # input_select helper entity (selector helper)
+    img_cell_background: var(--blue)                 # Active segment background (and tint background)
+
+    # Options must match the exact option strings inside the input_select helper
+    option1: 'off'
+    option2: mild
+    option3: intense
+
+    # (Optional) labels if you later want to show text, currently icons only
+    label1: 'off'
+    label2: mild
+    label3: intense
+
+    # Icons for each option/segment
+    icon1: m3o:humidity-low
+    icon2: m3o:humidity-mid
+    icon3: m3o:humidity-high
+
+  show_name: false
+  show_icon: false
+  show_state: false
+  layout: vertical
+
+  tap_action:
+    action: none
+
+  styles:
+    card:
+      - background: transparent
+      - border-radius: 16px
+      - padding: 0px 12px
+      - position: relative
+      - overflow: hidden
+      - '--button-card-ripple-color': transparent !important
+      - '--button-card-ripple-hover-opacity': 0 !important
+      - '--ha-card-ripple-color': transparent !important
+      - '--ha-ripple-hover-opacity': 0 !important
+
+    grid:
+      - grid-template-areas: '"slider"'
+      - grid-template-columns: 1fr
+      - grid-template-rows: 1fr
+
+  custom_fields:
+    slider:
+      card:
+        type: custom:button-card
+        entity: '[[[ return variables.entity ]]]'    # binds to input_select helper
+        show_name: false
+        show_state: false
+        show_icon: false
+
+        tap_action:
+          action: none
+
+        styles:
+          card:
+            - position: relative
+            - border-style: none
+
+            # Background tint layer:
+            # If you pass "var(--blue)" we automatically convert it to "var(--blue-tint)" (if your theme defines it)
+            - background: |
+                [[[
+                  const v = (variables?.img_cell_background || 'var(--red)')
+                    .toString()
+                    .trim();
+                  if (v.includes('-tint')) return v;
+                  if (v.startsWith('var(')) return v.replace(/\)$/, '-tint)');
+                  return v;
+                ]]]
+
+            - border-radius: 16px
+            - padding: 0
+            - box-shadow: none
+            - overflow: visible
+
+          grid:
+            # 3 segments with a moving background highlight (bg)
+            - grid-template-areas: '"bg bg bg" "opt1 opt2 opt3"'
+            - grid-template-columns: repeat(3, 1fr)
+            - grid-template-rows: auto
+            - gap: 0
+
+          custom_fields:
+            # Moving highlight behind the active option (slides left/center/right)
+            bg:
+              - position: absolute
+              - height: 40px
+              - width: 33.333%
+              - background: '[[[ return variables.img_cell_background ]]]'
+              - box-shadow: none
+              - border-radius: 16px
+              - top: 0
+              - left: 0
+              - transition: left 0.6s cubic-bezier(0.2, 0, 0.4, 1)
+              - z-index: 0
+              - grid-area: bg
+
+            # Ensure option buttons sit above the moving bg
+            opt1:
+              - grid-area: opt1
+              - z-index: 1
+            opt2:
+              - grid-area: opt2
+              - z-index: 1
+            opt3:
+              - grid-area: opt3
+              - z-index: 1
+
+        # Slide the highlight based on the *current state* of the input_select helper
+        state:
+          - value: '[[[ return variables.option1 ]]]'
+            styles:
+              custom_fields:
+                bg:
+                  - left: 0%
+
+          - value: '[[[ return variables.option2 ]]]'
+            styles:
+              custom_fields:
+                bg:
+                  - left: 33.3333%
+
+          - value: '[[[ return variables.option3 ]]]'
+            styles:
+              custom_fields:
+                bg:
+                  - left: 66.6666%
+
+        custom_fields:
+          bg: '[[[ return "&nbsp;"; ]]]'  # empty element just to render the bg slot
+
+          # Segment 1 -> sets input_select to option1
+          opt1:
+            card:
+              type: custom:button-card
+              entity: '[[[ return variables.entity ]]]'
+              icon: '[[[ return variables.icon1 ]]]'
+              show_state: false
+              show_icon: true
+              show_name: false
+              tap_action:
+                action: call-service
+                service: input_select.select_option
+                service_data:
+                  entity_id: '[[[ return variables.entity ]]]'
+                  option: '[[[ return variables.option1 ]]]'
+              styles:
+                card:
+                  - background: transparent
+                  - height: 40px
+                  - box-shadow: none
+                  - '--button-card-ripple-color': transparent !important
+                  - '--button-card-ripple-hover-opacity': 0 !important
+                  - '--ha-card-ripple-color': transparent !important
+                  - '--ha-ripple-hover-opacity': 0 !important
+                  - border-radius: 6px
+                  - border: none
+                  - z-index: 1
+                icon:
+                  - color: var(--black4)
+                  - opacity: 1
+                  - transition: color 0.2s
+              state:
+                - value: '[[[ return variables.option1 ]]]'
+                  styles:
+                    icon:
+                      - color: var(--black2)
+                      - opacity: 1
+
+          # Segment 2 -> sets input_select to option2
+          opt2:
+            card:
+              type: custom:button-card
+              entity: '[[[ return variables.entity ]]]'
+              icon: '[[[ return variables.icon2 ]]]'
+              show_state: false
+              show_icon: true
+              show_name: false
+              tap_action:
+                action: call-service
+                service: input_select.select_option
+                service_data:
+                  entity_id: '[[[ return variables.entity ]]]'
+                  option: '[[[ return variables.option2 ]]]'
+              styles:
+                card:
+                  - background: transparent
+                  - height: 40px
+                  - box-shadow: none
+                  - '--button-card-ripple-color': transparent !important
+                  - '--button-card-ripple-hover-opacity': 0 !important
+                  - '--ha-card-ripple-color': transparent !important
+                  - '--ha-ripple-hover-opacity': 0 !important
+                  - border-radius: 6px
+                  - border: none
+                  - z-index: 1
+                icon:
+                  - color: var(--black2)
+                  - opacity: 1
+                  - transition: color 0.2s
+              state:
+                - value: '[[[ return variables.option2 ]]]'
+                  styles:
+                    icon:
+                      - color: var(--black4)
+                      - opacity: 1
+
+          # Segment 3 -> sets input_select to option3
+          opt3:
+            card:
+              type: custom:button-card
+              entity: '[[[ return variables.entity ]]]'
+              icon: '[[[ return variables.icon3 ]]]'
+              show_state: false
+              show_icon: true
+              show_name: false
+              tap_action:
+                action: call-service
+                service: input_select.select_option
+                service_data:
+                  entity_id: '[[[ return variables.entity ]]]'
+                  option: '[[[ return variables.option3 ]]]'
+              styles:
+                card:
+                  - background: transparent
+                  - height: 40px
+                  - box-shadow: none
+                  - '--button-card-ripple-color': transparent !important
+                  - '--button-card-ripple-hover-opacity': 0 !important
+                  - '--ha-card-ripple-color': transparent !important
+                  - '--ha-ripple-hover-opacity': 0 !important
+                  - border-radius: 6px
+                  - border: none
+                  - z-index: 1
+                icon:
+                  - font-size: 14px
+                  - font-weight: 500
+                  - color: var(--black2)
+                  - opacity: 1
+                  - transition: color 0.2s
+              state:
+                - value: '[[[ return variables.option3 ]]]'
+                  styles:
+                    icon:
+                      - color: var(--black4)
+                      - opacity: 1

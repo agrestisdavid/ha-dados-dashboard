@@ -1,0 +1,201 @@
+dados_shutter_base:
+  variables:
+    entity: ""                      # Cover entity (e.g. cover.living_room_shutter)
+    img_cell_background: ""         # Icon tile background color (fallback used in glow calc)
+
+  entity: "[[[ return variables.entity ]]]"
+  icon: mdi:window-shutter
+  show_state: true
+
+  state:
+    # If cover is open -> use open icon
+    - value: open
+      icon: mdi:window-shutter-open
+
+  # State text:
+  # - If current_position/position exists -> show Closed / Open / "NN%"
+  # - Else fall back to entity.state string
+  state_display: |
+    [[[
+      const pos = entity.attributes.current_position ?? entity.attributes.position;
+
+      if (pos === undefined || pos === null) return entity.state;
+
+      const p = Number(pos);
+      if (!Number.isFinite(p)) return entity.state;
+
+      if (p <= 0) return 'Closed';
+      if (p >= 100) return 'Open';
+
+      return `${p}%`;
+    ]]]
+
+  icon_tap_action:
+    action: none
+
+  # Tap on the card toggles an expander section with id = this cover entity
+  tap_action:
+    action: fire-dom-event
+    expander-card:
+      data:
+        expander-card-id: "[[[ return variables.entity ]]]"
+        action: toggle
+
+  styles:
+    # Layout: icon + name/state + 3 control buttons (down/stop/up)
+    grid:
+      - grid-template-columns: 55px 1fr 50px 50px 62px  # icon | text | down | stop | up
+      - grid-template-rows: min-content 1fr
+      - grid-template-areas: "'i n down stop up' 'i s down stop up'"
+
+    # Transparent base card so it can sit inside other surfaces/expanders
+    card:
+      - border-radius: 36px
+      - background: transparent
+      - padding: 12px
+      - height: 80px
+      - overflow: visible
+
+    # Left icon tile (with optional glow)
+    img_cell:
+      - width: 45px
+      - height: 45px
+      - align-self: start
+      - margin-top: 5px
+      - background: "[[[ return variables.img_cell_background ]]]"
+      - border-radius: 18px
+      - box-shadow: |
+          [[[
+            // Glow uses the cover's rgb_color if present (rare), else falls back to img_cell_background
+            const c = entity?.attributes?.rgb_color;
+            const fb = variables.img_cell_background || 'var(--purple)';
+            const colA = c ? `rgba(${c[0]}, ${c[1]}, ${c[2]}, 0.7)` : fb;
+            const colB = c ? `rgba(${c[0]}, ${c[1]}, ${c[2]}, 0.8)` : fb;
+            return `-35px -30px 70px 20px ${colA}, -5px -5px 70px 10px ${colB}`;
+          ]]]
+      - overflow: visible
+
+    icon:
+      - width: 32px
+      - color: var(--contrast2)
+
+    name:
+      - justify-self: start
+      - align-self: start
+      - margin-top: 9px
+      - font-size: 16px
+      - font-weight: 500
+      - color: var(--contrast16)
+      - letter-spacing: 0.4px
+      - padding-left: 3px
+
+    state:
+      - justify-self: start
+      - align-self: start
+      - font-size: 14px
+      - font-weight: 400
+      - color: var(--contrast10)
+      - letter-spacing: 0.6px
+      - margin-top: "0px"
+      - padding-left: 3px
+
+    # Align control buttons nicely
+    custom_fields:
+      down:
+        - margin-top: 0px
+      stop:
+        - margin-top: 0px
+      up:
+        - margin-top: 0px
+
+  custom_fields:
+    # DOWN button -> cover.close_cover
+    down:
+      card:
+        type: custom:button-card
+        icon: mdi:arrow-down
+        show_name: false
+        show_state: false
+        tap_action:
+          action: call-service
+          service: cover.close_cover
+          target:
+            entity_id: "[[[ return entity.entity_id ]]]"
+        styles:
+          card:
+            - height: 50px
+            - width: 50px
+            - border-radius: 5px
+            - background: transparent
+          img_cell:
+            - height: 45px
+            - width: 45px
+            - border-radius: 15px
+            - background: var(--contrast3)
+          icon:
+            - height: 20px
+            - width: 20px
+        extra_styles: |
+          ha-ripple { display: none !important; }
+
+    # STOP button -> cover.stop_cover
+    stop:
+      card:
+        type: custom:button-card
+        icon: mdi:stop
+        show_name: false
+        show_state: false
+        tap_action:
+          action: call-service
+          service: cover.stop_cover
+          target:
+            entity_id: "[[[ return entity.entity_id ]]]"
+        styles:
+          card:
+            - height: 50px
+            - width: 50px
+            - border-radius: 5px
+            - background: transparent
+          img_cell:
+            - height: 45px
+            - width: 45px
+            - border-radius: 15px
+            - background: var(--contrast3)
+          icon:
+            - height: 20px
+            - width: 20px
+        extra_styles: |
+          ha-ripple { display: none !important; }
+
+    # UP button -> cover.open_cover
+    up:
+      card:
+        type: custom:button-card
+        icon: mdi:arrow-up
+        show_name: false
+        show_state: false
+        tap_action:
+          action: call-service
+          service: cover.open_cover
+          target:
+            entity_id: "[[[ return entity.entity_id ]]]"
+        styles:
+          card:
+            - height: 50px
+            - width: 50px
+            - border-radius: 5px
+            - background: transparent
+          img_cell:
+            - height: 45px
+            - width: 45px
+            - border-radius: 15px
+            - background: var(--contrast3)
+          icon:
+            - height: 20px
+            - width: 20px
+        extra_styles: |
+          ha-ripple { display: none !important; }
+
+  # Global: remove ripple for the whole card
+  extra_styles: |
+    ha-ripple { display: none !important; }

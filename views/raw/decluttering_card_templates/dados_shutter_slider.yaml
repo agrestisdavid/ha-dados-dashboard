@@ -1,0 +1,69 @@
+# Purpose
+# - A reusable shutter/cover position slider using custom:my-slider-v2.
+# - Provides a compact horizontal slider with:
+#   - Rounded container and card
+#   - Colored progress bar (uses [[img_cell_background]] as accent color)
+#   - A thin vertical “thumb” indicator
+# - Intended to be used inside dados_shutter_expander as the expanded control.
+#
+# Inputs (decluttering variables expected)
+# - [[entity]]             : shutter/cover entity (cover.*)
+# - [[img_cell_background]]: accent color used for the progress bar fill
+
+dados_shutter_slider:
+  card:
+    # Slider component
+    type: custom:my-slider-v2
+    entity: "[[entity]]"
+
+    # Interaction rules
+    allowTapping: false     # do not jump to a position on tap
+    allowSliding: true      # allow drag to set position
+    flipped: false
+    vertical: false         # horizontal slider
+
+    # Styling (my-slider-v2 style sections)
+    styles:
+      # Outer wrapper
+      container:
+        - border-radius: 24px
+
+      # Card background and sizing
+      card:
+        - margin-bottom: 0px
+        - border-radius: 24px
+        - height: 57px
+        - background: var(--contrast2)
+
+      # Filled progress (position indicator)
+      # - Uses the provided accent color
+      progress:
+        - border-radius: 1.714286rem
+        - background: "[[img_cell_background]]"
+
+      # Thumb (draggable indicator)
+      # - Very thin and tall for a “marker” style
+      thumb:
+        - width: 3px
+        - height: 30%
+        - top: 36%
+        - margin-right: 11px
+        - border-radius: 5px
+        - background: var(--black1)
+
+      # Track (unfilled background)
+      # - Currently returns the same color for both branches (placeholder logic)
+      track:
+        - background: |
+            [[[ 
+              if (entity.state == "closed") return "var(--lavender-tint)";
+              else return "var(--lavender-tint)";
+            ]]]
+
+    # Card-level styling (Home Assistant wrapper)
+    card_mod:
+      style: |
+        ha-card {
+          border-radius: 24px !important;
+          overflow: false;
+        }

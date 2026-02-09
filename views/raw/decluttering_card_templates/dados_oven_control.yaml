@@ -1,0 +1,67 @@
+# Purpose
+# - Minimal oven control stack (Backberta):
+#   1) Power on/off toggle (dados_selector_toggle)
+#   2) Program control actions (start / pause / resume / abort) via dados_start_button
+# - Designed to be embedded inside an expander (e.g., dados_oven_card).
+#
+# What it contains
+# - Card 1 (Power):
+#   - Controls switch.ofen_einschalter
+#   - Uses a brown icon cell background
+#   - Two-state toggle: off / on with matching icons
+#
+# - Card 2 (Controls):
+#   - Reads state from sensor.ofen_betriebszustand
+#   - Calls the relevant oven buttons for start/pause/resume/abort
+#   - Uses the same brown icon cell background for visual consistency
+#
+# Styling (card_mod)
+# - Applies to the second card only
+# - Makes that card visually “invisible” (transparent, no shadow, no border)
+# - Hides the default .content section (if present) to keep the layout clean
+
+dados_oven_control:
+  card:
+    type: vertical-stack
+    cards:
+      # ------------------------------------------------------------
+      # 1) POWER TOGGLE
+      # ------------------------------------------------------------
+      - type: custom:button-card
+        template: dados_selector_toggle
+        variables:
+          entity: switch.ofen_einschalter
+          img_cell_background: var(--brown)
+          option1: "off"
+          option2: "on"
+          label1: "off"
+          label2: "on"
+          icon1: mdi:power-off
+          icon2: mdi:power
+
+      # ------------------------------------------------------------
+      # 2) START / PAUSE / RESUME / ABORT CONTROLS
+      # ------------------------------------------------------------
+      - type: custom:button-card
+        template: dados_start_button
+        variables:
+          state_entity: sensor.ofen_betriebszustand
+          start_button: button.ofen_start
+          pause_button: button.ofen_programm_pausieren
+          resume_button: button.ofen_programm_fortsetzen
+          abort_button: button.ofen_programm_abbrechen
+          img_cell_background: var(--brown)
+
+        # Make the second card visually minimal
+        card_mod:
+          style:
+            .: |
+              ha-card {
+                background: transparent !important;
+                box-shadow: none !important;
+                border: none !important;
+                margin-top: 0px;
+              }
+              ha-card .content {
+                display: none !important;
+              }

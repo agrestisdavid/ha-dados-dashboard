@@ -1,0 +1,256 @@
+dados_selector:
+  variables:
+    # IMPORTANT:
+    # This template is for a real **select.*** entity (integration-provided),
+    # NOT an input_select helper.
+    # That’s why the service used is:
+    #   select.select_option
+    # and why the entity should look like:
+    #   select.some_entity
+    entity: select.roborock_qrevo_curv_series_wisch_intensitat
+
+    img_cell_background: var(--blue)   # Active segment highlight color (and tinted background)
+
+    # Options must match the select entity's exact option strings
+    option1: "off"
+    option2: mild
+    option3: intense
+
+    # (Optional) labels (not rendered here, but good for readability / future text display)
+    label1: "off"
+    label2: mild
+    label3: intense
+
+    # Icons per option segment
+    icon1: m3o:humidity-low
+    icon2: m3o:humidity-mid
+    icon3: m3o:humidity-high
+
+  # Pure control component (no outer title/state/icons)
+  show_name: false
+  show_icon: false
+  show_state: false
+  layout: vertical
+
+  tap_action:
+    action: none
+
+  styles:
+    # Outer wrapper: just spacing around the segmented control
+    card:
+      - background: transparent
+      - border-radius: 16px
+      - padding: 0px 12px
+      - position: relative
+      - overflow: hidden
+      - "--button-card-ripple-color": transparent !important
+      - "--button-card-ripple-hover-opacity": 0 !important
+      - "--ha-card-ripple-color": transparent !important
+      - "--ha-ripple-hover-opacity": 0 !important
+
+    grid:
+      - grid-template-areas: '"slider"'
+      - grid-template-columns: 1fr
+      - grid-template-rows: 1fr
+
+  custom_fields:
+    slider:
+      card:
+        type: custom:button-card
+        entity: "[[[ return variables.entity ]]]"  # Binds to select state to move the highlight
+        show_name: false
+        show_state: false
+        show_icon: false
+
+        tap_action:
+          action: none
+
+        styles:
+          # Inner segmented control base
+          card:
+            - position: relative
+            - border-style: none
+
+            # Tinted background behind the segments:
+            # var(--blue) -> tries var(--blue-rgb) and applies alpha 0.3
+            - background: |
+                [[[
+                  const v = (variables?.img_cell_background || 'var(--red)').trim();
+                  const rgb = v.includes('-rgb') ? v : v.replace(')', '-rgb)');
+                  return `rgba(${rgb}, 0.3)`;
+                ]]]
+
+            - border-radius: 16px
+            - padding: 0
+            - box-shadow: none
+            - overflow: visible
+
+          # 3 segments: opt1 | opt2 | opt3 + moving highlight (bg)
+          grid:
+            - grid-template-areas: '"bg bg bg" "opt1 opt2 opt3"'
+            - grid-template-columns: repeat(3, 1fr)
+            - grid-template-rows: auto
+            - gap: 0
+
+          custom_fields:
+            # Moving highlight behind the active segment
+            bg:
+              - position: absolute
+              - height: 40px
+              - width: 33.333%
+              - background: "[[[ return variables.img_cell_background ]]]"
+              - box-shadow: none
+              - border-radius: 16px
+              - top: 0
+              - left: 0
+              - transition: left 0.6s cubic-bezier(0.2, 0, 0.4, 1)
+              - z-index: 0
+              - grid-area: bg
+
+            # Buttons above highlight
+            opt1:
+              - grid-area: opt1
+              - z-index: 1
+            opt2:
+              - grid-area: opt2
+              - z-index: 1
+            opt3:
+              - grid-area: opt3
+              - z-index: 1
+
+        # Slide highlight depending on current select option
+        state:
+          - value: "[[[ return variables.option1 ]]]"
+            styles:
+              custom_fields:
+                bg:
+                  - left: 0%
+          - value: "[[[ return variables.option2 ]]]"
+            styles:
+              custom_fields:
+                bg:
+                  - left: 33.3333%
+          - value: "[[[ return variables.option3 ]]]"
+            styles:
+              custom_fields:
+                bg:
+                  - left: 66.6666%
+
+        custom_fields:
+          bg: "[[[ return \"&nbsp;\"; ]]]"  # dummy element so bg renders
+
+          # Segment 1 -> set select to option1
+          opt1:
+            card:
+              type: custom:button-card
+              entity: "[[[ return variables.entity ]]]"
+              icon: "[[[ return variables.icon1 ]]]"
+              show_state: false
+              show_icon: true
+              show_name: false
+              tap_action:
+                action: call-service
+                service: select.select_option
+                service_data:
+                  entity_id: "[[[ return variables.entity ]]]"
+                  option: "[[[ return variables.option1 ]]]"
+              styles:
+                card:
+                  - background: transparent
+                  - height: 40px
+                  - box-shadow: none
+                  - "--button-card-ripple-color": transparent !important
+                  - "--button-card-ripple-hover-opacity": 0 !important
+                  - "--ha-card-ripple-color": transparent !important
+                  - "--ha-ripple-hover-opacity": 0 !important
+                  - border-radius: 6px
+                  - border: none
+                  - z-index: 1
+                icon:
+                  - color: var(--contrast2)
+                  - opacity: 1
+                  - transition: color 0.2s
+              state:
+                - value: "[[[ return variables.option1 ]]]"
+                  styles:
+                    icon:
+                      - color: var(--contrast1)
+                      - opacity: 1
+
+          # Segment 2 -> set select to option2
+          opt2:
+            card:
+              type: custom:button-card
+              entity: "[[[ return variables.entity ]]]"
+              icon: "[[[ return variables.icon2 ]]]"
+              show_state: false
+              show_icon: true
+              show_name: false
+              tap_action:
+                action: call-service
+                service: select.select_option
+                service_data:
+                  entity_id: "[[[ return variables.entity ]]]"
+                  option: "[[[ return variables.option2 ]]]"
+              styles:
+                card:
+                  - background: transparent
+                  - height: 40px
+                  - box-shadow: none
+                  - "--button-card-ripple-color": transparent !important
+                  - "--button-card-ripple-hover-opacity": 0 !important
+                  - "--ha-card-ripple-color": transparent !important
+                  - "--ha-ripple-hover-opacity": 0 !important
+                  - border-radius: 6px
+                  - border: none
+                  - z-index: 1
+                icon:
+                  - color: var(--contrast2)
+                  - opacity: 1
+                  - transition: color 0.2s
+              state:
+                - value: "[[[ return variables.option2 ]]]"
+                  styles:
+                    icon:
+                      - color: var(--contrast1)
+                      - opacity: 1
+
+          # Segment 3 -> set select to option3
+          opt3:
+            card:
+              type: custom:button-card
+              entity: "[[[ return variables.entity ]]]"
+              icon: "[[[ return variables.icon3 ]]]"
+              show_state: false
+              show_icon: true
+              show_name: false
+              tap_action:
+                action: call-service
+                service: select.select_option
+                service_data:
+                  entity_id: "[[[ return variables.entity ]]]"
+                  option: "[[[ return variables.option3 ]]]"
+              styles:
+                card:
+                  - background: transparent
+                  - height: 40px
+                  - box-shadow: none
+                  - "--button-card-ripple-color": transparent !important
+                  - "--button-card-ripple-hover-opacity": 0 !important
+                  - "--ha-card-ripple-color": transparent !important
+                  - "--ha-ripple-hover-opacity": 0 !important
+                  - border-radius: 6px
+                  - border: none
+                  - z-index: 1
+                icon:
+                  - font-size: 14px
+                  - font-weight: 500
+                  - color: var(--contrast2)
+                  - opacity: 1
+                  - transition: color 0.2s
+              state:
+                - value: "[[[ return variables.option3 ]]]"
+                  styles:
+                    icon:
+                      - color: var(--contrast1)
+                      - opacity: 1

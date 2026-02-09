@@ -1,0 +1,84 @@
+# Purpose
+# - Reusable “automation/info” expander card with a clickable header + collapsible child content.
+# - Clean, gapless, rounded look, with optional auto-expand driven by a toggle entity.
+
+dados_automation_card:
+  card:
+    # What it builds
+    # - Uses custom:expander-card
+    type: custom:expander-card
+
+    # Header + content injection points
+    # - [[title_card]]: the header/title card definition
+    # - [[cards]]: the child cards shown when expanded
+    title-card: '[[title_card]]'
+    cards: '[[cards]]'
+
+    # Header behavior
+    # - Clicking the header toggles expand/collapse
+    title-card-clickable: true
+    # - Enables a button overlay area on the header (for quick actions)
+    title-card-button-overlay: true
+
+    # Child layout + spacing
+    clear-children: true          # normalize/clear default child styling for cleaner stacking
+    child-padding: 0px 5px        # padding around children
+    child-margin-top: "-10px"     # pull children upward for a tighter “connected” look
+    clear: false
+    padding: 0px
+    gap: 0px
+    expanded-gap: 0px
+
+    # Visual styling
+    icon: m3o:info
+    animation: true
+    arrow-color: var(--contrast16)
+    expanded: false               # default collapsed unless template expands it
+    button-background: var(--contrast2)
+    icon-rotate-degree: 0deg
+    overlay-margin: 17px 70px 0px 0px
+
+    # Header overlay CSS tweak
+    style: |-
+      .header-overlay {
+        height: unset !important;
+      }
+
+    # Unique expander identity (useful when multiple expanders exist)
+    expander-card-id: '[[expander_id]]'
+
+    # Access / visibility control (expander-card feature)
+    # - Restricts who sees/gets the overlay button
+    show-button-users:
+      - vaca-kuche
+
+    # Auto-expand logic
+    # - Uses [[toggle_entity]] to decide whether the expander is open
+    # - If [[toggle_entity]] is not provided (still contains '[['), fallback to:
+    #   input_boolean.automation_expander_toggle
+    # - Expands when the chosen entity is 'on'
+    templates:
+      - template: expanded
+        value_template: |-
+          [[[ 
+            const ent = '[[toggle_entity]]';
+            const fallback = 'input_boolean.automation_expander_toggle';
+            const entity = ent.includes('[[') ? fallback : ent;
+
+            return states[entity]?.state === 'on';
+          ]]]
+
+    # Card-level CSS (rounded + overflow hidden)
+    card_mod:
+      style:
+        .: |
+          ha-card {
+            border-radius: 36px !important;
+            overflow: hidden !important;
+            margin-top: 0px !important;
+          }
+
+    # Grid placement helpers
+    grid_options:
+      columns: full
+      rows: auto

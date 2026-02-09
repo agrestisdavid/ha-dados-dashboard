@@ -1,0 +1,27 @@
+type: sections
+max_columns: 4
+title: Heizung
+path: heizung
+icon: m3o:heat-pump-balance
+sections:
+  - cards:
+      - title: Verlauf
+        type: history-graph
+        hours_to_show: 277
+        entities:
+          - sensor.heizung_aktuelle_temperatur_wohnzimmer
+          - sensor.zuhause_outdoor_temperature
+          - sensor.heizkreis_vorlauftemperatur
+          - sensor.heizkreis_heizkurve
+          - sensor.warmwasser_aktuell
+          - number.heizkreis_mindest_vorlauftemperatur
+          - number.heizkreis_abschalttemperatur
+        grid_options:
+          columns: full
+    column_span: 4
+  - type: grid
+    cards:
+      - type: custom:navbar-card
+        template: main
+subview: true
+cards: []

@@ -1,0 +1,28 @@
+dados_expander_title:
+  template: dados_base
+
+  variables:
+    entity: null                      # Entity used as expander-card id + optional state source
+    state_display_entity: null        # Optional: show state from a different entity than "entity"
+    card_color: transparent           # Makes the header look like a title row (no background)
+    img_cell_background: var(--green) # Icon tile background color
+    custom_icon: null                 # Icon for the title row (override per usage)
+
+  entity: "[[[ return variables.entity ]]]"
+
+  icon: "[[[ return variables.custom_icon ]]]"
+
+  show_state: true                   # Shows the state text (coming from base's state_display logic)
+
+  # Tap toggles the expander section with id = entity
+  tap_action:
+    action: fire-dom-event
+    expander-card:
+      data:
+        expander-card-id: "[[[ return variables.entity ]]]"
+        action: toggle
+
+  styles:
+    # Allow overlays/glow to extend outside the card bounds (useful for expander headers)
+    card:
+      - overflow: visible

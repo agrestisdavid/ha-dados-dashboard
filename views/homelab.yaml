@@ -1,0 +1,80 @@
+type: sections
+max_columns: 2
+title: homelab
+path: homelab
+icon: m3o:data-table
+subview: true
+dense_section_placement: true
+sections:
+  - type: grid
+    cards:
+      - name: 3D Printer
+        camera: camera.k1_max_dado_printer_camera
+        status: sensor.k1_max_dado_print_status
+        progress: sensor.k1_max_dado_print_progress
+        time_left: sensor.k1_max_dado_print_time_left
+        nozzle: sensor.k1_max_dado_nozzle_temperature
+        bed: sensor.k1_max_dado_bed_temperature
+        box: sensor.k1_max_dado_chamber_temperature
+        power: ""
+        show_power_button: false
+        layer: sensor.k1_max_dado_working_layer
+        total_layers: sensor.k1_max_dado_total_layers
+        light: light.k1_max_dado_light
+        pause_btn: button.k1_max_dado_pause_print
+        resume_btn: button.k1_max_dado_resume_print
+        stop_btn: button.k1_max_dado_stop_print
+        theme:
+          pause_bg: rgba(252, 109, 9, .90)
+          resume_bg: rgba(76, 175, 80, .90)
+          stop_bg: rgba(244, 67, 54, .95)
+          light_on_bg: rgba(255, 235, 59, .95)
+          light_off_bg: rgba(150,150,150,.35)
+          pause_icon: "#fff"
+          resume_icon: "#fff"
+          stop_icon: "#fff"
+          light_icon_on: "#000"
+          light_icon_off: "#000"
+          status_icon: auto
+          progress_ring: auto
+          status_bg: auto
+          telemetry_icon: auto
+          telemetry_text: auto
+          custom_bg: rgba(33, 150, 243, .90)
+          custom_icon: "#fff"
+        custom_btn: ""
+        custom_btn_icon: ""
+        custom_btn_hidden: false
+        button_order:
+          - pause
+          - resume
+          - stop
+          - light
+          - power
+          - custom
+        pause_btn_icon: ""
+        resume_btn_icon: ""
+        stop_btn_icon: ""
+        light_btn_icon: m3o:lightbulb
+        power_btn_icon: ""
+        hide_box_temp: false
+        type: custom:k-printer-card
+      - type: custom:advanced-camera-card
+        cameras:
+          - camera_entity: camera.k1_max_dado_printer_camera
+            live_provider: ha
+            cast:
+              method: dashboard
+        status_bar:
+          style: none
+        performance:
+          style:
+            border_radius: true
+        view:
+          default: live
+    column_span: 2
+  - type: grid
+    cards:
+      - type: custom:navbar-card
+        template: main
+cards: []

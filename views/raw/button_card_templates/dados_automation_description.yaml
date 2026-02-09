@@ -1,0 +1,60 @@
+dados_automation_decription:
+  variables:
+    description: test            # Text shown as the “state” (your automation description)
+    entity: sensor.dummy         # Dummy entity (required by button-card, can be any stable entity)
+    expander_id: test            # Expander-card id to toggle on tap
+    state_display: Add Description # (unused here) optional placeholder if you want later
+
+  entity: "[[[ return variables.entity ]]]"
+
+  # Pure text row: only state text is visible
+  show_name: false
+  show_state: true
+  show_icon: false
+
+  # We hijack state_display to show the description text
+  state_display: "[[[ return variables.description ]]]"
+
+  # Tap toggles the referenced expander-card section
+  tap_action:
+    action: fire-dom-event
+    expander-card:
+      data:
+        expander-card-id: "[[[ return variables.expander_id ]]]"
+        action: toggle
+
+  styles:
+    # Card container: transparent, no “real” card look—just spacing
+    card:
+      - padding: 0px 8px 16px 8px          # top right bottom left
+      - background-color: transparent
+
+    # Single area layout: state only
+    grid:
+      - grid-template-areas: |
+          "s"
+      - grid-template-columns: 1fr
+
+    # Description text styling
+    state:
+      - justify-self: start
+      - align-self: start
+      - font-size: 14px
+      - font-weight: 400
+      - font-family: Roboto
+      - letter-spacing: 0.6px
+      - color: var(--contrast10)
+      - padding-left: 10px
+      - padding-bottom: 5px
+      - margin-top: "-15px"                 # pulls text upward to visually sit closer to the header above
+      - white-space: pre-line               # allows line breaks in description
+      - line-height: 1.2
+      - text-align: start
+
+  card_mod:
+    style: |
+      ha-card {
+        border-radius: 36px !important;     
+        overflow: hidden !important;
+        margin-top: 0px !important;
+      }

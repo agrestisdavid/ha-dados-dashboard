@@ -1,0 +1,131 @@
+# Purpose
+# - A reusable expander control for a single light entity ([[entity]]).
+# - Header uses your existing dados_light button-card (compact light tile look).
+# - Expanded area dynamically adds extra controls (brightness, color temperature, hue)
+#   depending on which labels are matched via auto-entities.
+#
+# Inputs (decluttering variables expected)
+# - [[entity]] : the light entity this expander controls (light.*)
+
+dados_light_expander:
+  card:
+    # Core component
+    type: custom:expander-card
+
+    # Grid placement (12-column layout)
+    grid_options:
+      columns: 12
+      rows: auto
+
+    # Header behavior
+    title-card-clickable: true        # clicking header toggles expand/collapse
+    title-card-button-overlay: true   # enables overlay button area
+
+    # Child layout + spacing
+    clear-children: true
+    child-padding: 0px 5px
+    child-margin-top: -15px          # pulls expanded content upward (tighter look)
+    clear: false
+    padding: 0px
+    gap: 0px
+    expanded-gap: 0px
+
+    # Visual styling
+    icon: m3o:info
+    animation: true
+    arrow-color: var(--contrast16)
+    button-background: var(--contrast3)
+    icon-rotate-degree: 0deg
+    expanded: false                  # default collapsed
+
+    # Overlay positioning
+    overlay-margin: 17px 70px 0px 0px
+
+    # Template hooks (currently unused)
+    templates: []
+
+    # Identity / uniqueness
+    expander-card-id: "[[entity]]"
+
+    # Access / visibility control (expander-card feature)
+    show-button-users:
+      - vaca-kuche
+
+    # ------------------------------------------------------------
+    # Header card (title-card)
+    # - Reuses your standard light card template (dados_light)
+    # - Forces transparent base color so the expander wrapper can own styling
+    # - Allows overflow so overlay elements can extend beyond card bounds
+    # ------------------------------------------------------------
+    title-card:
+      type: custom:button-card
+      template: dados_light
+      variables:
+        entity: "[[entity]]"
+        card_color: transparent
+      styles:
+        card:
+          - overflow: visible
+
+    # ------------------------------------------------------------
+    # Expanded content (cards)
+    # - Uses auto-entities to conditionally show specific control cards
+    #   based on labels (dimm, temp, hue) for the same entity.
+    #
+    # NOTE: This assumes you’ve labeled the light entity appropriately
+    # (or auto-entities label matching is configured in your system).
+    # ------------------------------------------------------------
+    cards:
+      - type: custom:auto-entities
+        card:
+          type: entities
+        filter:
+          include:
+            # Brightness control
+            - entity_id: "[[entity]]"
+              label: dimm
+              options:
+                type: custom:button-card
+                template: dados_light_brightness
+                variables:
+                  entity: "[[entity]]"
+
+            # Color temperature control
+            - entity_id: "[[entity]]"
+              label: temp
+              options:
+                type: custom:button-card
+                template: dados_light_temp
+                variables:
+                  entity: "[[entity]]"
+
+            # Hue / color control
+            - entity_id: "[[entity]]"
+              label: hue
+              options:
+                type: custom:button-card
+                template: dados_light_hue
+                variables:
+                  entity: "[[entity]]"
+
+          # No explicit excludes (everything is handled via label-based includes)
+          exclude: []
+
+    # Extra CSS tweaks for expander header elements
+    style: |
+      .header-overlay {
+        height: unset !important;
+      }
+      button.header {
+        border-radius: 16px !important;
+        overflow: hidden !important;
+      }
+
+    # Card-level styling
+    card_mod:
+      style:
+        .: |
+          ha-card {
+            border-radius: 36px !important;
+            overflow: hidden !important;
+          }

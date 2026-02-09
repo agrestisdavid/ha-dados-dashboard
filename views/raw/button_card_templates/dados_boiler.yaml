@@ -1,0 +1,147 @@
+dados_boiler:
+  template: dados_light
+
+  variables:
+    entity: sensor.warmwasser_aktuell         # Temperature sensor for hot water (used for state + thresholds)
+    switch_entity: switch.wasser_schnell_warm # “Boost” / fast-heat switch (used by the right toggle button)
+    state_display_entity: sensor.warmwasser_aktuell # Optional: source for shown state (defaults to entity)
+    icon_on: mdi:water-thermometer-outline    # Main card icon (on)
+    icon_off: mdi:water-thermometer-outline   # Main card icon (off)
+    img_cell_background: var(--red)           # Default icon tile background (will be overridden by thresholds)
+    show_glow: true                           # Enable/disable glow behind icon tile
+
+    # Thresholds (°C) used for coloring + icon color logic
+    state1: 55                                # hottest / “red” threshold
+    state2: 45                                # warm / “peach” threshold
+    state3: 35                                # lukewarm / “lavender” threshold
+    state4: 30                                # cool / “blue” threshold (fallback)
+
+    # Colors per threshold band
+    state1_color: var(--red)
+    state2_color: var(--peach)
+    state3_color: var(--lavender)
+    state4_color: var(--blue)
+
+  # IMPORTANT:
+  # Set entity to the SENSOR so the button-card "state:" operators evaluate the temperature value.
+  entity: '[[[ return variables.entity ]]]'
+
+  name: Warmwasser
+
+  # Display temperature with unit (e.g. "46 °C"), fallback to "-" if unavailable
+  state_display: |
+    [[[
+      const id = variables?.state_display_entity;
+      const e  = id ? states[id] : entity;
+      if (!e) return '-';
+
+      const s = e.state;
+      const u = e.attributes?.unit_of_measurement;
+      if (s == null || s === 'unknown' || s === 'unavailable') return '-';
+      return u ? `${s} ${u}` : `${s}`;
+    ]]]
+
+  # Card itself is informational; interactions are handled by the embedded toggle chip
+  tap_action:
+    action: none
+  icon_tap_action:
+    action: none
+
+  # Color the main icon tile based on the current temperature reading.
+  # NOTE: Your first rule uses value: 60 even though variables.state1 is 55.
+  # If you want state1 to control it, set value: "[[[ return variables.state1 ]]]" and same for others.
+  state:
+    - operator: ">="
+      value: 60                                # temp >= 60°C -> state1_color (very hot)
+      styles:
+        img_cell:
+          - background-color: "[[[ return variables.state1_color ]]]"
+          - box-shadow: |
+              [[[
+                if (variables?.show_glow === false) return 'none';
+                const fb = variables?.state1_color || 'var(--red)';
+                return `-55px -50px 70px 20px ${fb}, -35px -35px 70px 10px ${fb}`;
+              ]]]
+
+    - operator: ">="
+      value: 45                                # temp >= 45°C -> state2_color (warm)
+      styles:
+        img_cell:
+          - background-color: "[[[ return variables.state2_color ]]]"
+          - box-shadow: |
+              [[[
+                if (variables?.show_glow === false) return 'none';
+                const fb = variables?.state2_color || 'var(--red)';
+                return `-55px -50px 70px 20px ${fb}, -35px -35px 70px 10px ${fb}`;
+              ]]]
+
+    - operator: ">="
+      value: 35                                # temp >= 35°C -> state3_color (lukewarm)
+      styles:
+        img_cell:
+          - background-color: "[[[ return variables.state3_color ]]]"
+          - box-shadow: |
+              [[[
+                if (variables?.show_glow === false) return 'none';
+                const fb = variables?.state3_color || 'var(--red)';
+                return `-55px -50px 70px 20px ${fb}, -35px -35px 70px 10px ${fb}`;
+              ]]]
+
+    - operator: "<="
+      value: 34                                # temp <= 34°C -> state4_color (cool)
+      styles:
+        img_cell:
+          - background-color: "[[[ return variables.state4_color ]]]"
+          - box-shadow: |
+              [[[
+                if (variables?.show_glow === false) return 'none';
+                const fb = variables?.state4_color || 'var(--red)';
+                return `-55px -50px 70px 20px ${fb}, -35px -35px 70px 10px ${fb}`;
+              ]]]
+
+  custom_fields:
+    # Right-side embedded toggle button (boost switch)
+    toggle:
+      card:
+        type: custom:button-card
+        template: dados_toggle
+        variables:
+          entity: "[[[ return variables.switch_entity ]]]" # switch this chip controls
+          img_cell_background: var(--blue)                 # default chip color (overridden when off)
+        icon: m3of:water-heater
+
+        # When boost switch is OFF, show a neutral look
+        state:
+          - value: "off"
+            icon: mdi:water-boiler-off
+            styles:
+              icon:
+                - color: var(--contrast16)
+              img_cell:
+                - background: var(--contrast3)
+                - box-shadow: none
+
+        styles:
+          # Chip icon color follows the current temperature band (same thresholds as above)
+          icon:
+            - color: |
+                [[[
+                  const sid = variables?.state_display_entity;
+                  const s = sid ? parseFloat(states[sid]?.state) : NaN;
+                  if (isNaN(s)) return 'var(--contrast14)';
+
+                  const t1 = parseFloat(variables?.state1);
+                  const t2 = parseFloat(variables?.state2);
+                  const t3 = parseFloat(variables?.state3);
+                  const t4 = parseFloat(variables?.state4);
+
+                  const S1 = isNaN(t1) ? 55 : t1;
+                  const S2 = isNaN(t2) ? 45 : t2;
+                  const S3 = isNaN(t3) ? 35 : t3;
+                  const S4 = isNaN(t4) ? 30 : t4;
+
+                  if (s >= S1) return variables?.state1_color || 'var(--red)';
+                  if (s >= S2) return variables?.state2_color || 'var(--peach)';
+                  if (s >= S3) return variables?.state3_color || 'var(--lavender)';
+                  return variables?.state4_color || 'var(--blue)';
+                ]]]

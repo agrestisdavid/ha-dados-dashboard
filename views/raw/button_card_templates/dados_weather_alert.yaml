@@ -1,0 +1,184 @@
+dados_weather_alert:
+  template: dados_base
+
+  variables:
+    # --- Main entity ---
+    entity: binary_sensor.meteoalarm        # Meteoalarm binary sensor (on/off) with alert attributes
+    state_display_entity: null              # Not used here (we read attributes directly)
+
+    # --- Base styling (passed into dados_base) ---
+    card_color: var(--contrast2)            # Card background
+    card_height: 80px                       # Card height
+    card_border_radius: 36px                # Rounded corners
+    card_overflow: hidden                   # Clip content if needed
+    img_cell_background: var(--green)       # Fallback icon-tile background if no level match
+    show_glow: true                         # Enable glow on alert levels (box-shadow)
+
+    # --- Awareness levels -> colors (1..4) ---
+    lvl1: var(--green)                      # Level 1 (minor)
+    lvl2: var(--yellow)                     # Level 2 (moderate)
+    lvl3: var(--orange)                     # Level 3 (severe)
+    lvl4: var(--red)                        # Level 4 (extreme)
+
+  # Title text:
+  # Uses the alert headline attribute if available, otherwise “Weather Alert”
+  name: |
+    [[[
+      const fn = entity?.attributes?.headline || 'Weather Alert';
+      return fn;
+    ]]]
+
+  # Body text:
+  # Shows the description attribute (often long), otherwise “No Alert”
+  state_display: |
+    [[[
+      return entity?.attributes?.description || 'No Alert';
+    ]]]
+
+  # Icon:
+  # Picks an icon based on awareness_type (e.g. "meteoalarm; wind")
+  icon: |
+    [[[
+      const raw = String(entity?.attributes?.awareness_type ?? '').toLowerCase();
+      const type = raw.includes(';') ? raw.split(';')[1].trim() : raw.trim();
+
+      const map = {
+        'wind': 'mdi:weather-windy',
+        'snow-ice': 'mdi:weather-snowy',
+        'thunderstorm': 'mdi:weather-lightning',
+        'fog': 'mdi:weather-fog',
+        'high-temperature': 'mdi:thermometer-high',
+        'low-temperature': 'mdi:snowflake',
+        'coastalevent': 'mdi:waves',
+        'forest-fire': 'mdi:fire-alert',
+        'avalanches': 'mdi:landslide',
+        'rain': 'mdi:weather-rainy',
+        'flooding': 'mdi:home-flood',
+        'rain-flood': 'mdi:weather-pouring',
+        'marine-hazard': 'mdi:ferry',
+        'drought': 'mdi:water-off'
+      };
+
+      return map[type] || 'mdi:alert';
+    ]]]
+
+  # Tap navigates to your weather section
+  tap_action:
+    action: navigate
+    navigation_path: '#weather'
+
+  state:
+    # OFF (no alert):
+    # Use level-1 color so the tile stays calm/neutral.
+    - value: "off"
+      icon: "[[[ return variables.icon_1 ]]]"
+      styles:
+        img_cell:
+          - background: "[[[ return variables.lvl1 ]]]"
+
+    # ON + awareness_level == 1
+    - operator: template
+      value: |
+        [[[
+          const a = entity?.attributes?.awareness_level;
+          const n = parseInt(String(a).match(/\d+/)?.[0] ?? '0', 10);
+          return entity?.state === 'on' && n === 1;
+        ]]]
+      styles:
+        img_cell:
+          # Background uses level color (lvl1) unless the entity provides rgb_color (rare)
+          - background: |
+              [[[
+                const c = entity?.attributes?.rgb_color;
+                if (c) return `rgba(${c[0]}, ${c[1]}, ${c[2]}, 0.7)`;
+                return variables?.lvl1 || 'var(--blue)';
+              ]]]
+          # Glow shadow using same color logic
+          - box-shadow: |
+              [[[
+                const c = entity?.attributes?.rgb_color;
+                const fbColor = variables?.lvl1 || 'var(--blue)';
+                const colA = c ? `rgba(${c[0]}, ${c[1]}, ${c[2]}, 0.7)` : fbColor;
+                const colB = c ? `rgba(${c[0]}, ${c[1]}, ${c[2]}, 0.8)` : fbColor;
+                return `-75px -70px 70px 20px ${colA}, -35px -35px 70px 10px ${colB}`;
+              ]]]
+
+    # ON + awareness_level == 2
+    - operator: template
+      value: |
+        [[[
+          const a = entity?.attributes?.awareness_level;
+          const n = parseInt(String(a).match(/\d+/)?.[0] ?? '0', 10);
+          return entity?.state === 'on' && n === 2;
+        ]]]
+      styles:
+        img_cell:
+          - background: |
+              [[[
+                const c = entity?.attributes?.rgb_color;
+                if (c) return `rgba(${c[0]}, ${c[1]}, ${c[2]}, 0.7)`;
+                return variables?.lvl2 || 'var(--blue)';
+              ]]]
+          - box-shadow: |
+              [[[
+                const c = entity?.attributes?.rgb_color;
+                const fbColor = variables?.lvl2 || 'var(--blue)';
+                const colA = c ? `rgba(${c[0]}, ${c[1]}, ${c[2]}, 0.7)` : fbColor;
+                const colB = c ? `rgba(${c[0]}, ${c[1]}, ${c[2]}, 0.8)` : fbColor;
+                return `-75px -70px 70px 20px ${colA}, -35px -35px 70px 10px ${colB}`;
+              ]]]
+
+    # ON + awareness_level == 3
+    - operator: template
+      value: |
+        [[[
+          const a = entity?.attributes?.awareness_level;
+          const n = parseInt(String(a).match(/\d+/)?.[0] ?? '0', 10);
+          return entity?.state === 'on' && n === 3;
+        ]]]
+      styles:
+        img_cell:
+          - background: |
+              [[[
+                const c = entity?.attributes?.rgb_color;
+                if (c) return `rgba(${c[0]}, ${c[1]}, ${c[2]}, 0.7)`;
+                return variables?.lvl3 || 'var(--blue)';
+              ]]]
+          - box-shadow: |
+              [[[
+                const c = entity?.attributes?.rgb_color;
+                const fbColor = variables?.lvl3 || 'var(--blue)';
+                const colA = c ? `rgba(${c[0]}, ${c[1]}, ${c[2]}, 0.7)` : fbColor;
+                const colB = c ? `rgba(${c[0]}, ${c[1]}, ${c[2]}, 0.8)` : fbColor;
+                return `-75px -70px 70px 20px ${colA}, -35px -35px 70px 10px ${colB}`;
+              ]]]
+
+    # ON + awareness_level == 4
+    - operator: template
+      value: |
+        [[[
+          const a = entity?.attributes?.awareness_level;
+          const n = parseInt(String(a).match(/\d+/)?.[0] ?? '0', 10);
+          return entity?.state === 'on' && n === 4;
+        ]]]
+      styles:
+        img_cell:
+          - background: |
+              [[[
+                const c = entity?.attributes?.rgb_color;
+                if (c) return `rgba(${c[0]}, ${c[1]}, ${c[2]}, 0.7)`;
+                return variables?.lvl4 || 'var(--blue)';
+              ]]]
+          - box-shadow: |
+              [[[
+                const c = entity?.attributes?.rgb_color;
+                const fbColor = variables?.lvl4 || 'var(--blue)';
+                const colA = c ? `rgba(${c[0]}, ${c[1]}, ${c[2]}, 0.7)` : fbColor;
+                const colB = c ? `rgba(${c[0]}, ${c[1]}, ${c[2]}, 0.8)` : fbColor;
+                return `-75px -70px 70px 20px ${colA}, -35px -35px 70px 10px ${colB}`;
+              ]]]
+
+  styles:
+    # Minor tweak: make description text smaller (helps for long meteoalarm messages)
+    state:
+      - font-size: 12px

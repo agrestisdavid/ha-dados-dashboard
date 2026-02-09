@@ -1,0 +1,203 @@
+dados_selector_toggle:
+  variables:
+    entity: switch.geschirrspuler_einschalter_2  # Target switch entity this 2-way selector controls
+    img_cell_background: var(--green)            # Active segment highlight color
+
+    # Two states (must match the entity state strings; for a switch it's usually "on"/"off")
+    option1: off
+    option2: on
+
+    # (Optional) labels (currently not rendered, but useful for readability / future text display)
+    label1: off
+    label2: on
+
+    # Icons for each segment
+    icon1: mdi:power-off
+    icon2: mdi:power
+
+  # This is a pure control component (no title/state/icons on the outer wrapper)
+  show_name: false
+  show_icon: false
+  show_state: false
+  layout: vertical
+
+  tap_action:
+    action: none
+
+  styles:
+    # Outer wrapper (transparent container with padding)
+    card:
+      - background: transparent
+      - border-radius: 16px
+      - padding: 0px 12px
+      - position: relative
+      - overflow: hidden
+      - "--button-card-ripple-color": transparent !important
+      - "--button-card-ripple-hover-opacity": 0 !important
+      - "--ha-card-ripple-color": transparent !important
+      - "--ha-ripple-hover-opacity": 0 !important
+
+    grid:
+      - grid-template-areas: '"slider"'
+      - grid-template-columns: 1fr
+      - grid-template-rows: 1fr
+
+  custom_fields:
+    slider:
+      card:
+        type: custom:button-card
+        entity: "[[[ return variables.entity ]]]"   # Binds to the switch state so the highlight can move
+        show_name: false
+        show_state: false
+        show_icon: false
+
+        tap_action:
+          action: none
+
+        styles:
+          # Inner 2-way segmented control “base”
+          card:
+            - position: relative
+            - border-style: none
+
+            # Soft tinted background behind everything:
+            # Takes var(--green) -> tries to use var(--green-rgb) and applies 0.3 alpha.
+            # If you already pass var(--something-rgb), it uses it directly.
+            - background: |
+                [[[
+                  const v = (variables?.img_cell_background || 'var(--red)').trim();
+                  const rgb = v.includes('-rgb') ? v : v.replace(')', '-rgb)');
+                  return `rgba(${rgb}, 0.3)`;
+                ]]]
+
+            - border-radius: 16px
+            - padding: 0
+            - box-shadow: none
+            - overflow: visible
+
+          # 2 columns: opt1 | opt2, with a moving highlight layer (bg)
+          grid:
+            - grid-template-areas: '"bg bg" "opt1 opt2"'
+            - grid-template-columns: repeat(2, 1fr)
+            - grid-template-rows: auto
+            - gap: 0
+
+          custom_fields:
+            # Moving highlight behind the active option
+            bg:
+              - position: absolute
+              - height: 40px
+              - width: 50%
+              - background: "[[[ return variables.img_cell_background ]]]"
+              - box-shadow: none
+              - border-radius: 16px
+              - top: 0
+              - left: 0
+              - transition: left 0.6s cubic-bezier(0.2, 0, 0.4, 1)
+              - z-index: 0
+              - grid-area: bg
+
+            # Ensure option buttons sit above the highlight
+            opt1:
+              - grid-area: opt1
+              - z-index: 1
+            opt2:
+              - grid-area: opt2
+              - z-index: 1
+
+        # Slide highlight based on switch state:
+        # off -> left, on -> right
+        state:
+          - value: "[[[ return variables.option1 ]]]"
+            styles:
+              custom_fields:
+                bg:
+                  - left: 0%
+          - value: "[[[ return variables.option2 ]]]"
+            styles:
+              custom_fields:
+                bg:
+                  - left: 50%
+
+        custom_fields:
+          bg: "[[[ return \"&nbsp;\"; ]]]"   # dummy element so the bg slot renders
+
+          # Segment 1 = turn OFF
+          opt1:
+            card:
+              type: custom:button-card
+              entity: "[[[ return variables.entity ]]]"
+              icon: "[[[ return variables.icon1 ]]]"
+              show_state: false
+              show_icon: true
+              show_name: false
+              tap_action:
+                action: call-service
+                service: switch.turn_off
+                target:
+                  entity_id: "[[[ return variables.entity ]]]"
+              styles:
+                card:
+                  - background: transparent
+                  - height: 40px
+                  - box-shadow: none
+                  - "--button-card-ripple-color": transparent !important
+                  - "--button-card-ripple-hover-opacity": 0 !important
+                  - "--ha-card-ripple-color": transparent !important
+                  - "--ha-ripple-hover-opacity": 0 !important
+                  - border-radius: 6px
+                  - border: none
+                  - z-index: 1
+                icon:
+                  - color: var(--contrast2)
+                  - opacity: 1
+                  - transition: color 0.2s
+                  - height: 25px
+                  - width: 25px
+              state:
+                # When OFF is active, slightly adjust icon color for contrast
+                - value: "[[[ return variables.option1 ]]]"
+                  styles:
+                    icon:
+                      - color: var(--contrast1)
+                      - opacity: 1
+
+          # Segment 2 = turn ON
+          opt2:
+            card:
+              type: custom:button-card
+              entity: "[[[ return variables.entity ]]]"
+              icon: "[[[ return variables.icon2 ]]]"
+              show_state: false
+              show_icon: true
+              show_name: false
+              tap_action:
+                action: call-service
+                service: switch.turn_on
+                target:
+                  entity_id: "[[[ return variables.entity ]]]"
+              styles:
+                card:
+                  - background: transparent
+                  - height: 40px
+                  - box-shadow: none
+                  - "--button-card-ripple-color": transparent !important
+                  - "--button-card-ripple-hover-opacity": 0 !important
+                  - "--ha-card-ripple-color": transparent !important
+                  - "--ha-ripple-hover-opacity": 0 !important
+                  - border-radius: 6px
+                  - border: none
+                  - z-index: 1
+                icon:
+                  - color: var(--contrast2)
+                  - opacity: 1
+                  - transition: color 0.2s
+                  - height: 25px
+                  - width: 25px
+              state:
+                # When ON is active, slightly adjust icon color for contrast
+                - value: "[[[ return variables.option2 ]]]"
+                  styles:
+                    icon:
+                      - color: var(--contrast1)
+                      - opacity: 1

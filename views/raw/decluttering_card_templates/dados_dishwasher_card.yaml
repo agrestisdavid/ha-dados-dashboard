@@ -1,0 +1,45 @@
+# Purpose
+# - Convenience wrapper for a “Dishwasher” expander card.
+# - Provides sensible defaults (dishwasher state entity, default control card, and a title/header card),
+#   then passes everything into a shared base expander template (dados_expander_base).
+#
+# Key idea
+# - This template doesn’t build the UI from scratch.
+# - It defines defaults and forwards variables into dados_expander_base, which actually renders the expander.
+
+dados_dishwasher_card:
+  # Defaults (used when the caller does not override these variables)
+  default:
+    # Default main entity (dishwasher operational/state sensor)
+    - entity: sensor.geschirrspuler_betriebszustand
+
+    # Default child content inside the expander
+    # - A decluttering-card using template dados_dishwasher_control
+    - cards:
+        - type: custom:decluttering-card
+          template: dados_dishwasher_control
+
+    # Default header / title card shown on the expander
+    # - A button-card using template dados_dishwasher_card
+    # - Adds overflow visible so overlays/controls can extend beyond card bounds if needed
+    - title_card:
+        type: custom:button-card
+        template:
+          - dados_dishwasher_card
+        styles:
+          card:
+            - overflow: visible
+
+  # Actual rendered card
+  card:
+    # This template is itself a decluttering wrapper around the base expander
+    type: custom:decluttering-card
+    template: dados_expander_base
+
+    # Variable forwarding
+    # - Take resolved variables ([[...]]), pass them into dados_expander_base
+    variables:
+      - entity: '[[entity]]'          # the dishwasher “state” entity
+      - cards: '[[cards]]'            # child cards/content shown when expanded
+      - title_card: '[[title_card]]'  # header card shown in collapsed/expanded state
+      - card_mod: '[[card_mod]]'      # optional card_mod styling overrides

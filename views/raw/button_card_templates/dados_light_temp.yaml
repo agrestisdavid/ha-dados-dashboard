@@ -1,0 +1,53 @@
+dados_light_temp:
+  template: dados_slider
+
+  variables:
+    entity: null                 # Light entity to control (must be set)
+    icon: mdi:thermometer        # Icon shown in the parent slider card/template (if used there)
+
+  custom_fields:
+    slider:
+      card:
+        type: custom:my-slider-v2
+        entity: '[[[ return variables.entity ]]]'  # Target light
+        colorMode: temperature                     # Slider controls color temperature
+        allowTapping: true                         # Tap-to-set enabled (quick changes)
+        allowSliding: true                         # Drag enabled (fine tuning)
+        flipped: false                             # Normal direction
+        vertical: false                            # Horizontal slider
+
+        styles:
+          # Outer wrapper
+          container:
+            - border-radius: 24px
+            - overflow: visible                    # allow thumb to “stick out” without clipping
+
+          # Card background uses your --temperature gradient/color (provided by the slider component)
+          card:
+            - border-radius: 24px
+            - height: 57px
+            - background: var(--temperature)
+            - padding: 0 20px                      # inset so the thumb has breathing room
+
+          # Track/progress backgrounds are disabled because temperature gradient is on the card itself
+          track:
+            - overflow: visible
+            - background: none
+          progress:
+            - background: none
+
+          # Thumb = small vertical pill with a white ring (box-shadow)
+          thumb:
+            - background: transparent
+            - box-shadow: 0 0 0px 5px rgba(255,255,255,1)  # white “outline ring”
+            - top: 15px
+            - right: "-5px"                     
+            - height: 25px
+            - width: 4px
+            - border-radius: 100px              
+
+  extra_styles: |
+    /* Remove ripple for clean slider interactions */
+    ha-ripple {
+      display: none !important;
+    }

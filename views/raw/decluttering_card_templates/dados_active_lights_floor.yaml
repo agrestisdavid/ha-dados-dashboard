@@ -1,0 +1,106 @@
+# Purpose
+# - Builds a “currently active lights” view for a given floor ([[floor]]).
+# - Splits lights into two groups:
+#   1) Non-dimmable lights (label: nodimm) shown as simple button cards
+#   2) Dimmable lights (label: dimm) shown as expander-style controls
+# - Uses auto-entities to dynamically list only lights that are ON (and valid).
+
+dados_active_lights_floor:
+  card:
+    # Layout container
+    # - Stacks two dynamic entity lists vertically
+    type: vertical-stack
+    cards:
+      # ------------------------------------------------------------
+      # 1) ACTIVE NON-DIMMABLE LIGHTS (label: nodimm)
+      # ------------------------------------------------------------
+      - type: custom:auto-entities
+
+        # Wrapper card styling
+        # - Uses an entities card as a container but makes it visually invisible
+        card:
+          type: entities
+          card_mod:
+            style: |
+              ha-card {
+                background: transparent !important;
+                box-shadow: none !important;
+                border: 0 !important;
+              }
+              .card-content {
+                padding: 0 !important;
+              }
+
+        # Entity selection logic
+        filter:
+          include:
+            # Include lights on the selected floor with label "nodimm"
+            - floor: "[[floor]]"
+              domain: light
+              label: nodimm
+
+              # How each included entity is rendered
+              # - One custom button-card per light using template "dados_light"
+              options:
+                type: custom:button-card
+                template: dados_light
+                variables:
+                  entity: this.entity_id          # bind card to the current light entity
+                  img_cell_background: null       # no image-cell background for this group
+                  icon_on: m3o:lightbulb
+                  icon_off: m3o:light-off
+                  card_color: var(--contrast2)    # base card color for this group
+                  overflow: hidden
+
+          # Exclude anything not truly "active/usable"
+          exclude:
+            - state: "off"
+            - state: unavailable
+            - state: unknown
+            - state: /^0%$/                      # defensive: some lights may report "0%"
+
+      # ------------------------------------------------------------
+      # 2) ACTIVE DIMMABLE LIGHTS (label: dimm)
+      # ------------------------------------------------------------
+      - type: custom:auto-entities
+
+        # Wrapper card styling (same invisible container style)
+        card:
+          type: entities
+          card_mod:
+            style: |
+              ha-card {
+                background: transparent !important;
+                box-shadow: none !important;
+                border: 0 !important;
+              }
+              .card-content {
+                padding: 0 !important;
+              }
+
+        # Entity selection logic
+        filter:
+          include:
+            # Include lights on the selected floor with label "dimm"
+            - floor: "[[floor]]"
+              domain: light
+              label: dimm
+
+              # How each included entity is rendered
+              # - Uses decluttering-card template "dados_light_expander"
+              #   (typically provides slider/extra controls in an expandable layout)
+              options:
+                type: custom:decluttering-card
+                template: dados_light_expander
+                variables:
+                  - entity: this.entity_id        # bind expander to the current light entity
+                  - img_cell_background: var(--yellow)
+                  - card_color: transparent       # keep base transparent, expander handles visuals
+                  - overflow: visible             # allow sliders/overlays to extend if needed
+
+          # Exclude anything not truly "active/usable"
+          exclude:
+            - state: "off"
+            - state: unavailable
+            - state: unknown
+            - state: /^0%$/

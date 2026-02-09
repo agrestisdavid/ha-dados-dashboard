@@ -1,0 +1,83 @@
+dados_light_hue:
+  template: dados_slider
+
+  variables:
+    entity: null                 # Light entity to control (must be set)
+    icon: mdi:palette            # Icon shown in the parent slider card/template (if used there)
+
+  custom_fields:
+    slider:
+      card:
+        type: custom:service-call
+
+        # This card renders a slider that calls light.turn_on with hs_color on change.
+        entries:
+          - type: slider
+            thumb: line          # Use a thin line thumb for a “color picker” look
+
+            # Hue range in degrees (0..360)
+            range:
+              - 0
+              - 360
+            step: 0.1            # Fine control for hue
+
+            # Read the current value from the light's hs_color attribute (index 0 = hue)
+            value_attribute: hs_color.0
+
+            icon: mdi:none       # No icon inside the slider row itself
+            entity_id: "[[[ return variables.entity ]]]"
+
+            # When user changes the slider, call light.turn_on and set hs_color:
+            # - hue = selected value
+            # - saturation = 100 (fixed)
+            tap_action:
+              action: perform-action
+              target:
+                entity_id: "[[[ return variables.entity ]]]"
+              data:
+                hs_color:
+                  - "{{ value }}"   # Hue (0..360) from slider
+                  - 100             # Saturation fixed at 100%
+              perform_action: light.turn_on
+
+            # CSS for the slider itself (converted to px)
+            styles: |-
+              :host {
+                flex-basis: 200%;      /* makes the slider span wider in layouts */
+                height: 57px;
+                border-radius: 24px;
+                overflow: hidden;
+
+                /* Full hue rainbow background */
+                --background: linear-gradient(to right,
+                  #f00 0%, #ff0 17%, #0f0 33%, #0ff 50%, #00f 66%, #f0f 83%, #f00 100%);
+                --background-opacity: 1;
+              }
+
+              /* Keep all slider layers the same height + rounding */
+              .container,
+              .slider,
+              .track {
+                height: 57px;
+                border-radius: 24px;
+              }
+
+              /* Thumb sizing and rounding */
+              .thumb,
+              .thumb-line {
+                height: 60%;
+                top: 20%;
+                border-radius: 8px;
+              }
+
+              /* Tooltip shows the selected hue color */
+              .tooltip {
+                border-radius: 12px;
+                background: hsl({{ value }}, 100%, 50%);
+              }
+
+  extra_styles: |
+    /* Remove ripple for a clean “control surface” feel */
+    ha-ripple {
+      display: none !important;
+    }

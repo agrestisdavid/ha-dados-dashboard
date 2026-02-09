@@ -1,0 +1,69 @@
+dados_toggle:
+  variables:
+    entity: null                      # Target entity to toggle (light.*, switch.*, input_boolean.*, etc.)
+    img_cell_background: var(--yellow)# Fallback “ON color” if entity has no rgb_color
+
+  # Default icon (changes to toggle-on in ON state below)
+  icon: m3o:toggle-off
+
+  # This is a pure toggle button (no name/state text)
+  show_name: false
+  show_state: false
+
+  entity: '[[[ return variables.entity ]]]'
+
+  # Tap toggles the entity:
+  # - If it's a light -> light.toggle
+  # - If it's a switch -> switch.toggle
+  # - Otherwise -> homeassistant.toggle (generic)
+  tap_action:
+    action: call-service
+    service: |
+      [[[
+        const id = variables?.entity || '';
+        if (id.startsWith('light.')) return 'light.toggle';
+        if (id.startsWith('switch.')) return 'switch.toggle';
+        return 'homeassistant.toggle';
+      ]]]
+    target:
+      entity_id: '[[[ return variables.entity ]]]'
+
+  state:
+    # ON state:
+    # - icon changes to toggle-on
+    # - icon color uses the entity’s rgb_color when available (lights),
+    #   otherwise falls back to variables.img_cell_background
+    - value: "on"
+      icon: m3o:toggle-on
+      styles:
+        icon:
+          - color: |
+              [[[
+                const c = entity?.attributes?.rgb_color;
+                if (c) return `rgba(${c[0]}, ${c[1]}, ${c[2]}, 0.7)`;
+                return variables?.img_cell_background || 'var(--yellow)';
+              ]]]
+
+  styles:
+    # Outer button container (transparent, just holds the tile)
+    card:
+      - height: 50px
+      - width: 50px
+      - border-radius: 5px
+      - background: transparent
+
+    # Inner tile behind the icon
+    img_cell:
+      - height: 47px
+      - width: 47px
+      - border-radius: 15px
+      - background: var(--contrast3)        # neutral background (icon color indicates ON)
+
+    # Icon sizing
+    icon:
+      - height: 30px
+      - width: 30px
+
+  extra_styles: |
+    /* Disable ripple for a clean chip look */
+    ha-ripple { display: none !important; }

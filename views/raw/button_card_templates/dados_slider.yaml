@@ -1,0 +1,52 @@
+dados_slider:
+  variables:
+    entity: null                  # Target entity for the slider “container” card (passed down to child sliders)
+    icon: m3of:percent            # Icon shown on the right (defaults to percent)
+
+  show_name: false
+  show_state: false
+
+  entity: "[[[ return variables.entity ]]]"
+  icon: "[[[ return variables.icon ]]]"
+
+  # This wrapper should not toggle anything by itself (child slider handles interaction)
+  icon_tap_action:
+    action: none
+  tap_action:
+    action: none
+
+  styles:
+    # Layout: large slider area + small icon tile on the right
+    grid:
+      - grid-template-columns: 1fr 65px      # slider | icon tile
+      - grid-template-rows: min-content
+      - grid-template-areas: "'slider i'"
+
+    # Transparent wrapper card so it can sit inside other cards/expanders cleanly
+    card:
+      - border-radius: 26px                 # rounding for the whole slider row
+      - background: transparent
+      - padding: 0px
+      - height: 60px                        # fixed height row
+      - overflow: hidden                    # clip child content if needed
+
+    # Right icon tile container
+    img_cell:
+      - width: 45px
+      - height: 45px
+      - justify-self: end                   # push to the far right
+      - align-self: center                  # vertically centered
+      - margin-top: 0px
+      - background: var(--contrast4)        # neutral tile background
+      - border-radius: 18px
+      - overflow: visible
+
+    # Icon inside the right tile
+    icon:
+      - width: 25px
+      - color: var(--contrast20)
+
+    # Fine alignment tweak for the embedded slider field
+    custom_fields:
+      slider:
+        - margin-top: 1px

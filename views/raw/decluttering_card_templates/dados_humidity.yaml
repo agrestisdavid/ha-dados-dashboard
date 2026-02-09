@@ -1,0 +1,137 @@
+# Purpose
+# - Compact humidity widget with:
+#   1) A custom button-card header showing the current humidity value
+#   2) A 24h mini-graph-card trend line underneath
+# - Wrapped in vertical-stack-in-card so both parts look like one single “module”.
+#
+# Inputs (decluttering variables expected)
+# - [[entity]] : humidity sensor entity (e.g., sensor.*)
+# - [[name]]   : title shown in the header
+
+dados_humidity:
+  card:
+    # Wrapper that makes multiple cards appear as one
+    type: custom:vertical-stack-in-card
+    cards:
+      # ------------------------------------------------------------
+      # 1) HEADER (button-card)
+      # ------------------------------------------------------------
+      - type: custom:button-card
+        entity: "[[entity]]"
+        icon: mdi:water-percent
+        name: "[[name]]"
+        show_state: true
+
+        # State formatting
+        # - Parses the sensor state as a float
+        # - Shows 1 decimal place and appends "%"
+        state_display: |
+          [[[ 
+            const v = parseFloat(entity.state);
+            if (isNaN(v)) return '- °%';
+            return v.toFixed(1) + '%';
+          ]]]
+
+        # No interaction on tap
+        tap_action:
+          action: none
+
+        # Layout + styling
+        styles:
+          # Two-row layout: icon + name on row 1, icon + state on row 2
+          grid:
+            - grid-template-columns: 55px 1fr
+            - grid-template-rows: min-content 1fr
+            - grid-template-areas: "'i n' 'i s'"
+
+          # Card background “plate”
+          # - absolute positioning to create an overlay-like header look
+          card:
+            - background-color: var(--contrast1)
+            - border-radius: 26px
+            - height: 97px
+            - position: absolute
+
+          # Icon container
+          img_cell:
+            - width: 25px
+            - height: 25px
+            - align-self: start
+            - margin: "-7px 0px"
+
+          # Icon styling
+          icon:
+            - width: 25px
+            - color: var(--sky)
+            - z-index: 1
+            - align-self: start
+
+          # Title text styling
+          name:
+            - justify-self: start
+            - align-self: start
+            - font-size: 16px
+            - font-weight: 500
+            - color: var(--contrast16)
+            - font-family: Roboto
+            - letter-spacing: 0.4px
+            - margin: "-4px -10px"
+            - z-index: 1
+
+          # State “pill” styling
+          state:
+            - justify-self: start
+            - align-self: start
+            - font-size: 14px
+            - font-weight: 500
+            - font-family: Roboto
+            - color: var(--contrast2)
+            - letter-spacing: 0.6px
+            - z-index: 1
+            - background: var(--contrast16)
+            - padding: 2px 10px
+            - border-radius: 16px
+            - margin: 8px -10px
+
+      # ------------------------------------------------------------
+      # 2) TREND GRAPH (mini-graph-card)
+      # ------------------------------------------------------------
+      - type: custom:mini-graph-card
+        entities:
+          - entity: "[[entity]]"
+            name: Humidity
+            color: var(--sky)
+
+        # Chart settings
+        hours_to_show: 24
+        line_width: 5
+        font_size: 50
+        animate: true
+
+        # Hide everything except the line
+        show:
+          name: false
+          icon: false
+          state: false
+          legend: false
+          fill: false
+
+        # Graph card styling
+        # - Adds top padding so the header plate has room “above” the chart area
+        card_mod:
+          style: |
+            ha-card {
+              background: var(--contrast1) !important;
+              padding-top: 50px !important;
+            }
+
+    # ------------------------------------------------------------
+    # OUTER WRAPPER STYLING (vertical-stack-in-card container)
+    # ------------------------------------------------------------
+    card_mod:
+      style: |
+        ha-card {
+          background-color: transparent !important;
+          border-radius: 26px !important;
+          overflow: false;
+        }

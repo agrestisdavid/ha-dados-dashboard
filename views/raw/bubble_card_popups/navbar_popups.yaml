@@ -1,0 +1,57 @@
+type: grid      #navbar-popups
+cards:
+- type: vertical-stack          ##lichteran-popup
+  cards:
+  - type: custom:bubble-card
+    card_type: pop-up
+    hash: "#lightson"
+    button_type: name
+    name: Lights on
+    icon: m3o:light-group
+    scrolling_effect: false
+    modules:
+    - header-settings
+    more_info_popup:
+      bd_filter: blur(100px)
+      window_ani: rotate(360deg) translateY(150%)
+    sub_button:
+      main: []
+      bottom: []
+  - type: custom:decluttering-card
+    template: dados_active_lights
+- type: vertical-stack          ##rollosoffen-popup
+  cards:
+  - type: custom:bubble-card
+    card_type: pop-up
+    hash: "#rollosoffen"
+    button_type: name
+    name: Rollos Offen
+    icon: mdi:blinds-open
+    scrolling_effect: false
+  - type: custom:auto-entities
+    card:
+      type: grid
+      columns: 1
+      square: false
+    card_param: cards
+    filter:
+      include:
+      - domain: cover
+        state: open
+        options:
+          type: tile
+          entity: this.entity_id
+          name:
+          - type: area
+          icon: mdi:blinds
+          show_entity_picture: false
+          hide_state: false
+          vertical: false
+          features:
+          - type: cover-open-close
+          - type: cover-position
+          features_position: bottom
+      exclude: []
+
+
+column_span: 2

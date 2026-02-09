@@ -1,0 +1,123 @@
+# Purpose
+# - A reusable “Heating” expander card built on top of dados_expander_base.
+# - Provides defaults for your main heating climate entity, displayed temperature sensor,
+#   icon, colors, name, and navigation target.
+# - Expanded content shows a minimal tile with target temperature control.
+# - Header/title uses dados_expander_title (button-card) and supports navigation via icon tap.
+#
+# How it works
+# - This template is a decluttering wrapper:
+#   - It forwards a constructed [[title_card]] and [[cards]] into dados_expander_base.
+#   - dados_expander_base is responsible for the expander behavior and layout.
+
+dados_heating_card:
+  # Defaults (used if caller doesn’t override)
+  default:
+    # Main climate entity (thermostat / heating controller)
+    - entity: climate.heizung
+
+    # Sensor used for the displayed temperature text in the header
+    - state_display_entity: sensor.heizung_aktuelle_temperatur_wohnzimmer
+
+    # Header icon background color
+    - img_cell_background: var(--olive)
+
+    # Icon shown in the header
+    - custom_icon: mdi:heat-pump-outline
+
+    # Where to navigate when tapping the icon
+    - navigation_path: /ha-dados-dashboard/heating
+
+    # Header name text
+    - name: Heating
+
+  # Rendered card
+  card:
+    type: custom:decluttering-card
+    template: dados_expander_base
+    variables:
+      # ------------------------------------------------------------
+      # Identity / expander id source
+      # ------------------------------------------------------------
+      - entity: '[[entity]]'
+
+      # ------------------------------------------------------------
+      # Expanded content (child cards)
+      # - A minimal tile for the climate entity:
+      #   - shows target temperature control
+      #   - hides the default tile content area for a cleaner look
+      # ------------------------------------------------------------
+      - cards:
+          - type: tile
+            entity: '[[entity]]'
+            vertical: false
+            features:
+              - type: target-temperature
+              # Placeholder service-call feature (currently no entries)
+              - type: custom:service-call
+                entries: []
+            features_position: bottom
+
+            # Make the tile visually “invisible” except for features
+            card_mod:
+              style:
+                .: |
+                  ha-card {
+                    background: transparent !important;
+                    box-shadow: none !important;
+                    border: none !important;
+                    margin-top: 0px;
+                  }
+                  ha-card .content {
+                    display: none !important;
+                  }
+
+                # Deep styling for the feature select control container
+                # - Forces a solid background and rounded edges for the control UI
+                hui-card-features $:
+                  hui-card-feature $:
+                    hui-alarm-modes-card-feature $:
+                      ha-control-select $: |
+                        .container {
+                          background-color: rgba(var(--contrast2-rgb), 1) !important;
+                          border-radius: 13px !important;
+                          padding: 0px !important;
+                        }
+
+      # ------------------------------------------------------------
+      # Title / header card (passed into dados_expander_base)
+      # - Uses your shared title template: dados_expander_title
+      # - Shows a custom icon, name, and a state display line
+      # - Icon tap navigates to [[navigation_path]]
+      # ------------------------------------------------------------
+      - title_card:
+          type: custom:button-card
+          template: dados_expander_title
+          variables:
+            entity: '[[entity]]'
+            state_display_entity: '[[state_display_entity]]'
+            img_cell_background: '[[img_cell_background]]'
+            custom_icon: '[[custom_icon]]'
+            navigation_path: '[[navigation_path]]'
+
+          # Icon is sourced from variables.custom_icon
+          icon: "[[[ return variables.custom_icon ]]]"
+
+          # Show state line using the provided sensor; fallback text if missing
+          show_state: true
+          state_display: >-
+            [[[ return states[variables.state_display_entity]?.state || 'FEHLER'; ]]]
+
+          # Header name
+          name: '[[name]]'
+
+          # Icon tap navigates to the heating dashboard page
+          icon_tap_action:
+            action: navigate
+            navigation_path: "[[[ return variables.navigation_path ]]]"
+
+      # ------------------------------------------------------------
+      # Optional card_mod passthrough
+      # - Allows caller to inject additional styling into dados_expander_base
+      # ------------------------------------------------------------
+      - card_mod: '[[card_mod]]'
