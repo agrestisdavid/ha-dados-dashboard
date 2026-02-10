@@ -39,7 +39,7 @@ dados_heating_card:
       # ------------------------------------------------------------
       # Identity / expander id source
       # ------------------------------------------------------------
-      - entity: '[[entity]]'
+      - entity: "[[entity]]"
 
       # ------------------------------------------------------------
       # Expanded content (child cards)
@@ -49,7 +49,7 @@ dados_heating_card:
       # ------------------------------------------------------------
       - cards:
           - type: tile
-            entity: '[[entity]]'
+            entity: "[[entity]]"
             vertical: false
             features:
               - type: target-temperature
@@ -72,17 +72,33 @@ dados_heating_card:
                     display: none !important;
                   }
 
+                ha-tile-container $: |
+                  .content {
+                    display: none !important;
+                  }
+                .features hui-alarm-modes-tile-feature $: |
+                  .container {
+                    padding: 0px !important;
+                  }
+                .features hui-alarm-modes-tile-feature $ .container ha-control-select $ .container:
+                  |
+                  .option {
+                    background-color: transparent !important;
+                    border-radius: 13px !important;
+                  }
                 # Deep styling for the feature select control container
                 # - Forces a solid background and rounded edges for the control UI
+
                 hui-card-features $:
-                  hui-card-feature $:
-                    hui-alarm-modes-card-feature $:
-                      ha-control-select $: |
-                        .container {
-                          background-color: rgba(var(--contrast2-rgb), 1) !important;
-                          border-radius: 13px !important;
-                          padding: 0px !important;
-                        }
+                  #hui-card-feature $:
+                  hui-alarm-modes-card-feature $:
+                    ha-control-select $: |
+                      .container {
+                        background-color: rgba(var(--contrast2-rgb), 1) !important;
+                        border-radius: 13px !important;
+                        padding: 0px !important;
+                      }
+
 
       # ------------------------------------------------------------
       # Title / header card (passed into dados_expander_base)
@@ -94,11 +110,11 @@ dados_heating_card:
           type: custom:button-card
           template: dados_expander_title
           variables:
-            entity: '[[entity]]'
-            state_display_entity: '[[state_display_entity]]'
-            img_cell_background: '[[img_cell_background]]'
-            custom_icon: '[[custom_icon]]'
-            navigation_path: '[[navigation_path]]'
+            entity: "[[entity]]"
+            state_display_entity: "[[state_display_entity]]"
+            img_cell_background: "[[img_cell_background]]"
+            custom_icon: "[[custom_icon]]"
+            navigation_path: "[[navigation_path]]"
 
           # Icon is sourced from variables.custom_icon
           icon: "[[[ return variables.custom_icon ]]]"
@@ -109,7 +125,7 @@ dados_heating_card:
             [[[ return states[variables.state_display_entity]?.state || 'FEHLER'; ]]]
 
           # Header name
-          name: '[[name]]'
+          name: "[[name]]"
 
           # Icon tap navigates to the heating dashboard page
           icon_tap_action:
@@ -120,4 +136,4 @@ dados_heating_card:
       # Optional card_mod passthrough
       # - Allows caller to inject additional styling into dados_expander_base
       # ------------------------------------------------------------
-      - card_mod: '[[card_mod]]'
+      - card_mod: "[[card_mod]]"
