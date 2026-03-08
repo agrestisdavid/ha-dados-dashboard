@@ -261,8 +261,8 @@ dados-theme:
   # Gradient RGB variables
   brightness-low-rgb: 232, 176, 29
   brightness-high-rgb: 255, 211, 94
-  temperature-low-rgb: 177, 197, 255
-  temperature-high-rgb: 255, 175, 131
+  temperature-low-rgb: 255, 175, 131
+  temperature-high-rgb: 177, 197, 255 
   tabs-low-rgb: 255, 255, 255
   tabs-high-rgb: 253, 109, 38
   # Contrast variables
